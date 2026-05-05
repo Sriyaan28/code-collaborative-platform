@@ -29,9 +29,12 @@ const repositorySchema = new Schema({
         type: Boolean,
         default: true
     }, 
-    comments:{
-        type:String
-    },
+    comments:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Comment"
+        }
+    ]
 },{
     versionKey:false,
     timestamps:true

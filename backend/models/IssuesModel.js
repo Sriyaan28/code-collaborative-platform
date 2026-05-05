@@ -2,23 +2,23 @@ import { Schema, model } from 'mongoose';
 const IssuesSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: [ true, "Title not defined"]
     },
     description: {
         type: String,
-        required: true
+        required: [true, "Description not defined"]
     },
-    repo_id:{
+    repo_id: {
         type: Schema.Types.ObjectId,
         ref: "Repository",
-        required: true
+        required: [true, "Repository not defined"]
     },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: [true, "Author not defined"]
     },
-    status:{
+    status: {
         type: String,
         enum: ['open', 'closed'],
         default: 'open'
@@ -28,9 +28,11 @@ const IssuesSchema = new Schema({
         ref: "User"
     }]
 },
-    { timestamps: true ,
-  versionKey: false,
-  strict: "throw"});
-        
+    {
+        timestamps: true,
+        versionKey: false,
+        strict: "throw"
+    });
+
 
 export const IssuesModel = model("Issues", IssuesSchema);

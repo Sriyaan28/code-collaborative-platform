@@ -1,32 +1,40 @@
-import {Schema,model} from "mongoose";
-
-// NOTIFICATIONS:
-//     - notification_id
-//     - timestamp
-//     - isSeen
-//     - type
-//     - user(user_id)
-//     - message
+import { Schema, model } from "mongoose";
 
 const notificationSchema = new Schema({
-    message:{
-        type: String,
-        required: [true,"Message required"]
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "User not defined"]
     },
-    isSeen:{
+
+    message: {
+        type: String,
+        required: [true, "Message required"]
+    },
+
+    isSeen: {
         type: Boolean,
         default: false
     },
-    type:{
-        type:String
+
+    type: {
+        type: String
+        // fix suggested:
+        //,enum: [ 'COLLAB_ADDED' , 'PR_CREATED' , 'PR_MERGED' , 'COMMENT_ADDED' , 'ISSUE_ASSIGNED' ]
     },
-    user:{
-        type: Schema.Types.ObjectId,
-        ref: "User"
+
+    reference_id: {
+        type: Schema.Types.ObjectId
+    },
+
+    reference_type: {
+        type: String,
+        enum: ['PR', 'ISSUE', 'REPO', 'COMMENT']
     }
-},{
+}, {
     versionKey: false,
-    timestamps: true
+    timestamps: true,
+    strict: "throw"
 });
 
-export const NotificationModel = model("Notification",notificationSchema)
+export const NotificationModel = model("Notification", notificationSchema)

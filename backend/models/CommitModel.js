@@ -8,12 +8,14 @@ const commitSchema = new Schema({
 
   repo_id: {
     type: Schema.Types.ObjectId,
-    ref: "Repository"
+    ref: "Repository",
+    required: [true, "Repository not defined"]
   },
 
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: [true, "Author not defined"]
   },
 
   files_changed: [

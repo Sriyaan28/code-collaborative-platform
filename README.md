@@ -50,7 +50,7 @@
     - file_id
     - repository(repo_id)
     - name
-    - editedFiles(commit model)
+    - commits(commit model)
     - content(code)
     - createdBy(user_id)
 
