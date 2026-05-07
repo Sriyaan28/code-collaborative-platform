@@ -7,6 +7,7 @@ import { getRepoByIdController } from '../controllers/repoControllers/getRepoByI
 import { updateRepoByIdController } from '../controllers/repoControllers/update.controller.js';
 import { deleteRepoByIdController } from '../controllers/repoControllers/delete.controller.js';
 import { searchRepoByNameController } from '../controllers/repoControllers/searchByname.controller.js';
+import { checkRepoAccess } from '../middleware/checkRepoAccess.js';
 
 
 export const repoApp = exp.Router()
@@ -18,16 +19,16 @@ repoApp.post('/repo',verifyToken,createRepoController)
 repoApp.get('/all-repos',verifyToken,getAllReposController)
 
 // route for getting a repository by id 
-repoApp.get('/repo/:id', verifyToken, getRepoByIdController)
+repoApp.get('/repo/:id', verifyToken,checkRepoAccess, getRepoByIdController)
 
 // update a repository by id
-repoApp.put('/repo/:id', verifyToken, updateRepoByIdController)
+repoApp.put('/repo/:id', verifyToken, checkRepoAccess, updateRepoByIdController)
 
 // delete a repository by id
-repoApp.delete('/repo/:id', verifyToken, deleteRepoByIdController)
+repoApp.delete('/repo/:id', verifyToken,checkRepoAccess, deleteRepoByIdController)
 
 // search repositories by name
-repoApp.post('/search',verifyToken,searchRepoByNameController)
+repoApp.get('/search',verifyToken,searchRepoByNameController)
 
 
 

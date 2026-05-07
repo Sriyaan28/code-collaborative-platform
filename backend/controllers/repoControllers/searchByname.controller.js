@@ -12,8 +12,9 @@ export const searchRepoByNameController = async (req, res) => {
                 message: "User ID not found in request"
             });
         }
-        // get search query from req query
-        const query = req.body?.query;
+        // get search query from params
+        const query = req.query.repoName
+        console.log("Search query:", query)
 
         if (!query) {
             return res.status(400).json({
@@ -21,7 +22,6 @@ export const searchRepoByNameController = async (req, res) => {
                 message: "Search query is required"
             });
         }
-
 
         // search repositories by name using regex for partial and case-insensitive matching (visibility should be public for non owners)
         const repositories = await RepositoryModel.find({
@@ -39,9 +39,10 @@ export const searchRepoByNameController = async (req, res) => {
         const collaboratedReposIds = await CollaboratorModel.find({ user: uid }).select("repo")
         const collaboratedRepos = await RepositoryModel.find({ _id: { $in: collaboratedReposIds.map(c => c.repo) },
          name: { $regex: query,
-                 $options: "i" } })
+                 $options: "i"} })
             .select("_id name description visibility owner")
             .limit(10);
+
 
         // return the repositories to the client
         return res.status(200).json({

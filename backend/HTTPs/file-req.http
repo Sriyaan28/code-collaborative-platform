@@ -1,0 +1,9 @@
+### Create a new file
+POST http://localhost:8080/api/files/file
+Content-Type: application/json
+
+{
+    "name": "file3.txt",
+    "content": "This is the content of file.",
+    "repoId": "69fc602f336607d0f0c709d2"
+}

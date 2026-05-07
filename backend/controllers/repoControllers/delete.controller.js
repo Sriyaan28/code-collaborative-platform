@@ -7,27 +7,30 @@ export const deleteRepoByIdController = async (req, res) => {
         const rid = req.params.id
         // check if user id is present in token
         if (!uid) {
-            return res.status(400).json({ message: "User ID not found in request" })
+            return res.status(400).json({ message: "User ID not found in request", success: false })
         }
         
-        // check if user is owner of the repository
-        const repository = await RepositoryModel.findById(rid)
-        if (!repository) {
-            return res.status(404).json({ message: "Repository not found" })
+        // check role using checkRepoAccess middleware
+        const role = req.role;
+        console.log("User role in repository: ", role);
+        // if role is not owner, then the user does not have permission to delete the repository
+        if(role !== 'owner')
+        {
+            return res.status(403).json({
+                message: `${role}(s) do not have permission to delete this repository`,
+                success: false
+            })
         }
-        if (repository.owner.toString() !== uid) {
-            return res.status(403).json({ message: "You are not the owner of this repository" })
-        }
-
+        
         // find repository by id
         const deletedRepository = await RepositoryModel.findByIdAndDelete(rid)
         if (!deletedRepository) {
-            return res.status(404).json({ message: "Cannot fetch and delete repository" })
+            return res.status(404).json({ message: "Cannot fetch and delete repository", success: false })
         }
 
-        res.status(200).json({ message: "Repository deleted" })
+        res.status(200).json({ message: "Repository deleted", success: true })
     } catch (err) {
         console.log("Error in deleting repository", err)
-        res.status(500).json({ message: "Error in deleting repository" })
+        res.status(500).json({ message: "Error in deleting repository", success: false })
     }
 }

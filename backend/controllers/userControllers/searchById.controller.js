@@ -1,3 +1,4 @@
+
 import { UserModel } from "../../models/UserModel.js";
 import { RepositoryModel } from "../../models/RepositoryModel.js";
 
@@ -10,7 +11,7 @@ export const searchUsersByIdController = async (req, res) => {
         const userobj=await UserModel.findById(uid).select("-password") // exclude password from the user object
 
         if(!userobj){
-            return res.status(404).json({message:"user not found"})
+            return res.status(404).json({message:"User not found"})
         }
         // check if user is active
         if(!userobj.isActive){
@@ -26,10 +27,10 @@ export const searchUsersByIdController = async (req, res) => {
         console.log(userObject)
 
         // return user object to the client
-        res.status(200).json({message:"user found",payload:userObject})
+        res.status(200).json({message:"User found",payload:userObject})
     }
     catch(err){
         console.log("error in getting user",err)
-        res.status(500).json({message:"error in getting user"})
+        res.status(500).json({message:"Error in getting user"})
     }
 }

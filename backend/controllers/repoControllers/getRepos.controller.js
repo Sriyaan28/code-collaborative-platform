@@ -10,7 +10,6 @@ export const getAllReposController = async (req, res) => {
             return res.status(400).json({ message: "User ID not found in request" })
         }
 
-
         // find all repositories in the database where visibility is public
         const repositories = await RepositoryModel.find({ visibility: "PUBLIC", owner: { $ne: uid } })
         .select("_id name description visibility owner").sort({ createdAt: -1 })

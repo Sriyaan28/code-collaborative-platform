@@ -3,8 +3,15 @@ import { UserModel } from "../../models/UserModel.js";
 //delete user
 export const deleteController = async (req, res) => {
     try {
-        const user = await UserModel.findById(req.params.id);
+        const uid = req.user?.id;
 
+        const user = await UserModel.findById(uid);
+        
+        // check if user exists
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
         //check if user isActive
         if (!user.isActive) {
             return res.status(400).json({ message: 'user already deleted' });

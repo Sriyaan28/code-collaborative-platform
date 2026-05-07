@@ -16,11 +16,11 @@ const port = process.env.PORT || 3000
 app.use(exp.json())
 app.use(cookieParser())
 
-app.use('/auth-api',authApp)
-app.use('/user-api',userApp)
-app.use('/repo-api',repoApp)
-app.use('/file-api',fileApp)
-app.use('/collab-api',collabApp)
+app.use('/api/auth',authApp)
+app.use('/api/users',userApp)
+app.use('/api/repository',repoApp)
+app.use('/api/files',fileApp)
+app.use('/api/collaborator',collabApp)
 //=======================================================
 
 //_____________________start server_______________________________

@@ -7,7 +7,8 @@ export const getRepoByIdController = async (req, res) => {
 
         if (!uid) {
             return res.status(400).json({
-                message: "User ID not found"
+                message: "User ID not found", 
+                success: false
             })
         }
 
@@ -15,52 +16,55 @@ export const getRepoByIdController = async (req, res) => {
 
         // fetch repository first
         const repository = await RepositoryModel.findById(rid)
-
         if (!repository) {
             return res.status(404).json({
-                message: "Repository not found"
+                message: "Repository not found",
+                success: false
             })
         }
 
+        const role = req.role;
+        console.log("User role in repository: ", role);
+
         // everyone can access public repos
-        if (repository.visibility === "PUBLIC") {
+        if (role === 'viewer' && repository.visibility === 'PUBLIC') 
+        {
             return res.status(200).json({
                 message: "Repository found",
-                payload: repository
+                payload: repository,
+                success: true
             })
         }
 
         // owner can access private repo
-        if (repository.owner.toString() === uid.toString()) {
+        if (role === 'owner') {
             return res.status(200).json({
                 message: "Repository found",
-                payload: repository
+                payload: repository,
+                success: true
             })
         }
 
-        // collaborator can access private repo
-        const isCollaborator = await CollaboratorModel.findOne({
-            repo: rid,
-            user: uid
-        })
-
-        if (isCollaborator) {
+        if (role === 'collaborator') {
             return res.status(200).json({
                 message: "Repository found",
-                payload: repository
+                payload: repository,
+                success: true
             })
         }
 
         // otherwise deny access
         return res.status(403).json({
-            message: "Access denied"
+            message: "Access denied",
+            success: false
         })
 
     } catch (err) {
-        console.log("Error in getting repository", err)
+        // console.log("Error in getting repository", err)
 
         res.status(500).json({
-            message: "Error in getting repository"
+            message: "Error in getting repository",
+            success: false
         })
     }
 }

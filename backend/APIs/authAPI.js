@@ -18,11 +18,9 @@ authApp.post('/login',loginController)
 authApp.put('/profile',verifyToken,updateController)
 
 // route for logout
- authApp.get('/logout',logoutController)
+ authApp.get('/logout',verifyToken,logoutController)
 
 // route for deleting account
-authApp.delete("/delete",deleteController) 
+authApp.delete("/delete",verifyToken,deleteController) 
 
-// route for viewing profile
-// authApp.get('/profile',)
 

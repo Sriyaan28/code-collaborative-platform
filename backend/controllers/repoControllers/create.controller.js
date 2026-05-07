@@ -22,9 +22,9 @@ export const createRepoController = async (req, res) => {
         // console.log("repository created successfully", result)
         
         // send response
-        res.status(200).json({ message: "Repository created", payload: newrepo })
+        res.status(200).json({ message: "Repository created", payload: newrepo, success: true })
     } catch (err) {
         console.log("Error in creating repository", err)
-        res.status(500).json({ message: "Error in creating repository" })
+        res.status(500).json({ message: "Error in creating repository", success: false })
     }
 }

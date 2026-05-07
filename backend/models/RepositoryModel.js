@@ -18,16 +18,6 @@ const repositorySchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    
-    // REMOVE THIS PART LATER
-    // collaborators is not required as we can get collaborators from CollaboratorModel using repoId
-    // collaborators:[
-    //     {
-    //         type: Schema.Types.ObjectId,  
-    //         ref: "Collaborator"
-    //     }
-    // ],
-    
     isActive:{
         type: Boolean,
         default: true

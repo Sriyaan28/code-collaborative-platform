@@ -1,29 +1,28 @@
 ### USER REGISTER
-POST http://localhost:8080/auth-api/register
+POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "user1",
-    "email": "user1@example.com",
-    "password": "user1"
-}
-
-### USER LOGIN
-POST http://localhost:8080/auth-api/login
-Content-Type: application/json
-
-{
+    "name": "user2",
     "email": "user2@example.com",
     "password": "user2"
 }
 
+### USER LOGIN
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
 
-### USER PROFILE
-GET http://localhost:8080/auth-api/profile
+{
+    "email": "user1@example.com",
+    "password": "user1"
+}
 
+### USER LOGOUT
+GET http://localhost:8080/api/auth/logout
 
+// update and delete should be present in /api/user/profile (can be fixed later if needed)
 ### USER UPDATE 
-PUT http://localhost:8080/auth-api/profile
+PUT http://localhost:8080/api/auth/profile
 Content-Type: application/json
 Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjlhMDEzYTAyZGQ3NjcyYzk0M2YzYyIsImVtYWlsIjoidXNlcjJAZXhhbXBsZS5jb20iLCJpYXQiOjE3Nzc5NjcyMjgsImV4cCI6MTc3ODA1MzYyOH0.oGKV9w-GCQ10xOEqsaOj5_TzK2D35QMphUAozRi5HMo; Path=/; HttpOnly; SameSite=Lax
 
@@ -36,8 +35,6 @@ Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjlhMDEzYTAyZGQ3N
 
 
 ### USER DELETE
-DELETE http://localhost:8080/auth-api/profile
+DELETE http://localhost:8080/api/auth/profile
 
 
-### USER LOGOUT
-GET http://localhost:8080/auth-api/logout

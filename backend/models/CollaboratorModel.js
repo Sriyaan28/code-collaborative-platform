@@ -9,7 +9,7 @@ import { Schema,model } from "mongoose";
 const collaboratorSchema = new Schema({
     role:{
         type:String,
-        enum: ['owner', 'collaborator', 'viewer'],
+        enum: ['collaborator', 'viewer'],
         required:[true,"Role not defined"]
     },
     user:{

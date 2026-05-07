@@ -1,5 +1,5 @@
 ### Adding a new collaborator to a repository
-POST http://localhost:8080/collab-api/collaborator
+POST http://localhost:8080/api/collaborator/new
 Content-Type: application/json
 
 {
