@@ -28,9 +28,11 @@ export const addCollabController =async (req,res)=>{
         const result=await newCollaborator.save()
         console.log("Collaborator added successfully",result)
 
+        // REMOVE THIS PART LATER
+        // removed collaborators array from RepositoryModel, so no need to add collaborator to repository's collaborators array
         // add collaborator to repository's collaborators array
-        const updatedRepo= await RepositoryModel.findByIdAndUpdate(repoId,{$push:{collaborators:result._id}},{new:true})
-        console.log("Repository updated with new collaborator",updatedRepo)
+        // const updatedRepo= await RepositoryModel.findByIdAndUpdate(repoId,{$push:{collaborators:result._id}},{new:true})
+        // console.log("Repository updated with new collaborator",updatedRepo)
 
         res.status(201).json({message:"Collaborator added",payload:result})
     }catch(err){

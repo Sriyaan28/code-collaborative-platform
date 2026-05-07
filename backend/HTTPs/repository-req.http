@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### getting all repositories
-GET http://localhost:8080/repo-api/repo
+GET http://localhost:8080/repo-api/repos
 
 ### getting repository by id
 GET http://localhost:8080/repo-api/repo/69f9a5bf53eb87b6bc6b49a3

@@ -1,10 +1,12 @@
 import exp from 'express';
+import { verifyToken } from '../middleware/verifyToken.js';
+
 import { createRepoController } from '../controllers/repoControllers/create.controller.js';
-import { getReposController} from '../controllers/repoControllers/getRepos.controller.js';
-import { getReposByIdController } from '../controllers/repoControllers/getRepoById.controller.js';
+import { getAllReposController} from '../controllers/repoControllers/getRepos.controller.js';
+import { getRepoByIdController } from '../controllers/repoControllers/getRepoById.controller.js';
 import { updateRepoByIdController } from '../controllers/repoControllers/update.controller.js';
 import { deleteRepoByIdController } from '../controllers/repoControllers/delete.controller.js';
-import { verifyToken } from '../middleware/verifyToken.js';
+import { searchRepoByNameController } from '../controllers/repoControllers/searchByname.controller.js';
 
 
 export const repoApp = exp.Router()
@@ -12,15 +14,20 @@ export const repoApp = exp.Router()
 // route for creating a repository
 repoApp.post('/repo',verifyToken,createRepoController)
 
-// route for getting all repositories
-repoApp.get('/repo',getReposController)
+// route for getting all repositories (displays all repositories in the platform where the visibility is public)
+repoApp.get('/all-repos',verifyToken,getAllReposController)
 
-// route for getting a repository by id
-repoApp.get('/repo/:id', getReposByIdController)
+// route for getting a repository by id 
+repoApp.get('/repo/:id', verifyToken, getRepoByIdController)
 
 // update a repository by id
-repoApp.put('/repo/:id',updateRepoByIdController)
+repoApp.put('/repo/:id', verifyToken, updateRepoByIdController)
 
 // delete a repository by id
-repoApp.delete('/repo/:id',deleteRepoByIdController)
+repoApp.delete('/repo/:id', verifyToken, deleteRepoByIdController)
+
+// search repositories by name
+repoApp.post('/search',verifyToken,searchRepoByNameController)
+
+
 
