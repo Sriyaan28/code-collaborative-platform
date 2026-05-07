@@ -1,4 +1,4 @@
-import {userModel} from '../../models/UserModel.js';
+import {UserModel} from '../../models/UserModel.js';
 import {hash} from 'bcrypt';
 
 export const updateController = async(req,res)=>{
@@ -14,13 +14,13 @@ export const updateController = async(req,res)=>{
        
        const idOfUser = req.user.id
 
-         const user = await userModel.findById(idOfUser);
+         const user = await UserModel.findById(idOfUser);
         if(!user.isActive)
         {
             return res.status(400).json({message:"User profile is deactivated."})
         }
         // update user
-        const updatedUser = await userModel.findByIdAndUpdate(idOfUser,modifiedUser,{new:true})
+        const updatedUser = await UserModel.findByIdAndUpdate(idOfUser,modifiedUser,{new:true})
 
         return res.status(200).json({message:"User profile updated successfully",payload:updatedUser})
 

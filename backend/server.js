@@ -6,6 +6,7 @@ import { authApp } from './APIs/AuthAPI.js'
 import { repoApp } from './APIs/RepoAPI.js'
 import { fileApp } from './APIs/fileAPI.js'
 import { collabApp } from './APIs/CollabAPI.js'
+import { userApp } from './APIs/UserAPI.js'
 config()
 
 const app = exp()
@@ -16,6 +17,7 @@ app.use(exp.json())
 app.use(cookieParser())
 
 app.use('/auth-api',authApp)
+app.use('/user-api',userApp)
 app.use('/repo-api',repoApp)
 app.use('/file-api',fileApp)
 app.use('/collab-api',collabApp)

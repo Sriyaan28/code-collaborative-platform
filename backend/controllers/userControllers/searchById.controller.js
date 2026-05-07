@@ -1,10 +1,10 @@
-import { userModel } from "../models/UserModel"
+import { UserModel } from "../../models/UserModel.js";
 
-export const getUsers=async (req,res)=>{
+export const searchUsersByIdController = async (req, res) => {
     try{
         const uid=req.params.id
 
-        const userobj=await userModel.findById(uid)
+        const userobj=await UserModel.findById(uid)
 
         if(!userobj){
             return res.status(404).json({message:"user not found"})

@@ -1,9 +1,9 @@
-import { userModel } from "../../models/UserModel.js";
-
+import { UserModel } from "../../models/UserModel.js";
+    
 //delete user
 export const deleteController = async (req, res) => {
     try {
-        const user = await userModel.findById(req.params.id);
+        const user = await UserModel.findById(req.params.id);
 
         //check if user isActive
         if (!user.isActive) {

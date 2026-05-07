@@ -1,5 +1,5 @@
 import {hash} from 'bcrypt';
-import { userModel } from '../../models/UserModel.js';
+import { UserModel } from '../../models/UserModel.js';
 
 export const registerController = async(req,res)=>{
     try
@@ -11,7 +11,7 @@ export const registerController = async(req,res)=>{
         newUser.password = await hash(newUser.password,12)
 
         // create new user
-        const newUserDoc = new userModel(newUser)
+        const newUserDoc = new UserModel(newUser)
 
         // save user
         await newUserDoc.save()

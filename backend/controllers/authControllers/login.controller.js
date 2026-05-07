@@ -1,5 +1,5 @@
 import { hash,compare } from 'bcrypt'
-import { userModel } from '../../models/UserModel.js'
+import { UserModel } from '../../models/UserModel.js'
 import jwt from 'jsonwebtoken'
 const { sign } = jwt
 
@@ -12,7 +12,7 @@ export const loginController = async (req,res)=>{
         // get user data from req
         const { email,password } = req.body
         // find user in db
-        const currentUser=await userModel.findOne({ email:email })
+        const currentUser=await UserModel.findOne({ email:email })
 
         // check if user exists
         if(!currentUser)
