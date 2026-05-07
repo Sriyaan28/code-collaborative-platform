@@ -15,7 +15,7 @@ userApp.get('/profile',verifyToken,getProfileController)
 userApp.get('/search/:id',verifyToken,searchUsersByIdController)
 
 // route for searching users by name
-userApp.get('/search-name',verifyToken,searchUsersByNameController)
+userApp.post('/search-name',verifyToken,searchUsersByNameController)
 
 // route for searching users by email
-userApp.get('/search-email',verifyToken,searchUsersByEmailController)
+userApp.post('/search-email',verifyToken,searchUsersByEmailController)
