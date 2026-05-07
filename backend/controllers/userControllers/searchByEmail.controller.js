@@ -2,7 +2,7 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const searchUsersByEmailController = async (req, res) => {
   try {
-    const { query } = req.query;
+    const query = req.body?.query;
 
     if (!query) {
       return res.status(400).json({
@@ -16,9 +16,10 @@ export const searchUsersByEmailController = async (req, res) => {
       email: {
         $regex: query,
         $options: "i"
-      }
+      },
+      isActive: true
     })
-    .select("_id username email userProfile")
+    .select("_id name email userProfile")
     .limit(10);
 
     return res.status(200).json({

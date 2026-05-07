@@ -3,9 +3,9 @@ POST http://localhost:8080/auth-api/register
 Content-Type: application/json
 
 {
-    "name": "user2",
-    "email": "user2@example.com",
-    "password": "user2"
+    "name": "user1",
+    "email": "user1@example.com",
+    "password": "user1"
 }
 
 ### USER LOGIN

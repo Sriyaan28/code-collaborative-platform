@@ -2,5 +2,21 @@
 GET http://localhost:8080/user-api/profile
 
 
-### SEARCH USER
-GET http://localhost:8080/user-api/search
+### SEARCH USER BY ID
+GET http://localhost:8080/user-api/search/69f9a013a02dd7672c943f3c
+
+### SEARCH USER BY NAME
+POST http://localhost:8080/user-api/search-name
+Content-Type: application/json
+
+{
+    "query": "user"
+}
+
+### SEARCH USER BY EMAIL
+POST http://localhost:8080/user-api/search-email
+Content-Type: application/json
+
+{
+    "query": "user"
+}

@@ -2,7 +2,9 @@ import { UserModel } from "../../models/UserModel.js";
 
 export const searchUsersByNameController = async (req, res) => {
   try {
-    const { query } = req.query;
+    const query = req.body?.query;
+
+    console.log("Search query:", req.body?.query);
 
     // If no query is provided, return an error 
     if (!query) {
@@ -15,12 +17,14 @@ export const searchUsersByNameController = async (req, res) => {
     // Search for users whose username matches the query (case-insensitive)
     // Limit the results to 10 users and select only necessary fields
     const users = await UserModel.find({
-      username: {
+      _id: { $ne: req.user.id },
+      name: {
         $regex: query,
         $options: "i"
-      }
+      },
+      isActive: true
     })
-    .select("_id username email userProfile")
+    .select("_id name email userProfile")
     .limit(10);
 
     // Return the search results to the client

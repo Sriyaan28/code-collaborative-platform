@@ -3,7 +3,7 @@ POST http://localhost:8080/collab-api/collaborator
 Content-Type: application/json
 
 {
-    "repoId": "69f9c29aa46522dbdfa9525c",
-    "userId": "69f98574c50d948a9dc13026",
+    "repoId": "69fc62f6cd7532dfecc4bbc5",
+    "userId": "69f9a013a02dd7672c943f3c",
     "role": "collaborator"
 }
