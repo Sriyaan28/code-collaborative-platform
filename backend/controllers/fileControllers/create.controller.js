@@ -1,4 +1,4 @@
-import {FileModel} from '../../models/fileModel.js'
+import {FileModel} from '../../models/FileModel.js'
 
 export const createFileController = async (req, res) => {
     try{

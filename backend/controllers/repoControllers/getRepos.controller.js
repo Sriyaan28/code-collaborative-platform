@@ -19,7 +19,7 @@ export const getAllReposController = async (req, res) => {
         .select("_id name description visibility owner").sort({ createdAt: -1 })
 
         // user collaborated repositories which are private should also be displayed in user repositories section
-        const collaboratedReposIds = await CollaboratorModel.find({ user: uid }).select("repo")
+        const collaboratedReposIds = await CollaboratorModel.find({ user: uid,role: "collaborator" }).select("repo")
         const collaboratedRepos = await RepositoryModel.find({ _id: { $in: collaboratedReposIds.map(c => c.repo) }, visibility: "PRIVATE" })
         userRepos.push(...collaboratedRepos)
 

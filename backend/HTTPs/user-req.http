@@ -3,10 +3,10 @@ GET http://localhost:8080/api/users/profile
 
 
 ### SEARCH USER BY ID
-GET http://localhost:8080/api/users/user/69f9a013a02dd7672c943f3c
+GET http://localhost:8080/api/users/user/69fda3bda63e1422a85c344e
 
 ### SEARCH USER BY NAME
-GET http://localhost:8080/api/users/search?name=user
+GET http://localhost:8080/api/users/search?name=us
 
 ### SEARCH USER BY EMAIL
-GET http://localhost:8080/api/users/search?email=user1@example.com
+GET http://localhost:8080/api/users/search?email=user2@example.com

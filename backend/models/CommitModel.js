@@ -19,16 +19,16 @@ const commitSchema = new Schema({
   },
 
   files_changed: [
-    {
-      file_id: {
-        type: Schema.Types.ObjectId,
-        ref: "File"
-      },
-      changes: {
-        type: String
-      }
+  {
+    file_id: Schema.Types.ObjectId,
+    old_content: String,
+    new_content: String,
+    action: {
+      type: String,
+      enum: ["CREATE", "UPDATE", "DELETE"]
     }
-  ]
+  }
+]
 
 }, {
   timestamps: true,

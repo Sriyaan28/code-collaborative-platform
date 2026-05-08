@@ -21,6 +21,6 @@ authApp.put('/profile',verifyToken,updateController)
  authApp.get('/logout',verifyToken,logoutController)
 
 // route for deleting account
-authApp.delete("/delete",verifyToken,deleteController) 
+authApp.delete("/profile",verifyToken,deleteController) 
 
 

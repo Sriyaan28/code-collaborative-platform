@@ -3,29 +3,29 @@ POST http://localhost:8080/api/repository/repo
 Content-Type: application/json
 
 {
-    "name": "private-repo",
-    "description": "this is a private repo created by user1, collaborating with user2",
+    "name": "private-repository-1",
+    "description": "this is a private repository-1 created by user2",
     "visibility": "PRIVATE"
 }
 
 ### getting repository by id
-GET http://localhost:8080/api/repository/repo/69fc562c03a186f0e0a02538
+GET http://localhost:8080/api/repository/repo/69fda601a63e1422a85c3453
 
 ### Searching repositories by name
-GET http://localhost:8080/api/repository/search?repoName=r
+GET http://localhost:8080/api/repository/search?repoName=re
 
 ### Updating repository by id
-PUT http://localhost:8080/api/repository/repo/69fc62f6cd7532dfecc4bbc5
+PUT http://localhost:8080/api/repository/repo/69fda4b3a63e1422a85c3451
 Content-Type: application/json
 
 {
-    "name": "repo1-updated",
-    "description": "this is repo1-updated",
+    "name": "repo1",
+    "description": "this is a public repo 1 created by user1",
     "visibility": "PUBLIC"
 }
 
 ### Deleting repository by id
-DELETE http://localhost:8080/api/repository/repo/69fc62f6cd7532dfecc4bbc5
+DELETE http://localhost:8080/api/repository/repo/69fda54fa63e1422a85c3452
 
 ### getting all repositories
 GET http://localhost:8080/api/repository/all-repos

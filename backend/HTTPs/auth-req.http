@@ -3,9 +3,9 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "user2",
-    "email": "user2@example.com",
-    "password": "user2"
+    "name": "user3",
+    "email": "user3@example.com",
+    "password": "user3"
 }
 
 ### USER LOGIN
@@ -24,17 +24,21 @@ GET http://localhost:8080/api/auth/logout
 ### USER UPDATE 
 PUT http://localhost:8080/api/auth/profile
 Content-Type: application/json
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjlhMDEzYTAyZGQ3NjcyYzk0M2YzYyIsImVtYWlsIjoidXNlcjJAZXhhbXBsZS5jb20iLCJpYXQiOjE3Nzc5NjcyMjgsImV4cCI6MTc3ODA1MzYyOH0.oGKV9w-GCQ10xOEqsaOj5_TzK2D35QMphUAozRi5HMo; Path=/; HttpOnly; SameSite=Lax
 
 {
-    "name": "user2-updated",
-    "email": "user2@example.com",
-    "password": "user2",
+    "name": "user1",
+    "email": "user1@example.com",
+    "password": "user1",
     "userProfile":""
 }
 
 
 ### USER DELETE
 DELETE http://localhost:8080/api/auth/profile
+Content-Type: application/json
+
+{
+    "password": "user1"
+}
 
 

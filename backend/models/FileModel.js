@@ -19,6 +19,10 @@ const fileSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: [true, "Author not defined"]
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 },{
     timestamps: true,

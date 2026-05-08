@@ -22,7 +22,14 @@ export const checkRepoAccess = async (req, res, next) => {
         // add owner tag to the response object to be used in the controller if needed
         if (Repository && Repository.owner.toString() === uid) {
             req.role = 'owner';
+            req.repository = Repository; // add the repository object to the request object to be used in the controller if needed
             return next();
+        }
+
+        // check if user is blocked in any repository (global block)
+        const isBlocked = await CollaboratorModel.findOne({ user: uid, role: 'blocked' });
+        if (isBlocked) {
+            return res.status(403).json({message:"You've been blocked from accessing repositories",success:false})
         }
 
         // check if user is a collaborator in the repository

@@ -3,7 +3,24 @@ POST http://localhost:8080/api/collaborator/new
 Content-Type: application/json
 
 {
-    "repoId": "69fc62f6cd7532dfecc4bbc5",
+    "repoId": "69fda643a63e1422a85c3454",
+    "userId": "69fda3bda63e1422a85c344e",
+    "role": "blocked"
+}
+
+### get all collaborators
+GET http://localhost:8080/api/collaborator/collab/69fda643a63e1422a85c3454
+
+###
+DELETE http://localhost:8080/api/collaborator/repos/69fc602f336607d0f0c709d2/collab/69f9a013a02dd7672c943f3c
+
+
+### update
+PUT http://localhost:8080/api/collaborator/collab/69fd8163dd0a1afdb9c95c2d
+Content-Type: application/json
+
+{
+    "repoId": "69fc602f336607d0f0c709d2",
     "userId": "69f9a013a02dd7672c943f3c",
     "role": "collaborator"
 }
