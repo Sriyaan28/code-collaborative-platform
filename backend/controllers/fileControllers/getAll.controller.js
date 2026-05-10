@@ -6,7 +6,7 @@ export const getAllFilesController = async (req, res) => {
 
     try {
 
-        const  repoId = req.params.id;
+        const  repoId = req.params.repoId;
 
         const userId = req.user.id;
 

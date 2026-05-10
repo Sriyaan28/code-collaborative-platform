@@ -21,8 +21,8 @@ repoApp.get('/all-repos',verifyToken,getAllReposController)
 // route for getting a repository by id 
 repoApp.get('/repo/:id', verifyToken,checkRepoAccess, getRepoByIdController)
 
-// update a repository by id
-repoApp.put('/repo/:id', verifyToken, checkRepoAccess, updateRepoByIdController)
+// update a repository
+repoApp.put('/repo', verifyToken, checkRepoAccess, updateRepoByIdController)
 
 // delete a repository by id
 repoApp.delete('/repo/:id', verifyToken,checkRepoAccess, deleteRepoByIdController)

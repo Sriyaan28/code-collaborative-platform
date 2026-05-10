@@ -9,7 +9,7 @@ export const checkRepoAccess = async (req, res, next) => {
         if (!uid) {
             return res.status(400).json({ error: "User ID not found in request", success: false })
         }
-        const repoId = req.body?.repoId || req.query?.repoId || req.params?.id; 
+        const repoId = req.body?.repoId || req.query?.repoId || req.params?.id || req.params?.repoId; 
         console.log("Repository ID from request: ", repoId);
         if (!repoId) {
             return res.status(400).json({

@@ -1,54 +1,51 @@
 import { CollaboratorModel } from "../../models/CollaboratorModel.js";
 import { RepositoryModel } from "../../models/RepositoryModel.js";
-import { UserModel } from "../../models/UserModel.js";
 
-export const getCollaboratorsController = async (req, res) => {
+export const getCollaboratorByIdController = async(req,res)=>{
+    try
+    {
 
-    try {
+        
+        // get collaborator id from params
+        const collabId = req.params?.collabId;
 
-        const repoId = req.params.id;
+        // find the collaborator
+        const collaborator = await CollaboratorModel.findById(collabId);
+        if (!collaborator) {
+            return res.status(404).json({
+                success: false,
+                message: "Collaborator not found"
+            });
+        }
 
-        // Check if the repository exists
+        const repoId = collaborator.repo
+
+        // check if loggedIn user from token is same as the owner of the repo by getting repo details from repo id in collab model
         const repository = await RepositoryModel.findById(repoId);
-
         if (!repository) {
             return res.status(404).json({
-                message: "Repository not found"
+                success: false,
+                message: "Repository not found in collaborator"
             });
         }
-        // fetch role from checkRepoAccess middleware
-        const role = req.role;
 
-        // Only owners can view collaborators
-        if (role !== "owner") {
+        // only owner can check collaborator details
+        if (repository.owner.toString() !== req.user.id) {
             return res.status(403).json({
-                message: "Access denied. Only owners can view collaborators."
+                success: false,
+                message: "Unauthorized to view collaborator details"
             });
         }
-        // Fetch collaborators of the repository
-        const collaborators = await CollaboratorModel
-            .find({ repo: repoId, role: "collaborator" })
-            .populate("user", "_id name email");
 
-        const blockedUsers = await CollaboratorModel
-            .find({ repo: repoId, role: "blocked" })
-            .populate("user", "_id name email");
-        
-        res.status(200).json({
-            message: "Collaborators and Blocked Users fetched successfully",
-            payload: {
-                collaborators: collaborators,
-                blockedUsers: blockedUsers
-            }
+        // send res if owner
+        return res.status(200).json({
+            success: true,
+            message: "Collaborator details fetched successfully",
+            payload: collaborator
         });
-            
-    } catch (err) {
-
-        res.status(500).json({
-            message: "Failed to fetch collaborators",
-            error: err.message
-        });
-
     }
-
-};
+    catch(err)
+    {
+        return res.status(500).json({message:"Failed to fetch collaborator details",success:false})
+    }
+}

@@ -35,8 +35,8 @@ export const searchRepoByNameController = async (req, res) => {
             .select("_id name description visibility owner")
             .limit(10);
 
-        // if user is collaborator of any private repository, include those as well in the search results
-        const collaboratedReposIds = await CollaboratorModel.find({ user: uid }).select("repo")
+        // if user is collaborator of any private repository, include those as well in the search results and role is not blocked
+        const collaboratedReposIds = await CollaboratorModel.find({ user: uid, role: { $ne: "blocked" } }).select("repo")
         const collaboratedRepos = await RepositoryModel.find({ _id: { $in: collaboratedReposIds.map(c => c.repo) },
          name: { $regex: query,
                  $options: "i"} })

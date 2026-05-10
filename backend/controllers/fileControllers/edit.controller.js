@@ -3,8 +3,7 @@ import {FileModel} from "../../models/FileModel.js";
 export const editFileController = async (req, res) => {
     try {
         const uid = req.user.id;
-        const fileId = req.params.id;
-        const {name, content} = req.body;
+        const {name, content, fileId, repoId} = req.body;
 
         // get repo access role from middleware
         const role = req.role;

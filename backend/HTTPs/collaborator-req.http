@@ -3,24 +3,29 @@ POST http://localhost:8080/api/collaborator/new
 Content-Type: application/json
 
 {
-    "repoId": "69fda643a63e1422a85c3454",
-    "userId": "69fda3bda63e1422a85c344e",
-    "role": "blocked"
+    "repoId": "69ff5cf177314de2c408bef7",
+    "userId": "69fda478a63e1422a85c3450",
+    "role": "collaborator"
 }
 
-### get all collaborators
-GET http://localhost:8080/api/collaborator/collab/69fda643a63e1422a85c3454
+### get all collaborators by repoId
+GET http://localhost:8080/api/collaborator/collabs/69ff5d0377314de2c408bef8
 
-###
-DELETE http://localhost:8080/api/collaborator/repos/69fc602f336607d0f0c709d2/collab/69f9a013a02dd7672c943f3c
-
+### Get a collaborator using collabId
+GET http://localhost:8080/api/collaborator/collab/69ff5e8277314de2c408befb
 
 ### update
-PUT http://localhost:8080/api/collaborator/collab/69fd8163dd0a1afdb9c95c2d
+PUT http://localhost:8080/api/collaborator/collab/69ff5e8277314de2c408befb
 Content-Type: application/json
 
 {
-    "repoId": "69fc602f336607d0f0c709d2",
-    "userId": "69f9a013a02dd7672c943f3c",
+    "repoId": "69ff5d0377314de2c408bef8",
+    "userId": "69fda478a63e1422a85c3450",
     "role": "collaborator"
 }
+
+### Remove role of a user using repoId and userId
+DELETE http://localhost:8080/api/collaborator/repos/69ff5d0377314de2c408bef8/collab/69ff5e8277314de2c408befb
+
+### Deleting collaborator using collabId
+DELETE http://localhost:8080/api/collaborator/collab/69ff5e8277314de2c408befb

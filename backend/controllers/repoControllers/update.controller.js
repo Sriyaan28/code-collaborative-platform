@@ -5,7 +5,7 @@ export const updateRepoByIdController = async (req, res) => {
 
         // get user id from token and repository id from params
         const uid = req.user?.id || req.user?._id
-        const rid = req.params.id
+        const rid = req.body?.repoId
         
         // check if user id is present in token
         if (!uid) {

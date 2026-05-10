@@ -18,7 +18,7 @@ export const addCollabController =async (req,res)=>{
         }
         const existingCollab= await CollaboratorModel.findOne({repo:repoId,user:userId})
         if(existingCollab){
-            return res.status(400).json({message:"User is already a collaborator"})
+            return res.status(400).json({message:"User is already has a role in the repo"})
         }
         const newCollaborator= new CollaboratorModel({
             repo:repoId,
