@@ -13,6 +13,5 @@ commitApp.post('/commit', verifyToken, checkRepoAccess, createCommitController)
 // route to get commit by commitId
 commitApp.get('/commit/:commitId', verifyToken, getCommitByIdController)
 
-//route to get all commits in a repo
-commitApp.get('/commit/:repoId', verifyToken, checkRepoAccess, getAllCommitsController)
-
+//route to get all commits in a repo using repoId
+commitApp.get('/all-commits/:repoId', verifyToken, checkRepoAccess, getAllCommitsController)
