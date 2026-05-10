@@ -1,7 +1,8 @@
 import exp from 'express';
 import { verifyToken } from '../middleware/verifyToken.js';
-import { checkRepoAccess } from '../middleware/checkRepoAccess';
+import { checkRepoAccess } from '../middleware/checkRepoAccess.js';
 import { getAllCommitsController, getCommitByIdController } from '../controllers/commitControllers/get.controller.js';
+import { createCommitController } from '../controllers/commitControllers/create.controller.js';
 
 
 export const commitApp = exp.Router()
