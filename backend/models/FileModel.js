@@ -8,11 +8,15 @@ const fileSchema = new Schema({
         trim: true
     },
     repository: {
-        type:  Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Repository',
-        required: [true, "Repository not defined"] 
+        required: [true, "Repository not defined"]
     },
-    content:{
+    old_content: {
+        type: String,
+        default: ""
+    },
+    content: {
         type: String,
     },
     createdBy: {
@@ -24,7 +28,7 @@ const fileSchema = new Schema({
         type: Boolean,
         default: false
     }
-},{
+}, {
     timestamps: true,
     versionKey: false,
     strict: "throw"

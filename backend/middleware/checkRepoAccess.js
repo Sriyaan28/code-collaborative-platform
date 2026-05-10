@@ -9,7 +9,7 @@ export const checkRepoAccess = async (req, res, next) => {
         if (!uid) {
             return res.status(400).json({ error: "User ID not found in request", success: false })
         }
-        const repoId = req.body?.repoId || req.query?.repoId || req.params?.id || req.params?.repoId; 
+        const repoId = req.body?.repoId || req.body?.repository || req.query?.repoId || req.params?.id || req.params?.repoId;
         console.log("Repository ID from request: ", repoId);
         if (!repoId) {
             return res.status(400).json({
@@ -29,7 +29,7 @@ export const checkRepoAccess = async (req, res, next) => {
         // check if user is blocked in any repository (global block)
         const isBlocked = await CollaboratorModel.findOne({ user: uid, role: 'blocked' });
         if (isBlocked) {
-            return res.status(403).json({message:"You've been blocked from accessing repositories",success:false})
+            return res.status(403).json({ message: "You've been blocked from accessing repositories", success: false })
         }
 
         // check if user is a collaborator in the repository
@@ -54,10 +54,10 @@ export const checkRepoAccess = async (req, res, next) => {
         }
 
         // if the user is neither the owner, collaborator nor a viewer, then they do not have access to the repository
-            return res.status(403).json({
-                success: false,
-                message: "You do not have access to this repository"
-            })
+        return res.status(403).json({
+            success: false,
+            message: "You do not have access to this repository"
+        })
 
     } catch (error) {
         return res.status(500).json({

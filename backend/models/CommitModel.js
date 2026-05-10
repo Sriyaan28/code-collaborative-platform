@@ -6,7 +6,7 @@ const commitSchema = new Schema({
     required: true
   },
 
-  repo_id: {
+  repository: {
     type: Schema.Types.ObjectId,
     ref: "Repository",
     required: [true, "Repository not defined"]
@@ -19,16 +19,29 @@ const commitSchema = new Schema({
   },
 
   files_changed: [
-  {
-    file_id: Schema.Types.ObjectId,
-    old_content: String,
-    new_content: String,
-    action: {
-      type: String,
-      enum: ["CREATE", "UPDATE", "DELETE"]
+    {
+      file_id: {
+        type: Schema.Types.ObjectId,
+        ref: "File",
+        required: true
+      },
+      content: {
+        old_content: {
+          type: String,
+          default: ""
+        },
+        new_content: {
+          type: String,
+          default: ""
+        }
+      },
+      action: {
+        type: String,
+        enum: ["CREATE", "UPDATE", "DELETE"],
+        required: true
+      }
     }
-  }
-]
+  ]
 
 }, {
   timestamps: true,

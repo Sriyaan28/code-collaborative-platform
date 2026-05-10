@@ -4,44 +4,44 @@ const PRSchema = new Schema({
     type: String,
     required: true
   },
-  
+
   description: {
     type: String,
     required: true
   },
-  
-  repo_id: {
+
+  repository: {
     type: Schema.Types.ObjectId,
     ref: "Repository",
     required: true
   },
-  
+
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
-  
+
   status: {
     type: String,
     enum: ['open', 'closed', 'merged'],
     default: 'open'
   },
-  
+
   commits: [
     {
       type: Schema.Types.ObjectId,
       ref: "Commit"
     }
   ],
-  
+
   reviewers: [
     {
       type: Schema.Types.ObjectId,
       ref: "User"
     }
   ],
-  
+
   mergedBy: {
     type: Schema.Types.ObjectId,
     ref: "User"

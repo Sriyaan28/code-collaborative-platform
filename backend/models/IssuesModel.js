@@ -2,13 +2,13 @@ import { Schema, model } from 'mongoose';
 const IssuesSchema = new Schema({
     title: {
         type: String,
-        required: [ true, "Title not defined"]
+        required: [true, "Title not defined"]
     },
     description: {
         type: String,
         required: [true, "Description not defined"]
     },
-    repo_id: {
+    repository: {
         type: Schema.Types.ObjectId,
         ref: "Repository",
         required: [true, "Repository not defined"]
