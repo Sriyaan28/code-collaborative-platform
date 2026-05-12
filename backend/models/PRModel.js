@@ -24,7 +24,7 @@ const PRSchema = new Schema({
 
   status: {
     type: String,
-    enum: ['open', 'closed', 'merged'],
+    enum: ['open', 'closed', 'approved', 'rejected'],
     default: 'open'
   },
 
@@ -32,13 +32,6 @@ const PRSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "Commit"
-    }
-  ],
-
-  reviewers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User"
     }
   ],
 

@@ -18,6 +18,12 @@ const commitSchema = new Schema({
     required: [true, "Author not defined"]
   },
 
+  branch: {
+    type: Schema.Types.ObjectId,
+    ref: "Branch",
+    required: [true, "Branch not defined"]
+  },
+
   files_changed: [
     {
       file_id: {

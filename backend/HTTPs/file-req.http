@@ -3,26 +3,33 @@ POST http://localhost:8080/api/files/file
 Content-Type: application/json
 
 {
-    "name": "file3.txt",
+    "name": "file1.txt",
     "content": "This is the content of file.",
-    "repoId": "69fc602f336607d0f0c709d2"
+    "repoId": "6a02df766ff6de77bb6dd360",
+    "branchId": "6a02dfd46ff6de77bb6dd361" 
 }
 
 ### Get a file by id
-GET http://localhost:8080/api/files/file/69fc602f336607d0f0c709d3
+GET http://localhost:8080/api/files/file/6a02e4ea09325ae118e03f8c
 
 ### Get all files in a repository by repo id  
-GET http://localhost:8080/api/files/repo/69ff5d0377314de2c408bef8
+GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360
+
+### Get all files in main branch of a repository by repoId
+GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360/branch/main
+
+### Get all files in a branch using repoId and branchId
+GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360/branch/6a02dfd46ff6de77bb6dd361
 
 ### Update file by id
 PUT http://localhost:8080/api/files/file
 Content-Type: application/json
 
 {
-    "fileId": "69fc602f336607d0f0c709d3",
-    "repoId": "69ff5d0377314de2c408bef8",
-    "name": "file3.txt",
-    "content": "This is the updated content of file."
+    "fileId": "6a02e4ea09325ae118e03f8c",
+    "repoId": "6a02df766ff6de77bb6dd360",
+    "name": "file1.txt",
+    "content": "This is the content of file."
 }
 
 ### Soft delete/restore a file

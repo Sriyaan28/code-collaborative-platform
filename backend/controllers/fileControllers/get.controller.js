@@ -6,18 +6,26 @@ export const getFileController = async (req, res) => {
 
     try {
 
-        const fileId = req.params.id;
+        const fileId = req.params?.fileId;
+        if (!fileId) {
+            return res.status(400).json({
+                message: "File ID is required",
+                success: false
+            });
+        }
 
-        const userId = req.user.id;
+        const userId = req.user?.id;
 
         // find file
         const file = await FileModel.findById(fileId)
-            .populate("createdBy", "name email")
-            .populate("repository", "name visibility owner");
+            .populate("createdBy", "_id name email")
+            .populate("repository", "_id name visibility owner")
+            .populate("branch", "_id name");
 
         if (!file) {
             return res.status(404).json({
-                message: "File not found"
+                message: "File not found",
+                success: false
             });
         }
 
@@ -27,8 +35,7 @@ export const getFileController = async (req, res) => {
         // PRIVATE repo access check
         if (repository.visibility === "PRIVATE") {
 
-            const isOwner =
-                repository.owner.toString() === userId;
+            const isOwner = repository.owner.toString() === userId;
 
             const isCollaborator =
                 await CollaboratorModel.findOne({
@@ -38,7 +45,8 @@ export const getFileController = async (req, res) => {
 
             if (!isOwner && !isCollaborator) {
                 return res.status(403).json({
-                    message: "Access denied"
+                    message: "Access denied",
+                    success: false
                 });
             }
         }
@@ -46,14 +54,16 @@ export const getFileController = async (req, res) => {
         // success response
         res.status(200).json({
             message: "File fetched successfully",
-            file
+            payload: { file: file },
+            success: true
         });
 
     } catch (err) {
 
         res.status(500).json({
             message: "Failed to fetch file",
-            error: err.message
+            error: err.message,
+            success: false
         });
 
     }

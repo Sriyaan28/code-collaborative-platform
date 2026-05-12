@@ -12,6 +12,12 @@ const fileSchema = new Schema({
         ref: 'Repository',
         required: [true, "Repository not defined"]
     },
+    branch:
+    {
+        type: Schema.Types.ObjectId,
+        ref: "Branch",
+        required: [true, "Branch not defined"]
+    },
     old_content: {
         type: String,
         default: ""

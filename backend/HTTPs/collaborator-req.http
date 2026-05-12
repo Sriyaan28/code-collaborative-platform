@@ -12,7 +12,7 @@ Content-Type: application/json
 GET http://localhost:8080/api/collaborator/collabs/69ff5d0377314de2c408bef8
 
 ### Get a collaborator using collabId
-GET http://localhost:8080/api/collaborator/collab/69ff5e8277314de2c408befb
+GET http://localhost:8080/api/collaborator/collab/69ff5f5a88916da8c42445ce
 
 ### update
 PUT http://localhost:8080/api/collaborator/collab/69ff5e8277314de2c408befb

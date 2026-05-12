@@ -27,6 +27,14 @@ export const getAllCommitsController = async (req, res) => {
         }
         // fetch commits
         const commits = await CommitModel.find({ repository: repoId }).select("message repository author createdAt files_changed")
+            .populate(
+                "branch",
+                "name"
+            )
+            .populate(
+                "author",
+                "name email userProfile"
+            )
             .sort({ createdAt: -1 });
 
         // success response
@@ -68,6 +76,10 @@ export const getCommitByIdController = async (req, res) => {
             .populate(
                 "repository",
                 "name visibility owner"
+            )
+            .populate(
+                "branch",
+                "name"
             )
             .populate(
                 "files_changed.file_id",
