@@ -1,0 +1,24 @@
+### Route to create a new notification - frontend handles
+POST http://localhost:8080/api/notifications/notification
+Content-Type: application/json
+
+{
+    "type": "USER_LOGIN",
+    "reference_id": "6a043b74e19903f42142043f",
+    "reference_type": "USER"
+}
+
+### Route to get all notifications of a user
+GET http://localhost:8080/api/notifications/all-notifications
+
+### Route to get a notification by ID (marks as read automatically)
+GET http://localhost:8080/api/notifications/notification/6a04862abb5f0890519c18e7
+
+### Route to mark all notifications as read
+PUT http://localhost:8080/api/notifications/all-notifications
+
+### Route to delete a notification
+DELETE http://localhost:8080/api/notifications/notification/6a04862abb5f0890519c18e7
+
+### Route to delete all notifications
+DELETE http://localhost:8080/api/notifications/all-notifications

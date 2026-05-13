@@ -3,12 +3,12 @@ POST http://localhost:8080/api/branches/branch
 Content-Type: application/json
 
 {
-    "name": "feature-auth",
-    "repoId": "6a02e3cc09325ae118e03f89"
+    "name": "main",
+    "repoId": "6a04843566052ca9632349b7"
 }
 
 ### Get all branches in a repository using repoId
-GET http://localhost:8080/api/branches/repo/6a02df766ff6de77bb6dd360
+GET http://localhost:8080/api/branches/repo/6a04843566052ca9632349b7
 
 ### Get a branch by branchId
 GET http://localhost:8080/api/branches/branch/6a02dfd46ff6de77bb6dd361

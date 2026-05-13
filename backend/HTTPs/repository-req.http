@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### Deleting repository by id
-DELETE http://localhost:8080/api/repository/repo/69ff5c18d70ad9a6262bdc56
+DELETE http://localhost:8080/api/repository/repo/6a043b9be19903f421420440
 
 ### getting all repositories
 GET http://localhost:8080/api/repository/all-repos

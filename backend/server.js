@@ -13,12 +13,14 @@ import { commitApp } from './APIs/CommitAPI.js'
 import { branchApp } from './APIs/BranchAPI.js'
 import { prApp } from './APIs/prAPI.js'
 import { testApp } from './APIs/TestAPI.js'
+import { notificationApp } from './APIs/NotificationAPI.js'
+import { issueApp } from './APIs/IssuesAPI.js'
 
 config()
 
 export const app = exp()
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 
 // =====================================================
 // ENVIRONMENT CHECK
@@ -106,7 +108,13 @@ app.use('/api/branches', branchApp)
 
 app.use('/api/pull-requests', prApp)
 
+app.use('/api/notifications', notificationApp)
+
+app.use('/api/issues', issueApp)
+
 app.use('/api/test', testApp)
+
+
 
 // =====================================================
 // LOCAL SERVER ONLY
@@ -156,5 +164,15 @@ app.use((err, req, res, next) => {
     })
 
 })
+
+// Global handlers for unexpected errors
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception thrown:', err);
+    process.exit(1);
+});
 
 export default app

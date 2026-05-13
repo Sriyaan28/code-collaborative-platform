@@ -33,6 +33,9 @@ const fileSchema = new Schema({
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    modifiedAt: {
+        type: Date
     }
 }, {
     timestamps: true,

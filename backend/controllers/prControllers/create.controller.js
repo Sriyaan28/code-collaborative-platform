@@ -1,5 +1,7 @@
 import { PRModel } from "../../models/PRModel.js";
 import { BranchModel } from "../../models/BranchModel.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
+import { RepositoryModel } from "../../models/RepositoryModel.js";
 
 export const createPullRequestController = async (req, res) => {
     try {
@@ -78,6 +80,15 @@ export const createPullRequestController = async (req, res) => {
         })
 
         await pr.save()
+        const repo = await RepositoryModel.findById(repository)
+
+        // send notification to repo owner
+        await createNotification({
+            user: repo.owner,
+            type: "PR_CREATED",
+            reference_id: pr._id,
+            reference_type: "PR"
+        })
 
         return res.status(201).json({
             message: "Pull request created successfully",

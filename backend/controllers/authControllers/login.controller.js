@@ -1,42 +1,40 @@
-import { hash,compare } from 'bcrypt'
+import { hash, compare } from 'bcrypt'
 import { UserModel } from '../../models/UserModel.js'
 import jwt from 'jsonwebtoken'
 const { sign } = jwt
 
-import {config} from "dotenv";
+import { createNotification } from "../../services/notificationServices/create.service.js";
+
+import { config } from "dotenv";
 config();
 
-export const loginController = async (req,res)=>{
-    try
-    {
+export const loginController = async (req, res) => {
+    try {
         // get user data from req
-        const { email,password } = req.body
+        const { email, password } = req.body
         // find user in db
-        const currentUser=await UserModel.findOne({ email:email })
+        const currentUser = await UserModel.findOne({ email: email })
 
         // check if user exists
-        if(!currentUser)
-        {
-            return res.status(400).json({message:"Invalid user email"})
+        if (!currentUser) {
+            return res.status(400).json({ message: "Invalid user email" })
         }
 
         // check if user is active
-        if(!currentUser.isActive)
-        {
-            return res.status(400).json({message:"User profile is deactivated."})
+        if (!currentUser.isActive) {
+            return res.status(400).json({ message: "User profile is deactivated." })
         }
 
         //check if passwords match
-        const isMatched=await compare(password,currentUser.password)
+        const isMatched = await compare(password, currentUser.password)
 
         //Return message if passwords doesnt match
-        if(!isMatched)
-        {
-            return res.status(400).json({message:"Invalid user password"})
+        if (!isMatched) {
+            return res.status(400).json({ message: "Invalid user password" })
         }
         // generate token
-        const token=sign({id:currentUser._id,email:currentUser.email},process.env.JWT_SECRET,{expiresIn:"1d"})
-        res.cookie("token",token,{
+        const token = sign({ id: currentUser._id, email: currentUser.email }, process.env.JWT_SECRET, { expiresIn: "1d" })
+        res.cookie("token", token, {
             httpOnly: true,
             secure: false,
             sameSite: "lax"
@@ -46,11 +44,19 @@ export const loginController = async (req,res)=>{
         const userObj = currentUser.toObject()
         delete userObj.password
 
+        // send notification to user
+        await createNotification({
+            user: userObj._id,
+            type: "USER_LOGIN",
+            reference_id: userObj._id,
+            reference_type: "USER"
+        })
+
         // send response
-        return res.status(200).json({message:"User login successful", payload:userObj})
+        return res.status(200).json({ message: "User login successful", payload: userObj })
     }
-    catch(error)
-    {
-        res.status(500).json({message:"Internal server error"})
+    catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Internal server error", error: error.message, success: false })
     }
 }

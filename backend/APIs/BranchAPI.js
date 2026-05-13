@@ -19,5 +19,8 @@ branchApp.get('/repo/:repoId', verifyToken, checkRepoAccess, getAllBranchesContr
 // route for getting a branch using branch name from a repository
 branchApp.get('/repo/:repoId/branch/:branchName', verifyToken, checkRepoAccess, getBranchByBranchNameController)
 
+// route for merging branches
+// branchApp.post('/merge',verifyToken,mergeBranchController)
+
 
 

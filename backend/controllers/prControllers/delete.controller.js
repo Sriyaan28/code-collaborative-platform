@@ -1,4 +1,5 @@
 import { PRModel } from "../../models/PRModel.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
 
 // delete a pull request by prId from params
 export const deletePullRequestController = async (req, res) => {
@@ -54,6 +55,14 @@ export const deletePullRequestController = async (req, res) => {
                 success: false
             })
         }
+
+        // send notification to user
+        await createNotification({
+            user: uid,
+            type: "PR_DELETED",
+            reference_id: prId,
+            reference_type: "PR"
+        })
 
         // delete pull request
         await pullRequest.deleteOne();

@@ -5,8 +5,8 @@ Content-Type: application/json
 {
     "name": "file1.txt",
     "content": "This is the content of file.",
-    "repoId": "6a02df766ff6de77bb6dd360",
-    "branchId": "6a02dfd46ff6de77bb6dd361" 
+    "repoId": "6a04843566052ca9632349b7",
+    "branchId": "6a0490e2a95bb353480642f6" 
 }
 
 ### Get a file by id
@@ -29,7 +29,8 @@ Content-Type: application/json
     "fileId": "6a02e4ea09325ae118e03f8c",
     "repoId": "6a02df766ff6de77bb6dd360",
     "name": "file1.txt",
-    "content": "This is the content of file."
+    "content": "This is the content of file.",
+    "branchId": "6a0490e2a95bb353480642f6"
 }
 
 ### Soft delete/restore a file
@@ -41,3 +42,7 @@ Content-Type: application/json
     "repoId": "69fc602f336607d0f0c709d2",
     "isDeleted": true
 }
+
+### Permanently delete a file
+DELETE http://localhost:8080/api/files/file/:fileId
+

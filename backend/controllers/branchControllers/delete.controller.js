@@ -1,7 +1,11 @@
 import { BranchModel } from "../../models/BranchModel.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
+import { deleteFile } from "../../services/fileServices/delete.service.js";
+import { FileModel } from "../../models/FileModel.js";
 
 export const deleteBranchController = async (req, res) => {
     try {
+        const uid = req.user.id;
         const branchId = req.params?.branchId;
         const repoId = req.params?.repoId;
         //check if repoId and branchId are provided
@@ -46,10 +50,22 @@ export const deleteBranchController = async (req, res) => {
             })
         }
 
-        // control logic in frontend by deleting files from branch
+        // delete all files in branch
+        const files = await FileModel.find({ branch: branchId });
+        files.forEach(async (file) => {
+            await deleteFile({ fileId: file._id });
+        })
 
         //delete branch
         await BranchModel.findByIdAndDelete(branchId);
+
+        // send notification to user
+        await createNotification({
+            user: uid,
+            type: "BRANCH_DELETED",
+            reference_id: branchId,
+            reference_type: "BRANCH"
+        });
 
         return res.status(200).json({
             success: true,

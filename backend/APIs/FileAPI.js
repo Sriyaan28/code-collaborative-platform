@@ -3,7 +3,7 @@ import { createFileController } from '../controllers/fileControllers/create.cont
 import { verifyToken } from '../middleware/verifyToken.js';
 import { checkRepoAccess } from '../middleware/checkRepoAccess.js'
 import { editFileController } from '../controllers/fileControllers/edit.controller.js';
-import { deleteFileToggleController } from '../controllers/fileControllers/deleteToggle.controller.js';
+import { deleteFileController, deleteFileToggleController } from '../controllers/fileControllers/delete.controller.js';
 import { getAllBranchFilesController, getAllFilesController, getAllMainBranchFilesController } from '../controllers/fileControllers/getAll.controller.js';
 import { getFileController } from '../controllers/fileControllers/get.controller.js';
 
@@ -15,8 +15,11 @@ fileApp.post('/file', verifyToken, checkRepoAccess, createFileController)
 // route for updating a file
 fileApp.put('/file', verifyToken, checkRepoAccess, editFileController)
 
-// route for deleting a file
+// route for temporarily deleting a file
 fileApp.put('/file/toggle-delete', verifyToken, checkRepoAccess, deleteFileToggleController)
+
+// route for permanentely deleting a file
+fileApp.delete('/file/:fileId', verifyToken, deleteFileController)
 
 // route for retrieving a file
 fileApp.get('/file/:fileId', verifyToken, getFileController)
