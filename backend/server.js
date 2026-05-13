@@ -72,5 +72,4 @@ app.use((err, req, res, next) => {
     //Server side error
     res.status(500).json({ message: "Error occurred in server", error: err })
 })
-
 export default app;
