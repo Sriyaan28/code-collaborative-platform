@@ -23,6 +23,7 @@ export const createNotification = async ({
         'PR_DELETED',
         'BRANCH_CREATED',
         'BRANCH_DELETED',
+        'COMMIT_CREATED',
         'COLLAB_ADDED',
         'COLLAB_REMOVED',
         'COLLAB_UPDATED',
@@ -40,6 +41,7 @@ export const createNotification = async ({
         'FILE',
         'PR',
         'BRANCH',
+        'COMMIT',
         'COLLABORATOR',
         'COMMENT',
         'ISSUE'

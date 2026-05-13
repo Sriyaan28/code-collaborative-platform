@@ -24,7 +24,7 @@ const notificationSchema = new Schema({
             'REPOSITORY_CREATED', 'REPOSITORY_UPDATED', 'REPOSITORY_DELETED',
             'FILE_CREATED', 'FILE_UPDATED', 'FILE_DELETED', 'FILE_RESTORED',
             'PR_CREATED', 'PR_MERGED', 'PR_CLOSED', 'PR_DELETED',
-            'BRANCH_CREATED', 'BRANCH_DELETED',
+            'BRANCH_CREATED', 'BRANCH_DELETED', 'COMMIT_CREATED',
             'COLLAB_ADDED', 'COLLAB_REMOVED', 'COLLAB_UPDATED',
             'COMMENT_ADDED', 'ISSUE_ASSIGNED'
         ],
@@ -38,7 +38,7 @@ const notificationSchema = new Schema({
 
     reference_type: {
         type: String,
-        enum: ['PR', 'ISSUE', 'REPOSITORY', 'BRANCH', 'USER', 'COMMENT', 'COLLABORATOR', 'FILE'],
+        enum: ['PR', 'ISSUE', 'REPOSITORY', 'BRANCH', 'USER', 'COMMENT', 'COLLABORATOR', 'FILE', 'COMMIT'],
         required: [true, "Reference type required"]
     }
 }, {

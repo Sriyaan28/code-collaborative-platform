@@ -1,5 +1,7 @@
 import { CommitModel } from "../../models/CommitModel.js";
 import { FileModel } from "../../models/FileModel.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
+import { RepositoryModel } from "../../models/RepositoryModel.js";
 
 import { diffLines } from "diff";
 
@@ -111,6 +113,15 @@ export const createCommitController = async (req, res) => {
             branch: commitBranch,
             author: uid,
             files_changed
+        });
+
+        const repo = await RepositoryModel.findById(repository);
+        // send notification to repo owner
+        await createNotification({
+            user: repo.owner,
+            type: "COMMIT_CREATED",
+            reference_id: commit._id,
+            reference_type: "COMMIT"
         });
 
         // success response
