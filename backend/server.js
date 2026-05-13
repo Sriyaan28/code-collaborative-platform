@@ -10,6 +10,9 @@ import { userApp } from './APIs/UserAPI.js'
 import { commitApp } from './APIs/CommitAPI.js'
 import { branchApp } from './APIs/BranchAPI.js'
 import { prApp } from './APIs/prAPI.js'
+import { testApp } from './APIs/TestAPI.js'
+import cors from 'cors'
+
 config()
 
 export const app = exp()
@@ -19,6 +22,12 @@ const port = process.env.PORT || 3000
 app.use(exp.json())
 app.use(cookieParser())
 
+// to allow frontend application to send requests to backend
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    credentials: true
+}))
+
 app.use('/api/auth', authApp)
 app.use('/api/users', userApp)
 app.use('/api/repository', repoApp)
@@ -27,6 +36,7 @@ app.use('/api/collaborator', collabApp)
 app.use('/api/commits', commitApp)
 app.use('/api/branches', branchApp)
 app.use('/api/pull-requests', prApp)
+app.use('/api/test', testApp)
 //=======================================================
 
 //_____________________start server_______________________________
