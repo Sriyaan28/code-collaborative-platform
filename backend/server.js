@@ -24,7 +24,7 @@ app.use(cookieParser())
 
 // to allow frontend application to send requests to backend
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'https://code-collaborative-platform.vercel.app'],
     credentials: true
 }))
 
