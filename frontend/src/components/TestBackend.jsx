@@ -9,7 +9,6 @@ export default function TestBackend() {
         console.log("Button clicked");
 
         setStatus("Checking Backend...");
-
         try {
 
             const url = "https://code-collaborative-platform.vercel.app/api/test/demo";
