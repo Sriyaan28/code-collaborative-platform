@@ -12,7 +12,7 @@ import { branchApp } from './APIs/BranchAPI.js'
 import { prApp } from './APIs/prAPI.js'
 config()
 
-const app = exp()
+export const app = exp()
 const port = process.env.PORT || 3000
 
 //==================== middleware =======================
