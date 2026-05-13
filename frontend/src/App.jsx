@@ -2,7 +2,7 @@ import React from 'react'
 import TestBackend from './components/TestBackend'
 import RootLayout from './components/RootLayout'
 
-import { createBrowserRouter, RouterProvider } from "react-router"
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 
 function App() {
 
@@ -12,7 +12,11 @@ function App() {
       element: <RootLayout />,
       children: [
         {
-          path: "/test-backend",
+          index: true,
+          element: <Navigate to="/test-backend" replace />
+        },
+        {
+          path: "test-backend",
           element: <TestBackend />
         }
       ]
