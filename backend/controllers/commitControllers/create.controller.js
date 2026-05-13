@@ -38,7 +38,7 @@ export const createCommitController = async (req, res) => {
             const file = await FileModel.findOne({
                 _id: fileId,
                 repository: repository
-            });
+            }).populate("branch", "_id name");
             // invalid/deleted file
             if (!file || file.isDeleted) {
                 continue;

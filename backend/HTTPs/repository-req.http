@@ -3,9 +3,9 @@ POST http://localhost:8080/api/repository/repo
 Content-Type: application/json
 
 {
-    "name": "repository-2",
-    "description": "this is a private repository-2 created by user1",
-    "visibility": "PRIVATE"
+    "name": "repository-1",
+    "description": "this is a public repository-1 created by user1",
+    "visibility": "PUBLIC"
 }
 
 ### getting repository by id

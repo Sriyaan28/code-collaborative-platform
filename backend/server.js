@@ -9,6 +9,7 @@ import { collabApp } from './APIs/CollabAPI.js'
 import { userApp } from './APIs/UserAPI.js'
 import { commitApp } from './APIs/CommitAPI.js'
 import { branchApp } from './APIs/BranchAPI.js'
+import { prApp } from './APIs/prAPI.js'
 config()
 
 const app = exp()
@@ -25,6 +26,7 @@ app.use('/api/files', fileApp)
 app.use('/api/collaborator', collabApp)
 app.use('/api/commits', commitApp)
 app.use('/api/branches', branchApp)
+app.use('/api/pull-requests', prApp)
 //=======================================================
 
 //_____________________start server_______________________________

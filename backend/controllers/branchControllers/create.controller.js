@@ -54,6 +54,8 @@ export const createBranchController = async (req, res) => {
             }
         }
 
+        // if the branch to be created is not main, control flow in frontend to copy files from main to new branch
+
         // create branch
         const branch = new BranchModel({
             name: name,

@@ -1,4 +1,4 @@
-
+// this feature can be implemented later
 import { Schema, model } from 'mongoose';
 
 const commentSchema = new Schema({
@@ -13,7 +13,7 @@ const commentSchema = new Schema({
     },
     parent_type: {
         type: String,
-        enum: ['PR', 'ISSUE','FILE']
+        enum: ['PR', 'ISSUE', 'FILE']
     },
     parent_id: {
         type: Schema.Types.ObjectId,

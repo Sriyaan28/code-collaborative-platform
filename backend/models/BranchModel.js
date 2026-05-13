@@ -5,7 +5,7 @@ const branchSchema = new Schema({
         type: String,
         required: [true, "Branch name not defined"],
         trim: true,
-        match: [/^[a-zA-Z-]+$/, "Only alphabets and hyphens are allowed for branch name"]
+        match: ["/^[a-z-]+$/", "Only lower case alphabets and hyphens are allowed for branch name"]
     },
     repository: {
         type: Schema.Types.ObjectId,

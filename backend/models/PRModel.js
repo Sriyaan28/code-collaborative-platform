@@ -22,22 +22,33 @@ const PRSchema = new Schema({
     required: true
   },
 
-  status: {
-    type: String,
-    enum: ['open', 'closed', 'approved', 'rejected'],
-    default: 'open'
+  sourceBranch: {
+    type: Schema.Types.ObjectId,
+    ref: "Branch",
+    required: true
   },
 
-  commits: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Commit"
-    }
-  ],
+  targetBranch: {
+    type: Schema.Types.ObjectId,
+    ref: "Branch",
+    required: true
+  },
+
+  status: {
+    type: String,
+    enum: ['open', 'closed', 'merged'],
+    default: 'open'
+  },
 
   mergedBy: {
     type: Schema.Types.ObjectId,
     ref: "User"
+  },
+  mergedAt: {
+    type: Date
+  },
+  closedAt: {
+    type: Date
   }
 }, {
   timestamps: true,

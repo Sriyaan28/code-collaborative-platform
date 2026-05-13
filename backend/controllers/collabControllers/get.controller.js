@@ -1,11 +1,8 @@
 import { CollaboratorModel } from "../../models/CollaboratorModel.js";
 import { RepositoryModel } from "../../models/RepositoryModel.js";
 
-export const getCollaboratorByIdController = async(req,res)=>{
-    try
-    {
-
-        
+export const getCollaboratorByIdController = async (req, res) => {
+    try {
         // get collaborator id from params
         const collabId = req.params?.collabId;
 
@@ -44,8 +41,7 @@ export const getCollaboratorByIdController = async(req,res)=>{
             payload: collaborator
         });
     }
-    catch(err)
-    {
-        return res.status(500).json({message:"Failed to fetch collaborator details",success:false})
+    catch (err) {
+        return res.status(500).json({ message: "Failed to fetch collaborator details", success: false })
     }
 }

@@ -46,7 +46,7 @@ export const deleteBranchController = async (req, res) => {
             })
         }
 
-        // change branch to main branch in file model before deleting
+        // control logic in frontend by deleting files from branch
 
         //delete branch
         await BranchModel.findByIdAndDelete(branchId);

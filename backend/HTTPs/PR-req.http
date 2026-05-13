@@ -1,0 +1,28 @@
+### Create a new pull request
+POST http://localhost:8080/api/pull-requests/pull-request
+Content-Type: application/json
+
+{
+  "title": "Title",
+  "description": "description",
+  "repository": "repoId",
+  "sourceBranch": "featureBranchId",
+  "targetBranch": "mainBranchId"
+}
+
+### Get all pull requests
+GET http://localhost:8080/api/pull-requests/repo/:repoId/pull-request
+
+### Get pull request by prId
+GET http://localhost:8080/api/pull-requests/pull-request/:prId
+
+### Update pr status by prId
+PUT http://localhost:8080/api/pull-requests/pull-request/:prId
+Content-Type: application/json
+
+{
+    "status": "closed"
+}
+
+### Delete pr by prId
+DELETE http://localhost:8080/api/pull-requests/pull-request/:prId
