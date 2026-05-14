@@ -16,7 +16,7 @@ fileApp.post('/file', verifyToken, checkRepoAccess, createFileController)
 fileApp.put('/file', verifyToken, checkRepoAccess, editFileController)
 
 // route for temporarily deleting a file
-fileApp.put('/file/toggle-delete', verifyToken, checkRepoAccess, deleteFileToggleController)
+fileApp.put('/file/toggle-delete/:fileId', verifyToken, checkRepoAccess, deleteFileToggleController)
 
 // route for permanentely deleting a file
 fileApp.delete('/file/:fileId', verifyToken, deleteFileController)

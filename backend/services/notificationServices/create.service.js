@@ -26,7 +26,6 @@ export const createNotification = async ({
         'COMMIT_CREATED',
         'COLLAB_ADDED',
         'COLLAB_REMOVED',
-        'COLLAB_UPDATED',
         'COMMENT_ADDED',
         'ISSUE_ASSIGNED'
     ];

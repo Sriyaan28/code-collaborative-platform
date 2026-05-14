@@ -1,0 +1,29 @@
+### Add a comment to a file
+POST http://localhost:8080/api/comments/comment
+Content-Type: application/json
+
+{
+    "content": "This is a comment on a file",
+    "parent_type": "FILE",
+    "parent_id": "6a059bce1497fb9f7037ee92"
+}
+
+### Add a comment to a Pull Request
+POST http://localhost:8080/api/comments/comment
+Content-Type: application/json
+
+{
+    "content": "This is a comment on a PR",
+    "parent_type": "PR",
+    "parent_id": "6a059bce1497fb9f7037ee91"
+}
+
+### Add a comment to an Issue
+POST http://localhost:8080/api/comments/comment
+Content-Type: application/json
+
+{
+    "content": "This is a comment on an issue",
+    "parent_type": "ISSUE",
+    "parent_id": "6a059bce1497fb9f7037ee90"
+}

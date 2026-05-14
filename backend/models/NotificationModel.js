@@ -25,7 +25,7 @@ const notificationSchema = new Schema({
             'FILE_CREATED', 'FILE_UPDATED', 'FILE_DELETED', 'FILE_RESTORED',
             'PR_CREATED', 'PR_MERGED', 'PR_CLOSED', 'PR_DELETED',
             'BRANCH_CREATED', 'BRANCH_DELETED', 'COMMIT_CREATED',
-            'COLLAB_ADDED', 'COLLAB_REMOVED', 'COLLAB_UPDATED',
+            'COLLAB_ADDED', 'COLLAB_REMOVED',
             'COMMENT_ADDED', 'ISSUE_ASSIGNED'
         ],
         required: [true, "Notification type required"]

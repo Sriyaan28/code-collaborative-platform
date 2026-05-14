@@ -13,10 +13,11 @@ export const createFile = async ({
             "Name, content, repoId and branchId are required"
         );
     }
+    console.log("content :", content)
 
     const newFile = new FileModel({
         name,
-        content,
+        content: content,
         repository: repoId,
         createdBy,
         branch: branchId

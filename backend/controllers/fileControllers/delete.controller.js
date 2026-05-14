@@ -12,7 +12,7 @@ export const deleteFileToggleController = async (req, res) => {
         const repoId = req.body.repoId;
 
         // find file by id and repoId
-        const file = await FileModel.findOne({ _id: fileId, repoId: repoId });
+        const file = await FileModel.findOne({ _id: fileId, repository: repoId });
         if (!file) {
             return res.status(404).json({ message: "File not found" });
         }
@@ -40,7 +40,7 @@ export const deleteFileToggleController = async (req, res) => {
                 reference_type: "FILE"
             })
         }
-        res.status(200).json({ message: "File deleted successfully", success: true });
+        res.status(200).json({ message: `File ${file.isDeleted ? "deleted" : "restored"} successfully`, success: true });
     }
     catch (err) {
         res.status(500).json({ message: "Error deleting file", error: err.message, success: false });

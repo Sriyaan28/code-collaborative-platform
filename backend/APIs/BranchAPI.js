@@ -3,6 +3,7 @@ import { verifyToken } from '../middleware/verifyToken.js'
 import { checkRepoAccess } from '../middleware/checkRepoAccess.js'
 import { createBranchController } from '../controllers/branchControllers/create.controller.js'
 import { getBranchController, getAllBranchesController, getBranchByBranchNameController } from '../controllers/branchControllers/get.controller.js'
+import { deleteBranchController } from '../controllers/branchControllers/delete.controller.js'
 
 
 export const branchApp = exp.Router()
@@ -19,8 +20,7 @@ branchApp.get('/repo/:repoId', verifyToken, checkRepoAccess, getAllBranchesContr
 // route for getting a branch using branch name from a repository
 branchApp.get('/repo/:repoId/branch/:branchName', verifyToken, checkRepoAccess, getBranchByBranchNameController)
 
-// route for merging branches
-// branchApp.post('/merge',verifyToken,mergeBranchController)
-
+// route for deleting a branch
+branchApp.delete('/repo/:repoId/branch/:branchId', verifyToken, checkRepoAccess, deleteBranchController)
 
 

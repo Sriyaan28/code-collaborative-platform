@@ -2,8 +2,10 @@ import { RepositoryModel } from "../../models/RepositoryModel.js"
 import { createNotification } from "../../services/notificationServices/create.service.js"
 import { deleteBranch } from "../../services/branchServices/delete.service.js"
 import { deleteFile } from "../../services/fileServices/delete.service.js"
+import { deletePRByIdService } from "../../services/prServices/delete.service.js"
 import { FileModel } from "../../models/FileModel.js"
 import { BranchModel } from "../../models/BranchModel.js"
+import { PRModel } from "../../models/PRModel.js"
 
 export const deleteRepoByIdController = async (req, res) => {
     try {

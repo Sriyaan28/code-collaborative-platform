@@ -6,8 +6,8 @@ import { createNotification } from '../../services/notificationServices/create.s
 export const createIssueController = async (req, res) => {
     try {
         // get uid
-        const uid = req.user.uid
-        const { repository, title, description, assignees } = req.body
+        const uid = req.user.id
+        const { repository, title, description, assignees = [] } = req.body
 
 
 
@@ -20,16 +20,16 @@ export const createIssueController = async (req, res) => {
             })
         }
 
-        // check if assignees are present in UserModel(use for each)
-        assignees.forEach(async (assignee) => {
-            const user = await UserModel.findOne({ uid: assignee })
+        // check if assignees are present in UserModel
+        for (const assignee of assignees) {
+            const user = await UserModel.findById(assignee)
             if (!user) {
                 return res.status(404).json({
                     success: false,
                     message: `Assignee ${assignee} is not a valid user`
                 })
             }
-        })
+        }
 
         // create issue
         const issue = new IssuesModel({

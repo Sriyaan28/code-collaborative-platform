@@ -1,4 +1,5 @@
 import { RepositoryModel } from "../../models/RepositoryModel.js"
+import { createBranchService } from "../../services/branchServices/create.service.js";
 import { createNotification } from "../../services/notificationServices/create.service.js";
 
 export const createRepoController = async (req, res) => {
@@ -20,6 +21,9 @@ export const createRepoController = async (req, res) => {
         const newrepodocument = new RepositoryModel(newrepo)
         const result = await newrepodocument.save()
 
+        // create main branch
+        const mainBranch = await createBranchService({ name: "main", repoId: result._id })
+
         // send notification to user
         await createNotification({
             user: req.user?.id,
@@ -30,7 +34,7 @@ export const createRepoController = async (req, res) => {
         // console.log("repository created successfully", result)
 
         // send response
-        res.status(200).json({ message: "Repository created", payload: newrepo, success: true })
+        res.status(200).json({ message: "Repository created", payload: { result, mainBranch }, success: true })
     } catch (err) {
         console.log("Error in creating repository", err)
         res.status(500).json({ message: "Error in creating repository", success: false })

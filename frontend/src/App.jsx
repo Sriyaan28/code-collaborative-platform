@@ -1,30 +1,7 @@
-import React from 'react'
-import TestBackend from './components/TestBackend'
-import RootLayout from './components/RootLayout'
-
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-
-  const routerObj = createBrowserRouter([
-    {
-      path: "/",
-      element: <RootLayout />,
-      children: [
-        {
-          index: true,
-          element: <Navigate to="/test-backend" replace />
-        },
-        {
-          path: "test-backend",
-          element: <TestBackend />
-        }
-      ]
-    }
-  ])
-  return (
-    <RouterProvider router={routerObj}></RouterProvider>
-  )
+  return <AppRoutes />;
 }
 
-export default App
+export default App;

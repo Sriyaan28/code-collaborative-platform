@@ -1,0 +1,13 @@
+### Create an issue
+POST http://localhost:8080/api/issues/issue
+Content-Type: application/json
+
+{
+    "title": "Issue 2",
+    "description": "Description 1",
+    "repository": "6a05994149f210478aa6b38d",
+    "assignees":["6a04abf3a3d4a83ffd85038d"]
+}
+
+### Delete an issue
+DELETE http://localhost:8080/api/issues/issue/:issueId

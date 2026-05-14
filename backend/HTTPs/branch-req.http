@@ -3,15 +3,19 @@ POST http://localhost:8080/api/branches/branch
 Content-Type: application/json
 
 {
-    "name": "main",
-    "repoId": "6a04843566052ca9632349b7"
+    "name": "feature-three",
+    "repoId": "6a05994149f210478aa6b38d"
 }
 
 ### Get all branches in a repository using repoId
-GET http://localhost:8080/api/branches/repo/6a04843566052ca9632349b7
+GET http://localhost:8080/api/branches/repo/6a05994149f210478aa6b38d
 
 ### Get a branch by branchId
-GET http://localhost:8080/api/branches/branch/6a02dfd46ff6de77bb6dd361
+GET http://localhost:8080/api/branches/branch/6a0595cb36624bd02b593724
 
 ### Get a branch using branch name from a repository
 GET http://localhost:8080/api/branches/repo/6a02e3cc09325ae118e03f89/branch/feature-auth
+
+### Deleting branch by id
+DELETE http://localhost:8080/api/branches/repo/6a0594a805546ab2fcae09f3/branch/6a0594a805546ab2fcae09f4
+

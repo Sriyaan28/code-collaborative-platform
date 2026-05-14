@@ -5,21 +5,21 @@ Content-Type: application/json
 {
     "name": "file1.txt",
     "content": "This is the content of file.",
-    "repoId": "6a04843566052ca9632349b7",
-    "branchId": "6a0490e2a95bb353480642f6" 
+    "repoId": "6a05994149f210478aa6b38d",
+    "branchId": "6a05994149f210478aa6b38e" 
 }
 
-### Get a file by id
-GET http://localhost:8080/api/files/file/6a02e4ea09325ae118e03f8c
+### Get a file by id -> provides content too
+GET http://localhost:8080/api/files/file/6a059bce1497fb9f7037ee92
 
 ### Get all files in a repository by repo id  
-GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360
+GET http://localhost:8080/api/files/repo/6a05994149f210478aa6b38d
 
 ### Get all files in main branch of a repository by repoId
 GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360/branch/main
 
-### Get all files in a branch using repoId and branchId
-GET http://localhost:8080/api/files/repo/6a02df766ff6de77bb6dd360/branch/6a02dfd46ff6de77bb6dd361
+### Get all files in a branch using repoId and branchId(content is excluded)
+GET http://localhost:8080/api/files/repo/6a05994149f210478aa6b38d/branch/6a059bce1497fb9f7037ee91
 
 ### Update file by id
 PUT http://localhost:8080/api/files/file
@@ -27,20 +27,19 @@ Content-Type: application/json
 
 {
     "fileId": "6a02e4ea09325ae118e03f8c",
-    "repoId": "6a02df766ff6de77bb6dd360",
+    "repoId": "6a0594a805546ab2fcae09f3",
     "name": "file1.txt",
     "content": "This is the content of file.",
     "branchId": "6a0490e2a95bb353480642f6"
 }
 
 ### Soft delete/restore a file
-PUT http://localhost:8080/api/files/file/delete-toggle
+PUT http://localhost:8080/api/files/file/toggle-delete/6a05999949f210478aa6b392
 Content-Type: application/json
 
 {
-    "fileId": "69fc602f336607d0f0c709d3",
-    "repoId": "69fc602f336607d0f0c709d2",
-    "isDeleted": true
+    "repoId": "6a05994149f210478aa6b38d",
+    "isDeleted": false
 }
 
 ### Permanently delete a file

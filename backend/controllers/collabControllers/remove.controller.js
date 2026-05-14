@@ -1,5 +1,6 @@
 import { CollaboratorModel } from "../../models/CollaboratorModel.js";
 import { RepositoryModel } from "../../models/RepositoryModel.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
 
 
 // remove using repoId and userId
@@ -40,6 +41,14 @@ export const removeCollaboratorController = async (req, res) => {
         }
         // remove collaborator as collaborator or unblock if blocked
         await CollaboratorModel.findByIdAndDelete(collaborator._id);
+
+        // send notification to owner about removed collaborator's details
+        await createNotification({
+            user: uid,
+            type: "COLLAB_REMOVED",
+            reference_id: userId,
+            reference_type: "USER"
+        })
 
         res.status(200).json({
             message: "Collaborator removed successfully"
@@ -106,7 +115,15 @@ export const deleteCollaboratorByIdController = async (req, res) => {
         }
 
         // else delete
-        await CollaboratorModel.findByIdAndDelete(collabId);
+        const deletedCollab = await CollaboratorModel.findByIdAndDelete(collabId);
+
+        // send notification to owner about removed collaborator's details
+        await createNotification({
+            user: uid,
+            type: "COLLAB_REMOVED",
+            reference_id: deletedCollab.user,
+            reference_type: "USER"
+        })
 
         res.status(200).json({
             message: "Collaborator deleted successfully",

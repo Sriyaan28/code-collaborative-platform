@@ -36,8 +36,8 @@ const PRSchema = new Schema({
 
   status: {
     type: String,
-    enum: ['open', 'closed', 'merged'],
-    default: 'open'
+    enum: ['opened', 'closed', 'merged'],
+    default: 'opened'
   },
 
   mergedBy: {

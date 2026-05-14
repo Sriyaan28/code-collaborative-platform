@@ -79,12 +79,16 @@ export const createBranchController = async (req, res) => {
 
             const mainBranchFiles = await FileModel.find({
                 repository: repoId,
-                branch: mainBranch._id
-            });
+                branch: mainBranch._id,
+                isDeleted: false
+            }).lean();
+
+            console.log("main branch files :", mainBranchFiles)
 
             const duplicatedFiles = mainBranchFiles.map((file) => ({
                 name: file.name,
-                content: file.content,
+                content: file.content || "",
+                old_content: file.old_content || "",
                 repository: repoId,
                 branch: branch._id,
                 createdBy: req.user.id

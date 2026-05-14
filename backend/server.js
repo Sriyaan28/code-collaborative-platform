@@ -15,6 +15,7 @@ import { prApp } from './APIs/prAPI.js'
 import { testApp } from './APIs/TestAPI.js'
 import { notificationApp } from './APIs/NotificationAPI.js'
 import { issueApp } from './APIs/IssuesAPI.js'
+import { commentApp } from './APIs/CommentAPI.js'
 
 config()
 
@@ -111,6 +112,8 @@ app.use('/api/pull-requests', prApp)
 app.use('/api/notifications', notificationApp)
 
 app.use('/api/issues', issueApp)
+
+app.use('/api/comments', commentApp)
 
 app.use('/api/test', testApp)
 
