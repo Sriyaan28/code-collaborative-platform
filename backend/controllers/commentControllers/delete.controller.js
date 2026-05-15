@@ -2,7 +2,7 @@ import { CommentModel } from "../../models/CommentModel.js";
 import { deleteCommentByIdService } from "../../services/commentServices/delete.service.js";
 
 // delete comment by id
-export const deleteController = async (req, res) => {
+export const deleteCommentByIdController = async (req, res) => {
     try {
         // get user id from token
         const uid = req.user?.id;

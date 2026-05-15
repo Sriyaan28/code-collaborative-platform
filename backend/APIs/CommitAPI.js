@@ -3,7 +3,7 @@ import { verifyToken } from '../middleware/verifyToken.js';
 import { checkRepoAccess } from '../middleware/checkRepoAccess.js';
 import { getAllCommitsController, getCommitByIdController } from '../controllers/commitControllers/get.controller.js';
 import { createCommitController } from '../controllers/commitControllers/create.controller.js';
-
+import { rollbackCommitController } from '../controllers/commitControllers/rollback.controller.js';
 
 export const commitApp = exp.Router()
 
@@ -13,5 +13,8 @@ commitApp.post('/commit', verifyToken, checkRepoAccess, createCommitController)
 // route to get commit by commitId
 commitApp.get('/commit/:commitId', verifyToken, getCommitByIdController)
 
-//route to get all commits in a repo using repoId
+// route to get all commits in a repo using repoId
 commitApp.get('/repo/:repoId', verifyToken, checkRepoAccess, getAllCommitsController)
+
+// route to rollback to a commit
+commitApp.post('/rollback', verifyToken, checkRepoAccess, rollbackCommitController)

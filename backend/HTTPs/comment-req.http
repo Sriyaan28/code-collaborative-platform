@@ -27,3 +27,9 @@ Content-Type: application/json
     "parent_type": "ISSUE",
     "parent_id": "6a059bce1497fb9f7037ee90"
 }
+
+### Get all comments for a file/pr/issue by passing parentId
+GET http://localhost:8080/api/comments/all-comments/6a059bce1497fb9f7037ee92
+
+### Delete a comment by commentId
+DELETE http://localhost:8080/api/comments/comment/6a059bce1497fb9f7037ee93

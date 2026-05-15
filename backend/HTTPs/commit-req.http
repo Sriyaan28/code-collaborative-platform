@@ -3,14 +3,22 @@ POST http://localhost:8080/api/commits/commit
 Content-Type: application/json
 
 {
-    "repository": "6a02df766ff6de77bb6dd360",
+    "repository": "6a05994149f210478aa6b38d",
     "message": "updated file1.txt",
-    "files": ["6a02e4ea09325ae118e03f8c"]
+    "files": ["6a05999949f210478aa6b392"]
 }
 
 ### Get all commits by repoId
-GET http://localhost:8080/api/commits/repo/6a02df766ff6de77bb6dd360
+GET http://localhost:8080/api/commits/repo/6a05994149f210478aa6b38d
 
 ### Get a commit by commitId
 GET http://localhost:8080/api/commits/commit/6a02eb6534318682d0e438ca
 
+### Rollback to a specific commit
+POST http://localhost:8080/api/commits/rollback
+Content-Type: application/json
+
+{
+    "repository": "6a05994149f210478aa6b38d",
+    "commitId": "6a02eb6534318682d0e438ca"
+}

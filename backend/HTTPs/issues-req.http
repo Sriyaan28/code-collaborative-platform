@@ -9,5 +9,13 @@ Content-Type: application/json
     "assignees":["6a04abf3a3d4a83ffd85038d"]
 }
 
+### Get an issue
+GET http://localhost:8080/api/issues/issue/:issueId
+
+### Get all issues
+GET http://localhost:8080/api/issues/repo/:repoId/all-issues
+
 ### Delete an issue
 DELETE http://localhost:8080/api/issues/issue/:issueId
+
+
