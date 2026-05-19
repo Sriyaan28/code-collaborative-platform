@@ -1,4 +1,4 @@
-import { IssuesModel } from "../../models/IssueModel.js";
+import { IssuesModel } from "../../models/IssuesModel.js";
 
 export const getIssueService = async (issueId) => {
     try {
