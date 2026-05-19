@@ -66,13 +66,15 @@ export const deleteFileController = async (req, res) => {
 
         // check access by getting repo details
         const repo = await RepositoryModel.findById(file.repository);
+        console.log(repo)
 
         if (!repo) {
             return res.status(404).json({ message: "Repository not found", success: false });
         }
 
         // if repo.owner is not uid, then deny access
-        if (repo.owner !== uid) {
+        console.log(repo.owner.toString(), uid.toString())
+        if (repo.owner.toString() !== uid.toString()) {
             return res.status(403).json({ message: "You do not have permission to delete this file", success: false });
         }
 

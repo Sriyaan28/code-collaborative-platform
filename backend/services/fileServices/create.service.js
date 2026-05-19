@@ -8,16 +8,15 @@ export const createFile = async ({
     createdBy
 }) => {
 
-    if (!name || !content || !repoId || !branchId) {
+    if (!name || !repoId || !branchId) {
         throw new Error(
-            "Name, content, repoId and branchId are required"
+            "Name, repoId and branchId are required"
         );
     }
-    console.log("content :", content)
 
     const newFile = new FileModel({
         name,
-        content: content,
+        content: content || "",
         repository: repoId,
         createdBy,
         branch: branchId

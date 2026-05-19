@@ -1,5 +1,6 @@
 import { UserModel } from '../../models/UserModel.js';
 import { hash } from 'bcrypt';
+import { createNotification } from '../../services/notificationServices/create.service.js';
 
 export const updateController = async (req, res) => {
     try {

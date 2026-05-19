@@ -3,7 +3,7 @@ POST http://localhost:8080/api/collaborator/new
 Content-Type: application/json
 
 {
-    "repoId": "69ff5cf177314de2c408bef7",
+    "repoId": "6a0c5d47b45863402dc6c693",
     "userId": "69fda478a63e1422a85c3450",
     "role": "collaborator"
 }

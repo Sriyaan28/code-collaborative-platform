@@ -36,18 +36,6 @@ const Sidebar = () => {
                 {
                     name: "Repositories",
                     path: "/repositories"
-                },
-                {
-                    name: "Branches",
-                    path: "/branches"
-                },
-                {
-                    name: "Files",
-                    path: "/files"
-                },
-                {
-                    name: "Pull Requests",
-                    path: "/pull-requests"
                 }
             ]
         },
@@ -80,46 +68,84 @@ const Sidebar = () => {
 
     return (
 
-        <aside className="w-[280px] border-r border-gray-800 bg-[#0d1117] p-6 overflow-y-auto">
+        <aside className="w-[280px] border-r border-gray-800 bg-[#0d1117] p-6 overflow-y-auto flex flex-col justify-between">
 
-            <h1 className="text-3xl font-bold mb-10">
-                CodeCollab
-            </h1>
+            {/* Top */}
+            <div>
 
-            <div className="space-y-8">
+                {/* Logo */}
+                <div className="mb-12">
 
-                {
-                    sections.map((section) => (
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        CodeCollab
+                    </h1>
 
-                        <div key={section.title}>
+                    <p className="text-gray-500 mt-2 text-sm">
+                        Collaborative Development Platform
+                    </p>
 
-                            <h2 className="text-xs tracking-widest text-gray-500 mb-4">
-                                {section.title}
-                            </h2>
+                </div>
 
-                            <div className="space-y-2">
+                {/* Sections */}
+                <div className="space-y-10">
 
-                                {
-                                    section.items.map((item) => (
+                    {
+                        sections.map((section) => (
 
-                                        <Link
-                                            key={item.path}
-                                            to={item.path}
-                                            className={`block px-4 py-3 rounded-xl transition ${location.pathname === item.path
-                                                    ? "bg-blue-500 text-black font-semibold"
-                                                    : "hover:bg-[#161b22]"
-                                                }`}
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    ))
-                                }
+                            <div key={section.title}>
+
+                                {/* Section Title */}
+                                <h2 className="text-xs tracking-[0.25em] text-gray-500 mb-4 font-semibold">
+
+                                    {section.title}
+
+                                </h2>
+
+                                {/* Items */}
+                                <div className="space-y-2">
+
+                                    {
+                                        section.items.map((item) => {
+
+                                            const isActive =
+                                                location.pathname === item.path;
+
+                                            return (
+
+                                                <Link
+                                                    key={item.path}
+                                                    to={item.path}
+                                                    className={`block px-4 py-3 rounded-2xl transition-all duration-200 ${isActive
+                                                            ? "bg-blue-500 text-black font-semibold shadow-lg shadow-blue-500/20"
+                                                            : "text-gray-300 hover:bg-[#161b22] hover:text-white"
+                                                        }`}
+                                                >
+
+                                                    {item.name}
+
+                                                </Link>
+                                            );
+                                        })
+                                    }
+
+                                </div>
 
                             </div>
+                        ))
+                    }
 
-                        </div>
-                    ))
-                }
+                </div>
+
+            </div>
+
+            {/* Bottom */}
+            <div className="pt-8 border-t border-gray-800">
+
+                <p className="text-sm text-gray-500 leading-6">
+
+                    Build, collaborate, and manage repositories with your development team.
+
+                </p>
 
             </div>
 

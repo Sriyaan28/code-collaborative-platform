@@ -5,8 +5,8 @@ Content-Type: application/json
 {
     "name": "file1.txt",
     "content": "This is the content of file.",
-    "repoId": "6a05994149f210478aa6b38d",
-    "branchId": "6a05994149f210478aa6b38e" 
+    "repoId": "6a0c36f2e3cf6aa5992cc0a1",
+    "branchId": "6a0c36f2e3cf6aa5992cc0a2" 
 }
 
 ### Get a file by id -> provides content too

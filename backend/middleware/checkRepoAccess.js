@@ -19,6 +19,9 @@ export const checkRepoAccess = async (req, res, next) => {
         }
         // check if the user is the owner of the repository 
         const Repository = await RepositoryModel.findById(repoId);
+        console.log("Repository: ", Repository);
+        console.log("User ID: ", uid);
+        console.log("Owner ID: ", Repository.owner);
         // add owner tag to the response object to be used in the controller if needed
         if (Repository && Repository.owner.toString() === uid) {
             req.role = 'owner';

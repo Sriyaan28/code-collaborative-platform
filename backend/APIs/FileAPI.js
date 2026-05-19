@@ -6,6 +6,7 @@ import { editFileController } from '../controllers/fileControllers/edit.controll
 import { deleteFileController, deleteFileToggleController } from '../controllers/fileControllers/delete.controller.js';
 import { getAllBranchFilesController, getAllFilesController, getAllMainBranchFilesController } from '../controllers/fileControllers/getAll.controller.js';
 import { getFileController } from '../controllers/fileControllers/get.controller.js';
+import { analyzeCodeHealth } from '../services/aiServices/codeHealthService.js';
 
 export const fileApp = exp.Router()
 
@@ -32,3 +33,35 @@ fileApp.get('/repo/:repoId/branch/main', verifyToken, checkRepoAccess, getAllMai
 
 // route for getting all files of a branch using repoId and branchId
 fileApp.get('/repo/:repoId/branch/:branchId', verifyToken, checkRepoAccess, getAllBranchFilesController)
+
+// route for code health analyzer
+fileApp.post('/code-health', verifyToken, async (req, res) => {
+
+    try {
+
+        const { code } = req.body
+
+        if (!code) {
+
+            return res.status(400).json({
+                message: "Code is required"
+            })
+        }
+
+        const result = await analyzeCodeHealth(code)
+
+        return res.status(200).json({
+            message: "Code health analyzed successfully",
+            payload: result
+        })
+    }
+    catch (err) {
+
+        console.log(err)
+
+        return res.status(500).json({
+            message: "Error analyzing code health",
+            error: err.message
+        })
+    }
+})

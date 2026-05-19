@@ -1,5 +1,6 @@
 import exp from 'express'
 import { UserModel } from '../models/UserModel.js'
+import { analyzeCodeHealth } from '../services/aiServices/codeHealthService.js'
 
 export const testApp = exp.Router()
 

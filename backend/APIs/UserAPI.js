@@ -8,10 +8,11 @@ import { searchUsersController } from '../controllers/userControllers/search.con
 export const userApp = exp.Router()
 
 // route for viewing your profile
-userApp.get('/profile',verifyToken,getProfileController)
+userApp.get('/profile', verifyToken, getProfileController)
 
 // route for searching user by id
-userApp.get('/user/:id',verifyToken,searchUsersByIdController)
+userApp.get('/user/:id', verifyToken, searchUsersByIdController)
 
 // route for searching users by name and email
-userApp.get('/search',verifyToken,searchUsersController)
+userApp.get('/search', verifyToken, searchUsersController)
+

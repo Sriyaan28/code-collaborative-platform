@@ -1,5 +1,6 @@
 import { CollaboratorModel } from "../../models/CollaboratorModel.js"
 import { RepositoryModel } from "../../models/RepositoryModel.js"
+import { updateCollabService } from "../../services/collabServices/update.service.js"
 import { createNotification } from "../../services/notificationServices/create.service.js"
 
 export const addCollabController = async (req, res) => {
@@ -8,9 +9,12 @@ export const addCollabController = async (req, res) => {
 
         // get logged in user id from token
         const loggedIn = req.user?._id || req.user?.id
+        console.log("User ID:", userId)
 
         // find repository
+        console.log("Repo ID :", repoId)
         const repo = await RepositoryModel.findById(repoId)
+        console.log("Repository :", repo)
         if (!repo) {
             return res.status(404).json({ message: "Repository not found" })
         }
@@ -20,7 +24,9 @@ export const addCollabController = async (req, res) => {
         }
         const existingCollab = await CollaboratorModel.findOne({ repo: repoId, user: userId })
         if (existingCollab) {
-            return res.status(400).json({ message: "User is already has a role in the repo" })
+            // update role using update service
+            const updatedCollab = await updateCollabService(existingCollab._id, role)
+            return res.status(200).json({ message: "Collaborator updated", payload: updatedCollab })
         }
         const newCollaborator = new CollaboratorModel({
             repo: repoId,

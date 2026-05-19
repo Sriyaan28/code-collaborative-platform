@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "name": "repository-1",
-    "description": "this is a public repository-1 created by user1",
+    "description": "this is a public repository-1 created by dhairya",
     "visibility": "PUBLIC"
 }
 

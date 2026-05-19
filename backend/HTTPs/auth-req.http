@@ -3,9 +3,9 @@ POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "user1",
-    "email": "user1@example.com",
-    "password": "user1"
+    "name": "dhairya",
+    "email": "dhairya@gmail.com",
+    "password": "dhairya"
 }
 
 ### USER LOGIN
@@ -13,8 +13,8 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "user1@example.com",
-    "password": "user1"
+    "email": "pranay@gmail.com",
+    "password": "pranay"
 }
 
 ### USER LOGOUT

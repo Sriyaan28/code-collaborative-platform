@@ -13,7 +13,7 @@ const CreateRepositoryModal = ({
     const [formData, setFormData] = useState({
         name: "",
         description: "",
-        visibility: "public"
+        visibility: "PUBLIC"
     });
 
     if (!isOpen) return null;
@@ -43,7 +43,7 @@ const CreateRepositoryModal = ({
             setFormData({
                 name: "",
                 description: "",
-                visibility: "public"
+                visibility: "PUBLIC"
             });
 
         }
@@ -111,12 +111,12 @@ const CreateRepositoryModal = ({
                         onChange={handleChange}
                         className="w-full p-4 rounded-xl bg-[#0d1117] border border-gray-700 outline-none"
                     >
-                        <option value="public">
-                            Public
+                        <option value="PUBLIC">
+                            PUBLIC
                         </option>
 
-                        <option value="private">
-                            Private
+                        <option value="PRIVATE">
+                            PRIVATE
                         </option>
                     </select>
 

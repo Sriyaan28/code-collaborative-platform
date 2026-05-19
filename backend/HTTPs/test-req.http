@@ -1,2 +1,10 @@
 ### Get test data
 GET http://localhost:8080/api/test/demo
+
+### Analyze code health (Requires verifyToken - Add Cookie below from your logged-in session)
+POST http://localhost:8080/api/files/code-health
+Content-Type: application/json
+
+{
+    "code": "def sum(a, b): return a + b\nprint(sum(10, 20))"
+}
