@@ -8,13 +8,9 @@ import AuthProvider from './context/AuthContext'
 import { ModalProvider } from './context/ModalContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-
-    <AuthProvider>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
-    </AuthProvider>
-
-  </React.StrictMode>,
+  <AuthProvider>
+    <ModalProvider>
+      <App />
+    </ModalProvider>
+  </AuthProvider>
 )
