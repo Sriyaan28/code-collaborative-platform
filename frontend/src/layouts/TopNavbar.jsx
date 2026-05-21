@@ -44,8 +44,6 @@ const TopNavbar = () => {
             const data =
                 await getNotifications();
 
-            console.log(data);
-
             setNotifications(
                 data.payload?.allNotifications || []
             );

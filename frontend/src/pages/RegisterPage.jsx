@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import axiosInstance from "../api/axios";
+import useModal from "../hooks/useModal";
 
 const RegisterPage = () => {
 
     const navigate = useNavigate();
+    const { showModal } = useModal();
 
     const [loading, setLoading] = useState(false);
 
@@ -36,16 +38,17 @@ const RegisterPage = () => {
                 formData
             );
 
-            alert("Registration Success");
+            showModal("Registration Success", "success");
 
             navigate("/login");
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Registration Failed"
+                "Registration Failed",
+                "error"
             );
         }
         finally {

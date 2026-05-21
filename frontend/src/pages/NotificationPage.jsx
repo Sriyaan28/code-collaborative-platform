@@ -14,11 +14,14 @@ import {
     markNotificationRead
 } from "../api/notificationApi";
 
+import useModal from "../hooks/useModal";
+
 const NotificationPage = () => {
 
     const { notificationId } = useParams();
 
     const navigate = useNavigate();
+    const { showModal } = useModal();
 
     const [notification, setNotification] = useState(null);
 
@@ -69,7 +72,6 @@ const NotificationPage = () => {
 
     const handleReferenceRedirect = () => {
 
-        console.log(notification);
 
         if (!notification) return;
 
@@ -154,8 +156,9 @@ const NotificationPage = () => {
 
             default:
 
-                alert(
-                    "No redirect available"
+                showModal(
+                    "No redirect available",
+                    "error"
                 );
         }
     };

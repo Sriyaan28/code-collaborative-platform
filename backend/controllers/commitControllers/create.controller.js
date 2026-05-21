@@ -2,6 +2,7 @@ import { CommitModel } from "../../models/CommitModel.js";
 import { FileModel } from "../../models/FileModel.js";
 import { createNotification } from "../../services/notificationServices/create.service.js";
 import { RepositoryModel } from "../../models/RepositoryModel.js";
+import { createInitialCommit } from "../../services/commitServices/create.service.js";
 
 import { diffLines } from "diff";
 
@@ -25,6 +26,10 @@ export const createCommitController = async (req, res) => {
         // request body
         const { repository, message, files } = req.body;
 
+        // find existing commits in the repository
+        const existingCommits = await CommitModel.find({ repository });
+        const isInitialCommit = existingCommits.length === 0;
+
         // commit snapshots
         const files_changed = [];
 
@@ -46,12 +51,13 @@ export const createCommitController = async (req, res) => {
                 continue;
             }
             // set branch from first file
+            const branchIdStr = (file.branch._id || file.branch).toString();
             if (!commitBranch) {
-                commitBranch = file.branch.toString();
+                commitBranch = branchIdStr;
             }
 
             // ensure all files belong to same branch
-            if (file.branch.toString() !== commitBranch) {
+            if (branchIdStr !== commitBranch) {
                 return res.status(400).json({
                     message: "Cannot commit files from different branches",
                     success: false
@@ -61,12 +67,12 @@ export const createCommitController = async (req, res) => {
             // determine action
             let action = "UPDATE";
 
-            if (file.old_content === "") {
+            if (file.old_content === null) {
                 action = "CREATE";
             }
 
-            // skip unchanged files
-            if (file.old_content === file.content) {
+            // skip unchanged files unless it's the initial commit
+            if (!isInitialCommit && file.old_content === file.content) {
                 continue;
             }
 
@@ -107,13 +113,24 @@ export const createCommitController = async (req, res) => {
         }
 
         // create commit
-        const commit = await CommitModel.create({
-            message,
-            repository,
-            branch: commitBranch,
-            author: uid,
-            files_changed
-        });
+        let commit;
+        if (isInitialCommit) {
+            commit = await createInitialCommit({
+                repository,
+                message,
+                branch: commitBranch,
+                author: uid,
+                files_changed
+            });
+        } else {
+            commit = await CommitModel.create({
+                message,
+                repository,
+                branch: commitBranch,
+                author: uid,
+                files_changed
+            });
+        }
 
         const repo = await RepositoryModel.findById(repository);
         // send notification to repo owner

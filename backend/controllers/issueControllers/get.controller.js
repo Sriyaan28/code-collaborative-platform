@@ -4,8 +4,11 @@ export const getIssueController = async (req, res) => {
     try {
         const uid = req.user.id
         const issue = await getIssueService(req.params.issueId);
-        // if uid is not present in issue.assignees or issue.createdBy(then send error)
-        if (!issue.assignees.includes(uid) && issue.createdBy !== uid) {
+        const isCreator = issue.createdBy?._id?.toString() === uid || issue.createdBy?.toString() === uid;
+        const isAssignee = issue.assignees?.some(assignee => assignee?._id?.toString() === uid || assignee?.toString() === uid);
+        const isOwner = issue.repository?.owner?.toString() === uid;
+
+        if (!isCreator && !isAssignee && !isOwner) {
             return res.status(403).json({ message: "User is not authorized to view this issue", success: false });
         }
 

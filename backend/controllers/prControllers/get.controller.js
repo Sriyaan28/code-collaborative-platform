@@ -5,7 +5,7 @@ import { RepositoryModel } from "../../models/RepositoryModel.js";
 export const getAllPullRequestController = async (req, res) => {
     try {
         // get uid
-        const uid = req.user.uid
+        const uid = req.user.id
 
         // get role
         const role = req.role
@@ -20,8 +20,8 @@ export const getAllPullRequestController = async (req, res) => {
             })
         }
 
-        // if role is not owner, return error
-        if (role !== "owner") {
+        // if role is viewer, return error (optional, but typically viewers can see PRs too. Let's just block blocked users if any, though checkRepoAccess handles that)
+        if (role === "blocked") {
             return res.status(403).json({
                 message: "You don't have access to get pull requests",
                 success: false
@@ -64,7 +64,7 @@ export const getAllPullRequestController = async (req, res) => {
 export const getPullRequestController = async (req, res) => {
     try {
         // get uid
-        const uid = req.user.uid
+        const uid = req.user.id
 
 
         // get prId from params
@@ -86,8 +86,11 @@ export const getPullRequestController = async (req, res) => {
             .populate("mergedBy", "_id name email userProfile")
             .populate("repository", "_id name visibility owner");
 
-        // only owner can access whole details of a PR
-        if (pullRequest.repository?.owner?.id !== uid) {
+        // allow owner or PR creator to view details
+        const isOwner = pullRequest.repository?.owner?.toString() === uid;
+        const isCreator = pullRequest.createdBy?._id?.toString() === uid || pullRequest.createdBy?.toString() === uid;
+        
+        if (!isOwner && !isCreator) {
             return res.status(403).json({
                 message: "You don't have access to get full details of this pull request",
                 success: false

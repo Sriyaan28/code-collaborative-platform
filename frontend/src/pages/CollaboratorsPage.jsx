@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -15,9 +15,12 @@ import {
     removeCollaborator
 } from "../api/collaboratorApi";
 
+import useModal from "../hooks/useModal";
+
 const CollaboratorsPage = () => {
 
     const { repoId } = useParams();
+    const { showModal } = useModal();
 
     const [collaborators, setCollaborators] = useState([]);
 
@@ -25,7 +28,7 @@ const CollaboratorsPage = () => {
 
     const [loading, setLoading] = useState(true);
 
-    const [showModal, setShowModal] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const [activeTab, setActiveTab] = useState("collaborators");
 
@@ -82,18 +85,21 @@ const CollaboratorsPage = () => {
 
         try {
 
-            await removeCollaborator(
+            const res = await removeCollaborator(
                 collabId
             );
+
+            showModal(res.message, "success");
 
             fetchCollaborators();
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to remove collaborator"
+                "Failed to remove collaborator",
+                "error"
             );
         }
     };
@@ -101,6 +107,16 @@ const CollaboratorsPage = () => {
     return (
 
         <DashboardLayout>
+
+            {/* Back Button */}
+            <div className="mb-6">
+                <Link
+                    to={`/repository/${repoId}`}
+                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
+                >
+                    <span>←</span> Back to Repository Overview
+                </Link>
+            </div>
 
             {/* Header */}
             <div className="flex items-center justify-between mb-10">
@@ -119,7 +135,7 @@ const CollaboratorsPage = () => {
 
                 <button
                     onClick={() =>
-                        setShowModal(true)
+                        setIsAddModalOpen(true)
                     }
                     className="px-6 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
                 >
@@ -138,8 +154,8 @@ const CollaboratorsPage = () => {
                         )
                     }
                     className={`px-6 py-3 rounded-2xl transition font-semibold ${activeTab === "collaborators"
-                            ? "bg-blue-500 text-black"
-                            : "bg-[#161b22] hover:bg-[#1f2937]"
+                        ? "bg-blue-500 text-black"
+                        : "bg-[#161b22] hover:bg-[#1f2937]"
                         }`}
                 >
                     Collaborators
@@ -152,8 +168,8 @@ const CollaboratorsPage = () => {
                         )
                     }
                     className={`px-6 py-3 rounded-2xl transition font-semibold ${activeTab === "blocked"
-                            ? "bg-red-500 text-black"
-                            : "bg-[#161b22] hover:bg-[#1f2937]"
+                        ? "bg-red-500 text-black"
+                        : "bg-[#161b22] hover:bg-[#1f2937]"
                         }`}
                 >
                     Blocked Users
@@ -187,7 +203,7 @@ const CollaboratorsPage = () => {
 
                                         <button
                                             onClick={() =>
-                                                setShowModal(true)
+                                                setIsAddModalOpen(true)
                                             }
                                             className="px-6 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
                                         >
@@ -281,9 +297,9 @@ const CollaboratorsPage = () => {
 
             {/* ADD MODAL */}
             <AddCollaboratorModal
-                isOpen={showModal}
+                isOpen={isAddModalOpen}
                 onClose={() =>
-                    setShowModal(false)
+                    setIsAddModalOpen(false)
                 }
                 onCollaboratorAdded={
                     fetchCollaborators

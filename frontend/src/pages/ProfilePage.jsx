@@ -15,10 +15,12 @@ import {
 // is calling the api and getting 500 server error
 
 import { useAuth } from "../hooks/useAuth";
+import useModal from "../hooks/useModal";
 
 const ProfilePage = () => {
 
     const { setUser } = useAuth();
+    const { showModal } = useModal();
 
     const [loading, setLoading] = useState(true);
 
@@ -85,20 +87,21 @@ const ProfilePage = () => {
 
             setSaving(true);
 
-            const data = await updateProfile(
+            const res = await updateProfile(
                 formData
             );
 
-            setUser(data.payload);
+            setUser(res.payload);
 
-            alert("Profile Updated");
+            showModal(res.message, "success");
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to update profile"
+                "Failed to update profile",
+                "error"
             );
         }
         finally {
@@ -109,25 +112,26 @@ const ProfilePage = () => {
     const handleDeleteProfile = async () => {
 
         if (!deletePassword.trim()) {
-            return alert("Password required");
+            return showModal("Password required", "error");
         }
 
         try {
 
             setDeleting(true);
 
-            await deleteProfile(deletePassword);
+            const res = await deleteProfile(deletePassword);
 
-            alert("Profile Deleted");
+            showModal(res.message, "success");
 
             window.location.href = "/login";
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to delete profile"
+                "Failed to delete profile",
+                "error"
             );
         }
         finally {

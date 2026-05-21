@@ -3,15 +3,18 @@ import { useEffect, useState } from "react";
 import { diffLines } from "diff";
 
 import axiosInstance from "../../api/axios";
+import useModal from "../../hooks/useModal";
 
 const CodeHealthModal = ({
     isOpen,
     onClose,
     code,
-    onApplyEdits
+    onApplyEdits,
+    onCreateIssue
 }) => {
 
     const [loading, setLoading] = useState(false);
+    const { showModal } = useModal();
 
     const [result, setResult] = useState(null);
 
@@ -64,8 +67,9 @@ const CodeHealthModal = ({
 
             console.log(err);
 
-            alert(
-                "Failed to analyze code"
+            showModal(
+                "Failed to analyze code",
+                "error"
             );
         }
         finally {
@@ -257,6 +261,7 @@ const CodeHealthModal = ({
                                         title="Issues"
                                         items={result.issues}
                                         color="text-red-400"
+                                        onCreateIssue={onCreateIssue}
                                     />
 
                                     {/* SUGGESTIONS */}
@@ -416,7 +421,8 @@ const MetricCard = ({
 const Section = ({
     title,
     items,
-    color
+    color,
+    onCreateIssue
 }) => {
 
     if (!items?.length) return null;
@@ -444,21 +450,33 @@ const Section = ({
                     items.map(
                         (item, index) => (
 
-                            <div
-                                key={index}
-                                className="
-                                    bg-[#161b22]
-                                    border
-                                    border-gray-800
-                                    rounded-2xl
-                                    p-5
-                                    leading-7
-                                "
-                            >
-
-                                {item}
-
-                            </div>
+                                <div
+                                    key={index}
+                                    className="
+                                        bg-[#161b22]
+                                        border
+                                        border-gray-800
+                                        rounded-2xl
+                                        p-5
+                                        leading-7
+                                        flex
+                                        items-start
+                                        justify-between
+                                        gap-4
+                                    "
+                                >
+                                    <div className="flex-1">
+                                        {item}
+                                    </div>
+                                    {onCreateIssue && (
+                                        <button
+                                            onClick={() => onCreateIssue(item)}
+                                            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-sm transition shrink-0"
+                                        >
+                                            Create Issue
+                                        </button>
+                                    )}
+                                </div>
                         )
                     )
                 }

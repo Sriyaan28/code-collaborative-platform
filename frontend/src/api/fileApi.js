@@ -69,13 +69,17 @@ export const updateFile = async (
 };
 
 
-// DELETE FILE
 export const deleteFile = async (
-    fileId
+    fileId,
+    repoId
 ) => {
 
-    const res = await axiosInstance.delete(
-        `/files/file/${fileId}`
+    const res = await axiosInstance.put(
+        `/files/file/toggle-delete/${fileId}`,
+        {
+            repoId,
+            isDeleted: true
+        }
     );
 
     return res.data;

@@ -7,6 +7,7 @@ import {
 import {
     searchUsers
 } from "../../api/userApi";
+import useModal from "../../hooks/useModal";
 
 const AddCollaboratorModal = ({
     isOpen,
@@ -28,6 +29,7 @@ const AddCollaboratorModal = ({
     const [selectedUser, setSelectedUser] = useState(null);
 
     const [role, setRole] = useState("viewer");
+    const { showModal } = useModal();
 
     if (!isOpen) return null;
 
@@ -83,8 +85,9 @@ const AddCollaboratorModal = ({
 
         if (!selectedUser) {
 
-            return alert(
-                "Please select a user"
+            return showModal(
+                "Please select a user",
+                "error"
             );
         }
 
@@ -92,7 +95,7 @@ const AddCollaboratorModal = ({
 
             setLoading(true);
 
-            await addCollaborator({
+            const res = await addCollaborator({
 
                 repoId: repoId,
 
@@ -100,6 +103,8 @@ const AddCollaboratorModal = ({
 
                 role
             });
+
+            showModal(res.message, "success");
 
             onCollaboratorAdded();
 
@@ -117,9 +122,10 @@ const AddCollaboratorModal = ({
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to add collaborator"
+                "Failed to add collaborator",
+                "error"
             );
         }
         finally {

@@ -5,7 +5,7 @@ import { createNotification } from "../../services/notificationServices/create.s
 export const deletePullRequestController = async (req, res) => {
     try {
         // get uid
-        const uid = req.user.uid
+        const uid = req.user.id
 
         // get prId from params
         const { prId } = req.params
@@ -26,7 +26,7 @@ export const deletePullRequestController = async (req, res) => {
             .populate("repository", "_id name visibility owner");
 
         // only owner can access whole details of a PR
-        if (pullRequest.repository?.owner?.id !== uid) {
+        if (pullRequest.repository?.owner?.toString() !== uid) {
             return res.status(403).json({
                 message: "You don't have access to delete this pull request",
                 success: false

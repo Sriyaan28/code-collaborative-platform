@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { createRepository } from "../../api/repositoryApi";
+import useModal from "../../hooks/useModal";
 
 const CreateRepositoryModal = ({
     isOpen,
@@ -9,6 +10,7 @@ const CreateRepositoryModal = ({
 }) => {
 
     const [loading, setLoading] = useState(false);
+    const { showModal } = useModal();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -34,7 +36,9 @@ const CreateRepositoryModal = ({
 
             setLoading(true);
 
-            await createRepository(formData);
+            const res = await createRepository(formData);
+
+            showModal(res.message, "success");
 
             onRepositoryCreated();
 
@@ -49,9 +53,10 @@ const CreateRepositoryModal = ({
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to create repository"
+                "Failed to create repository",
+                "error"
             );
         }
         finally {

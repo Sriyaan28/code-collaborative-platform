@@ -10,7 +10,7 @@ export const updatePRStatusController = async (req, res) => {
     try {
 
         // get uid
-        const uid = req.user.uid;
+        const uid = req.user.id;
 
         // get prId from params
         const { prId } = req.params;

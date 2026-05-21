@@ -13,6 +13,12 @@ import BranchesPage from "../pages/BranchesPage";
 import FilesPage from "../pages/FilesPage";
 import CollaboratorsPage from "../pages/CollaboratorsPage";
 import NotificationPage from "../pages/NotificationPage";
+import CommitsPage from "../pages/CommitsPage";
+import CommitPage from "../pages/CommitPage";
+import PullRequestsPage from "../pages/PullRequestsPage";
+import PullRequestDetailPage from "../pages/PullRequestDetailPage";
+import IssuesPage from "../pages/IssuesPage";
+import IssueDetailPage from "../pages/IssueDetailPage";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
@@ -116,6 +122,56 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute>
                             <CollaboratorsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/repository/:repoId/commits"
+                    element={
+                        <ProtectedRoute>
+                            <CommitsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/repository/:repoId/commit/:commitId"
+                    element={
+                        <ProtectedRoute>
+                            <CommitPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/repository/:repoId/pull-requests"
+                    element={
+                        <ProtectedRoute>
+                            <PullRequestsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/repository/:repoId/pull-request/:prId"
+                    element={
+                        <ProtectedRoute>
+                            <PullRequestDetailPage />
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/repository/:repoId/issues"
+                    element={
+                        <ProtectedRoute>
+                            <IssuesPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/repository/:repoId/issue/:issueId"
+                    element={
+                        <ProtectedRoute>
+                            <IssueDetailPage />
                         </ProtectedRoute>
                     }
                 />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -17,6 +17,10 @@ import EmptyEditorState from "../components/file/EmptyEditorState";
 import CreateFileModal from "../components/file/CreateFileModal";
 
 import CodeHealthModal from "../components/file/CodeHealthModal";
+import CreateIssueModal from "../components/issue/CreateIssueModal";
+import CreateCommitModal from "../components/commit/CreateCommitModal";
+
+import useModal from "../hooks/useModal";
 
 import {
     getBranches
@@ -32,6 +36,7 @@ import {
 const FilesPage = () => {
 
     const { repoId } = useParams();
+    const { showModal } = useModal();
 
     const [branches, setBranches] = useState([]);
 
@@ -47,7 +52,13 @@ const FilesPage = () => {
 
     const [saving, setSaving] = useState(false);
 
+    const [editorLoading, setEditorLoading] =
+        useState(false);
+
     const [isCreateModalOpen, setIsCreateModalOpen] =
+        useState(false);
+
+    const [isCommitModalOpen, setIsCommitModalOpen] =
         useState(false);
 
     const [isFullscreen, setIsFullscreen] =
@@ -58,6 +69,12 @@ const FilesPage = () => {
 
     const [isCodeHealthOpen, setIsCodeHealthOpen] =
         useState(false);
+
+    const [isCreateIssueModalOpen, setIsCreateIssueModalOpen] =
+        useState(false);
+        
+    const [issueInitialData, setIssueInitialData] = 
+        useState(null);
 
     // ESCAPE FULLSCREEN
     useEffect(() => {
@@ -130,11 +147,21 @@ const FilesPage = () => {
     };
 
     // FETCH FILES
-    const fetchFiles = async () => {
+    const fetchFiles = async (preserveEditorState = false) => {
 
         if (!selectedBranch) return;
 
         try {
+
+            if (!preserveEditorState) {
+                // IMPORTANT FIX
+                // CLEAR OLD EDITOR STATE
+                setSelectedFile(null);
+
+                setContent("");
+            }
+
+            setEditorLoading(true);
 
             const data =
                 await getBranchFiles(
@@ -142,9 +169,10 @@ const FilesPage = () => {
                     selectedBranch
                 );
 
-            setFiles(
-                data.payload || []
-            );
+            const fetchedFiles =
+                (data.payload || []).filter(file => !file.isDeleted);
+
+            setFiles(fetchedFiles);
 
         }
         catch (err) {
@@ -154,6 +182,8 @@ const FilesPage = () => {
         finally {
 
             setLoading(false);
+
+            setEditorLoading(false);
         }
     };
 
@@ -178,6 +208,10 @@ const FilesPage = () => {
 
             try {
 
+                setContent("");
+
+                setEditorLoading(true);
+
                 const data =
                     await getFileById(
                         selectedFile._id
@@ -191,6 +225,10 @@ const FilesPage = () => {
             catch (err) {
 
                 console.log(err);
+            }
+            finally {
+
+                setEditorLoading(false);
             }
         };
 
@@ -207,7 +245,7 @@ const FilesPage = () => {
 
             setSaving(true);
 
-            await updateFile({
+            const res = await updateFile({
                 fileId:
                     selectedFile._id,
 
@@ -216,15 +254,18 @@ const FilesPage = () => {
                 content
             });
 
-            fetchFiles();
+            showModal(res.message, "success");
+
+            fetchFiles(true);
 
         }
         catch (err) {
 
             console.log(err);
 
-            alert(
-                "Failed to save file"
+            showModal(
+                "Failed to save file",
+                "error"
             );
         }
         finally {
@@ -247,9 +288,12 @@ const FilesPage = () => {
 
         try {
 
-            await deleteFile(
-                selectedFile._id
+            const res = await deleteFile(
+                selectedFile._id,
+                repoId
             );
+
+            showModal(res.message, "success");
 
             setSelectedFile(null);
 
@@ -262,11 +306,19 @@ const FilesPage = () => {
 
             console.log(err);
 
-            alert(
-                "Failed to delete file"
+            showModal(
+                "Failed to delete file",
+                "error"
             );
         }
     };
+
+    // CHANGED FILES ONLY
+    const changedFiles =
+        files.filter(
+            (file) =>
+                file.old_content !== file.content
+        );
 
     if (loading) {
 
@@ -284,9 +336,19 @@ const FilesPage = () => {
 
         <DashboardLayout>
 
+            {/* Back Button */}
+            <div className="mb-4">
+                <Link 
+                    to={`/repository/${repoId}`}
+                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
+                >
+                    <span>←</span> Back to Repository Overview
+                </Link>
+            </div>
+
             <div
                 className="
-                    h-[calc(100vh-72px)]
+                    h-[calc(100vh-112px)]
                     flex
                     overflow-hidden
                 "
@@ -344,15 +406,38 @@ const FilesPage = () => {
                                         onOpenCodeHealth={() =>
                                             setIsCodeHealthOpen(true)
                                         }
+                                        onOpenCommit={() =>
+                                            setIsCommitModalOpen(true)
+                                        }
                                     />
 
                                     {/* EDITOR */}
                                     <div className="flex-1 overflow-auto">
 
-                                        <CodeEditor
-                                            content={content}
-                                            setContent={setContent}
-                                        />
+                                        {
+                                            editorLoading
+                                                ? (
+                                                    <div
+                                                        className="
+                                                            h-full
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            text-gray-400
+                                                        "
+                                                    >
+                                                        <Loader
+                                                            text="Loading file..."
+                                                        />
+                                                    </div>
+                                                )
+                                                : (
+                                                    <CodeEditor
+                                                        content={content}
+                                                        setContent={setContent}
+                                                    />
+                                                )
+                                        }
 
                                     </div>
 
@@ -378,6 +463,17 @@ const FilesPage = () => {
                 branchId={selectedBranch}
             />
 
+            {/* COMMIT MODAL */}
+            <CreateCommitModal
+                isOpen={isCommitModalOpen}
+                onClose={() =>
+                    setIsCommitModalOpen(false)
+                }
+                files={files}
+                repository={repoId}
+                onCommitCreated={fetchFiles}
+            />
+
             {/* CODE HEALTH MODAL */}
             <CodeHealthModal
                 isOpen={isCodeHealthOpen}
@@ -386,11 +482,31 @@ const FilesPage = () => {
                 }
                 code={content}
                 onApplyEdits={(newCode) => {
-
                     setContent(newCode);
-
                     setIsCodeHealthOpen(false);
                 }}
+                onCreateIssue={(issueContent) => {
+                    setIsCodeHealthOpen(false);
+                    setIssueInitialData({
+                        title: `Code Health Issue in ${selectedFile?.name || 'File'}`,
+                        description: issueContent
+                    });
+                    setIsCreateIssueModalOpen(true);
+                }}
+            />
+
+            {/* CREATE ISSUE MODAL */}
+            <CreateIssueModal 
+                isOpen={isCreateIssueModalOpen}
+                onClose={() => {
+                    setIsCreateIssueModalOpen(false);
+                    setIssueInitialData(null);
+                }}
+                onIssueCreated={() => {
+                    // Do nothing or show a success message
+                }}
+                repoId={repoId}
+                initialData={issueInitialData}
             />
 
         </DashboardLayout>

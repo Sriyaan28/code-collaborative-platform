@@ -35,12 +35,34 @@ export const getAllCommitsController = async (req, res) => {
                 "author",
                 "name email userProfile"
             )
+            .populate(
+                "files_changed.file_id",
+                "name"
+            )
             .sort({ createdAt: -1 });
+
+        const formattedCommits = commits.map(commit => {
+            const differences = commit.files_changed.map(file => {
+                const oldContent = file.content.old_content || "";
+                const newContent = file.content.new_content || "";
+                const diff = diffLines(oldContent, newContent);
+                return {
+                    file_id: file.file_id?._id,
+                    file_name: file.file_id?.name,
+                    action: file.action,
+                    diff
+                };
+            });
+            return {
+                ...commit.toObject(),
+                differences
+            };
+        });
 
         // success response
         res.status(200).json({
             message: "Commits fetched successfully",
-            payload: { commits },
+            payload: formattedCommits,
             success: true
         });
 

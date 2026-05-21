@@ -7,7 +7,7 @@ export const getRepoByIdController = async (req, res) => {
 
         if (!uid) {
             return res.status(400).json({
-                message: "User ID not found", 
+                message: "User ID not found",
                 success: false
             })
         }
@@ -15,7 +15,8 @@ export const getRepoByIdController = async (req, res) => {
         const rid = req.params.id
 
         // fetch repository first
-        const repository = await RepositoryModel.findById(rid)
+        const repository = await RepositoryModel.findById(rid).populate("owner", "name email");
+
         if (!repository) {
             return res.status(404).json({
                 message: "Repository not found",
@@ -27,8 +28,7 @@ export const getRepoByIdController = async (req, res) => {
         console.log("User role in repository: ", role);
 
         // everyone can access public repos
-        if (role === 'viewer' && repository.visibility === 'PUBLIC') 
-        {
+        if (role === 'viewer' && repository.visibility === 'PUBLIC') {
             return res.status(200).json({
                 message: "Repository found",
                 payload: repository,

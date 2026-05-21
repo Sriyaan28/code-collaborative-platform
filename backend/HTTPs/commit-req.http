@@ -3,7 +3,7 @@ POST http://localhost:8080/api/commits/commit
 Content-Type: application/json
 
 {
-    "repository": "6a05994149f210478aa6b38d",
+    "repository": "6a0c5d47b45863402dc6c693",
     "message": "updated file1.txt",
     "files": ["6a05999949f210478aa6b392"]
 }

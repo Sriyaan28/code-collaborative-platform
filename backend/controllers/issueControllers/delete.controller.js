@@ -25,7 +25,7 @@ export const deleteIssueController = async (req, res) => {
         const repoId = issue.repository;
         const repo = await RepositoryModel.findById(repoId);
         const owner = repo.owner;
-        if (uid !== owner) {
+        if (uid !== owner.toString()) {
             return res.status(403).json({
                 success: false,
                 message: "You are not authorized to delete this issue"

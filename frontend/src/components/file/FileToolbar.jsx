@@ -5,7 +5,8 @@ import {
     FiTrash2,
     FiRotateCcw,
     FiRotateCw,
-    FiCpu
+    FiCpu,
+    FiGitCommit
 } from "react-icons/fi";
 
 const FileToolbar = ({
@@ -15,17 +16,18 @@ const FileToolbar = ({
     saving,
     isFullscreen,
     setIsFullscreen,
-    onOpenCodeHealth
+    onOpenCodeHealth,
+    onOpenCommit
 }) => {
 
     return (
 
         <div
             className="
-                h-[72px]
+                h-[64px]
                 border-b
                 border-gray-800
-                px-6
+                px-5
                 flex
                 items-center
                 justify-between
@@ -40,8 +42,8 @@ const FileToolbar = ({
                 {/* FILE ICON */}
                 <div
                     className="
-                        w-11
-                        h-11
+                        w-10
+                        h-10
                         rounded-xl
                         bg-blue-500/10
                         border
@@ -49,7 +51,7 @@ const FileToolbar = ({
                         flex
                         items-center
                         justify-center
-                        text-lg
+                        text-sm
                         shrink-0
                     "
                 >
@@ -61,7 +63,7 @@ const FileToolbar = ({
 
                     <h2
                         className="
-                            text-xl
+                            text-lg
                             font-semibold
                             text-blue-400
                             truncate
@@ -76,9 +78,9 @@ const FileToolbar = ({
 
                     <p
                         className="
-                            text-xs
+                            text-[11px]
                             text-gray-500
-                            mt-1
+                            mt-0.5
                         "
                     >
                         Editing repository file
@@ -91,37 +93,23 @@ const FileToolbar = ({
             {/* RIGHT */}
             <div className="flex items-center gap-2">
 
-                {/* FULLSCREEN */}
+                {/* COMMIT */}
                 <ToolbarButton
-                    icon={
-                        isFullscreen
-                            ? <FiMinimize2 size={17} />
-                            : <FiMaximize2 size={17} />
-                    }
-                    text={
-                        isFullscreen
-                            ? "Minimize"
-                            : "Fullscreen"
-                    }
-                    onClick={() =>
-                        setIsFullscreen(
-                            !isFullscreen
-                        )
-                    }
+                    icon={<FiGitCommit size={15} />}
+                    onClick={onOpenCommit}
+                    variant="green"
                 />
 
-                {/* AI CODE HEALTH */}
+                {/* AI */}
                 <ToolbarButton
-                    icon={<FiCpu size={17} />}
-                    text="AI"
+                    icon={<FiCpu size={15} />}
                     onClick={onOpenCodeHealth}
                     variant="purple"
                 />
 
                 {/* UNDO */}
                 <ToolbarButton
-                    icon={<FiRotateCcw size={17} />}
-                    text="Undo"
+                    icon={<FiRotateCcw size={15} />}
                     onClick={() =>
                         document.execCommand(
                             "undo"
@@ -131,8 +119,7 @@ const FileToolbar = ({
 
                 {/* REDO */}
                 <ToolbarButton
-                    icon={<FiRotateCw size={17} />}
-                    text="Redo"
+                    icon={<FiRotateCw size={15} />}
                     onClick={() =>
                         document.execCommand(
                             "redo"
@@ -140,22 +127,31 @@ const FileToolbar = ({
                     }
                 />
 
+                {/* FULLSCREEN */}
+                <ToolbarButton
+                    icon={
+                        isFullscreen
+                            ? <FiMinimize2 size={15} />
+                            : <FiMaximize2 size={15} />
+                    }
+                    onClick={() =>
+                        setIsFullscreen(
+                            !isFullscreen
+                        )
+                    }
+                />
+
                 {/* SAVE */}
                 <ToolbarButton
-                    icon={<FiSave size={17} />}
-                    text={
-                        saving
-                            ? "Saving"
-                            : "Save"
-                    }
+                    icon={<FiSave size={15} />}
                     onClick={onSave}
                     variant="blue"
+                    disabled={saving}
                 />
 
                 {/* DELETE */}
                 <ToolbarButton
-                    icon={<FiTrash2 size={17} />}
-                    text="Delete"
+                    icon={<FiTrash2 size={15} />}
                     onClick={onDelete}
                     variant="red"
                 />
@@ -166,12 +162,12 @@ const FileToolbar = ({
     );
 };
 
-// BUTTON COMPONENT
+// BUTTON
 const ToolbarButton = ({
     icon,
-    text,
     onClick,
-    variant = "default"
+    variant = "default",
+    disabled = false
 }) => {
 
     const variants = {
@@ -202,6 +198,13 @@ const ToolbarButton = ({
             hover:bg-purple-400
             border-purple-400
             text-black
+        `,
+
+        green: `
+            bg-green-500
+            hover:bg-green-400
+            border-green-400
+            text-black
         `
     };
 
@@ -209,29 +212,23 @@ const ToolbarButton = ({
 
         <button
             onClick={onClick}
+            disabled={disabled}
             className={`
-                h-11
-                px-4
+                w-10
+                h-10
                 rounded-xl
                 border
                 flex
                 items-center
-                gap-2
+                justify-center
                 transition-all
                 duration-200
-                font-medium
-                text-sm
+                disabled:opacity-50
                 ${variants[variant]}
             `}
         >
 
             {icon}
-
-            <span>
-
-                {text}
-
-            </span>
 
         </button>
     );

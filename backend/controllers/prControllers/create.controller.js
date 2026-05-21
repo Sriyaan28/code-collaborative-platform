@@ -54,7 +54,7 @@ export const createPullRequestController = async (req, res) => {
         }
 
         // check if branches belongs to same repo
-        if (sourceBranchObj.repository !== targetBranchObj.repository) {
+        if (sourceBranchObj.repository?.toString() !== targetBranchObj.repository?.toString()) {
             return res.status(400).json({
                 message: "Source branch and target branch must belong to the same repository",
                 success: false

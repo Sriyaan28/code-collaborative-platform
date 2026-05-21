@@ -34,6 +34,7 @@ const RepositoryPage = () => {
                 setRepository(
                     data.payload
                 );
+                console.log(data.payload);
 
             }
             catch (err) {
@@ -155,20 +156,25 @@ const RepositoryPage = () => {
                 <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-6">
 
                     <h2 className="text-2xl font-semibold mb-5">
-                        Future Features
+                        Details
                     </h2>
 
-                    <div className="space-y-3 text-gray-400">
+                    <div className="space-y-4 text-gray-400">
 
-                        <p>• Collaborators</p>
+                        <p>
+                            <span className="text-white">Owner:</span>{" "}
+                            {repository.owner?.name || "Unknown"}
+                        </p>
 
-                        <p>• Pull Requests</p>
+                        <p>
+                            <span className="text-white">Created At:</span>{" "}
+                            {new Date(repository.createdAt).toLocaleDateString()}
+                        </p>
 
-                        <p>• Commits</p>
-
-                        <p>• Discussions</p>
-
-                        <p>• Repository Settings</p>
+                        <p>
+                            <span className="text-white">Updated At:</span>{" "}
+                            {new Date(repository.updatedAt).toLocaleDateString()}
+                        </p>
 
                     </div>
 

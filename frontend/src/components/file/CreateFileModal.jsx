@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { createFile } from "../../api/fileApi";
+import useModal from "../../hooks/useModal";
 
 const CreateFileModal = ({
     isOpen,
@@ -11,6 +12,7 @@ const CreateFileModal = ({
 }) => {
 
     const [loading, setLoading] = useState(false);
+    const { showModal } = useModal();
 
     const [formData, setFormData] = useState({
         name: ""
@@ -37,11 +39,13 @@ const CreateFileModal = ({
 
             setLoading(true);
 
-            await createFile({
+            const res = await createFile({
                 name: formData.name,
                 repoId,
                 branchId
             });
+
+            showModal(res.message, "success");
 
             setFormData({
                 name: ""
@@ -54,9 +58,10 @@ const CreateFileModal = ({
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to create file"
+                "Failed to create file",
+                "error"
             );
         }
         finally {

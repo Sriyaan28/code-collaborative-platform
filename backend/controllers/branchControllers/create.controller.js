@@ -88,7 +88,7 @@ export const createBranchController = async (req, res) => {
             const duplicatedFiles = mainBranchFiles.map((file) => ({
                 name: file.name,
                 content: file.content || "",
-                old_content: file.old_content || "",
+                old_content: file.old_content !== undefined ? file.old_content : "",
                 repository: repoId,
                 branch: branch._id,
                 createdBy: req.user.id

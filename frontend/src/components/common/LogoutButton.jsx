@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 
 import axiosInstance from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
+import useModal from "../../hooks/useModal";
 
 const LogoutButton = () => {
 
     const navigate = useNavigate();
 
     const { setUser } = useAuth();
+    const { showModal } = useModal();
 
     const handleLogout = async () => {
 
@@ -22,9 +24,10 @@ const LogoutButton = () => {
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Logout Failed"
+                "Logout Failed",
+                "error"
             );
         }
     };

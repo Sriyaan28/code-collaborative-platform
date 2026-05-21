@@ -8,19 +8,36 @@ export const createFile = async ({
     createdBy
 }) => {
 
-    if (!name || !repoId || !branchId) {
+    if (
+        !name ||
+        !repoId ||
+        !branchId
+    ) {
+
         throw new Error(
+
             "Name, repoId and branchId are required"
         );
     }
 
-    const newFile = new FileModel({
-        name,
-        content: content || "",
-        repository: repoId,
-        createdBy,
-        branch: branchId
-    });
+    const newFile =
+        new FileModel({
+
+            name,
+
+            content:
+                content || "",
+
+            // IMPORTANT
+            // INITIAL DIFF STATE
+            old_content: null,
+
+            repository: repoId,
+
+            createdBy,
+
+            branch: branchId
+        });
 
     return await newFile.save();
 };

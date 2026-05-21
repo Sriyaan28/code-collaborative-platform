@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -15,9 +15,12 @@ import {
     deleteBranch
 } from "../api/branchApi";
 
+import useModal from "../hooks/useModal";
+
 const BranchesPage = () => {
 
     const { repoId } = useParams();
+    const { showModal } = useModal();
 
     const [branches, setBranches] = useState([]);
 
@@ -69,10 +72,12 @@ const BranchesPage = () => {
 
             setCreating(true);
 
-            await createBranch({
+            const res = await createBranch({
                 name: branchName,
                 repoId: repoId
             });
+
+            showModal(res.message, "success");
 
             setBranchName("");
 
@@ -83,9 +88,10 @@ const BranchesPage = () => {
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to create branch"
+                "Failed to create branch",
+                "error"
             );
         }
         finally {
@@ -101,16 +107,19 @@ const BranchesPage = () => {
 
         try {
 
-            await switchBranch(branchId);
+            const res = await switchBranch(branchId);
+
+            showModal(res.message, "success");
 
             fetchBranches();
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to switch branch"
+                "Failed to switch branch",
+                "error"
             );
         }
     };
@@ -128,19 +137,22 @@ const BranchesPage = () => {
 
         try {
 
-            await deleteBranch(
+            const res = await deleteBranch(
                 repoId,
                 branchId
             );
+
+            showModal(res.message, "success");
 
             fetchBranches();
 
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Failed to delete branch"
+                "Failed to delete branch",
+                "error"
             );
         }
     };
@@ -148,6 +160,16 @@ const BranchesPage = () => {
     return (
 
         <DashboardLayout>
+
+            {/* Back Button */}
+            <div className="mb-6">
+                <Link 
+                    to={`/repository/${repoId}`}
+                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
+                >
+                    <span>←</span> Back to Repository Overview
+                </Link>
+            </div>
 
             {/* Header */}
             <div className="flex items-center justify-between mb-10">

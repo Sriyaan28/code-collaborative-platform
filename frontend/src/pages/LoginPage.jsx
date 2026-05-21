@@ -3,12 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 
 import axiosInstance from "../api/axios";
 import { useAuth } from "../hooks/useAuth";
+import useModal from "../hooks/useModal";
 
 const LoginPage = () => {
 
     const navigate = useNavigate();
 
     const { user, setUser } = useAuth();
+    const { showModal } = useModal();
 
 
     useEffect(() => {
@@ -55,9 +57,10 @@ const LoginPage = () => {
         }
         catch (err) {
 
-            alert(
+            showModal(
                 err.response?.data?.message ||
-                "Login failed"
+                "Login failed",
+                "error"
             );
         }
         finally {
