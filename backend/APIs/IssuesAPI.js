@@ -4,9 +4,13 @@ import { checkRepoAccess } from "../middleware/checkRepoAccess.js";
 import { createIssueController } from '../controllers/issueControllers/create.controller.js';
 import { deleteIssueController } from '../controllers/issueControllers/delete.controller.js';
 import { getIssueController, getAllIssuesController } from '../controllers/issueControllers/get.controller.js';
+import { getAssignedIssuesController } from '../controllers/issueControllers/getAssigned.controller.js';
 import { updateIssueStatusController } from '../controllers/issueControllers/update.controller.js';
 
 export const issueApp = exp.Router()
+
+// route to get all open issues assigned to the logged-in user globally
+issueApp.get('/assigned', verifyToken, getAssignedIssuesController);
 
 // route to create an issue
 issueApp.post('/issue', verifyToken, checkRepoAccess, createIssueController)

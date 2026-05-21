@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import { useParams, Link } from "react-router-dom";
 
-import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
 
 import CollaboratorCard from "../components/collaborator/CollaboratorCard";
@@ -105,18 +103,7 @@ const CollaboratorsPage = () => {
     };
 
     return (
-
-        <DashboardLayout>
-
-            {/* Back Button */}
-            <div className="mb-6">
-                <Link
-                    to={`/repository/${repoId}`}
-                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                >
-                    <span>←</span> Back to Repository Overview
-                </Link>
-            </div>
+        <div>
 
             {/* Header */}
             <div className="flex items-center justify-between mb-10">
@@ -307,7 +294,7 @@ const CollaboratorsPage = () => {
                 repoId={repoId}
             />
 
-        </DashboardLayout>
+        </div>
     );
 };
 

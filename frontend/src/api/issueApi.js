@@ -24,3 +24,9 @@ export const updateIssueStatus = async (issueId, status) => {
     const res = await axiosInstance.patch(`/issues/issue/${issueId}`, { status });
     return res.data;
 };
+
+// GET ASSIGNED ISSUES (GLOBAL)
+export const getAssignedIssues = async () => {
+    const res = await axiosInstance.get(`/issues/assigned`);
+    return res.data;
+};

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
-import RepositoryTabs from "../components/repository/RepositoryTabs";
 import Loader from "../components/common/Loader";
 import { getAllPullRequests } from "../api/prApi";
 import { getBranches } from "../api/branchApi";
@@ -53,29 +51,12 @@ const PullRequestsPage = () => {
     };
 
     if (loading) {
-        return (
-            <DashboardLayout>
-                <Loader text="Loading pull requests..." />
-            </DashboardLayout>
-        );
+        return <Loader text="Loading pull requests..." />;
     }
 
     return (
-        <DashboardLayout>
+        <div>
             <div className="max-w-5xl mx-auto">
-                
-                {/* Back Button */}
-                <div className="mb-4">
-                    <Link 
-                        to={`/repository/${repoId}`}
-                        className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                    >
-                        <span>←</span> Back to Repository Overview
-                    </Link>
-                </div>
-
-                <RepositoryTabs repoId={repoId} />
-
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold mb-2">Pull Requests</h1>
@@ -148,7 +129,7 @@ const PullRequestsPage = () => {
                 branches={branches}
             />
 
-        </DashboardLayout>
+        </div>
     );
 };
 

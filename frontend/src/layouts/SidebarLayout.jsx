@@ -75,15 +75,11 @@ const Sidebar = () => {
 
                 {/* Logo */}
                 <div className="mb-12">
-
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        CodeCollab
-                    </h1>
-
-                    <p className="text-gray-500 mt-2 text-sm">
-                        Collaborative Development Platform
-                    </p>
-
+                    <Link to="/dashboard" className="hover:text-blue-400 transition-colors block w-fit">
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            CodeCollab
+                        </h1>
+                    </Link>
                 </div>
 
                 {/* Sections */}
@@ -116,8 +112,8 @@ const Sidebar = () => {
                                                     key={item.path}
                                                     to={item.path}
                                                     className={`block px-4 py-3 rounded-2xl transition-all duration-200 ${isActive
-                                                            ? "bg-blue-500 text-black font-semibold shadow-lg shadow-blue-500/20"
-                                                            : "text-gray-300 hover:bg-[#161b22] hover:text-white"
+                                                        ? "bg-blue-500 text-black font-semibold shadow-lg shadow-blue-500/20"
+                                                        : "text-gray-300 hover:bg-[#161b22] hover:text-white"
                                                         }`}
                                                 >
 

@@ -5,8 +5,7 @@ import {
     FiTrash2,
     FiRotateCcw,
     FiRotateCw,
-    FiCpu,
-    FiGitCommit
+    FiCpu
 } from "react-icons/fi";
 
 const FileToolbar = ({
@@ -16,8 +15,7 @@ const FileToolbar = ({
     saving,
     isFullscreen,
     setIsFullscreen,
-    onOpenCodeHealth,
-    onOpenCommit
+    onOpenCodeHealth
 }) => {
 
     return (
@@ -93,18 +91,12 @@ const FileToolbar = ({
             {/* RIGHT */}
             <div className="flex items-center gap-2">
 
-                {/* COMMIT */}
-                <ToolbarButton
-                    icon={<FiGitCommit size={15} />}
-                    onClick={onOpenCommit}
-                    variant="green"
-                />
-
                 {/* AI */}
                 <ToolbarButton
                     icon={<FiCpu size={15} />}
                     onClick={onOpenCodeHealth}
                     variant="purple"
+                    title="Code Health"
                 />
 
                 {/* UNDO */}
@@ -115,6 +107,7 @@ const FileToolbar = ({
                             "undo"
                         )
                     }
+                    title="Undo"
                 />
 
                 {/* REDO */}
@@ -125,6 +118,7 @@ const FileToolbar = ({
                             "redo"
                         )
                     }
+                    title="Redo"
                 />
 
                 {/* FULLSCREEN */}
@@ -139,6 +133,7 @@ const FileToolbar = ({
                             !isFullscreen
                         )
                     }
+                    title={isFullscreen ? "Minimize" : "Maximize"}
                 />
 
                 {/* SAVE */}
@@ -147,6 +142,7 @@ const FileToolbar = ({
                     onClick={onSave}
                     variant="blue"
                     disabled={saving}
+                    title="Save"
                 />
 
                 {/* DELETE */}
@@ -154,6 +150,7 @@ const FileToolbar = ({
                     icon={<FiTrash2 size={15} />}
                     onClick={onDelete}
                     variant="red"
+                    title="Delete"
                 />
 
             </div>
@@ -167,7 +164,8 @@ const ToolbarButton = ({
     icon,
     onClick,
     variant = "default",
-    disabled = false
+    disabled = false,
+    title
 }) => {
 
     const variants = {
@@ -213,6 +211,7 @@ const ToolbarButton = ({
         <button
             onClick={onClick}
             disabled={disabled}
+            title={title}
             className={`
                 w-10
                 h-10

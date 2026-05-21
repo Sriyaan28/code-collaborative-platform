@@ -1,4 +1,5 @@
 import { rollbackService } from "../../services/commitServices/rollback.service.js";
+import { createNotification } from "../../services/notificationServices/create.service.js";
 
 export const rollbackCommitController = async (req, res) => {
     try {
@@ -26,6 +27,14 @@ export const rollbackCommitController = async (req, res) => {
         }
 
         const rollbackResult = await rollbackService(commitId);
+
+        // create notification
+        await createNotification({
+            user: uid,
+            type: "COMMIT_ROLLBACK",
+            reference_id: rollbackResult.branch,
+            reference_type: "BRANCH"
+        });
 
         return res.status(200).json({
             message: "Rollback successful",

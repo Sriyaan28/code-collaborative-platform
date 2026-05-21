@@ -1,122 +1,12 @@
-import { useEffect, useState } from "react";
-
-import { useParams } from "react-router-dom";
-
-import DashboardLayout from "../layouts/DashboardLayout";
-
-import Loader from "../components/common/Loader";
-
-import RepositoryTabs from "../components/repository/RepositoryTabs";
-
-import {
-    getRepositoryById
-} from "../api/repositoryApi";
+import { useOutletContext } from "react-router-dom";
 
 const RepositoryPage = () => {
+    const { repository } = useOutletContext();
 
-    const { repoId } = useParams();
-
-    const [repository, setRepository] = useState(null);
-
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-
-        const fetchRepository = async () => {
-
-            try {
-
-                const data =
-                    await getRepositoryById(
-                        repoId
-                    );
-
-                setRepository(
-                    data.payload
-                );
-                console.log(data.payload);
-
-            }
-            catch (err) {
-
-                console.log(err);
-            }
-            finally {
-
-                setLoading(false);
-            }
-        };
-
-        fetchRepository();
-
-    }, [repoId]);
-
-    if (loading) {
-
-        return (
-
-            <DashboardLayout>
-
-                <Loader text="Loading repository..." />
-
-            </DashboardLayout>
-        );
-    }
-
-    if (!repository) {
-
-        return (
-
-            <DashboardLayout>
-
-                <p className="text-gray-500">
-                    Repository not found
-                </p>
-
-            </DashboardLayout>
-        );
-    }
+    if (!repository) return null;
 
     return (
-
-        <DashboardLayout>
-
-            {/* Header */}
-            <div className="mb-10">
-
-                <div className="flex items-center gap-5 flex-wrap">
-
-                    <h1 className="text-5xl font-bold text-blue-400">
-
-                        {repository.name}
-
-                    </h1>
-
-                    <span className="px-4 py-2 rounded-full bg-[#161b22] border border-gray-700 text-sm">
-
-                        {repository.visibility}
-
-                    </span>
-
-                </div>
-
-                <p className="text-gray-400 mt-6 text-lg leading-8 max-w-4xl">
-
-                    {
-                        repository.description ||
-                        "No description"
-                    }
-
-                </p>
-
-            </div>
-
-            {/* Tabs */}
-            <RepositoryTabs
-                repoId={repoId}
-            />
-
-            {/* Overview */}
+        <div>
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-6">
@@ -182,7 +72,7 @@ const RepositoryPage = () => {
 
             </div>
 
-        </DashboardLayout>
+        </div>
     );
 };
 

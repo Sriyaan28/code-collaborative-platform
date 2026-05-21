@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
 const RepositoryTabs = ({
-    repoId
+    repoId,
+    repository
 }) => {
 
     const location = useLocation();
@@ -43,7 +44,12 @@ const RepositoryTabs = ({
             path: `/repository/${repoId}/commits`
         }
 
-    ];
+    ].filter(tab => {
+        if (repository?.currentUserRole === 'viewer') {
+            return !["Pull Requests", "Issues", "Collaborators"].includes(tab.name);
+        }
+        return true;
+    });
 
     return (
 

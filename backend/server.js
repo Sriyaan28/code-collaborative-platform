@@ -16,6 +16,7 @@ import { testApp } from './APIs/TestAPI.js'
 import { notificationApp } from './APIs/NotificationAPI.js'
 import { issueApp } from './APIs/IssuesAPI.js'
 import { commentApp } from './APIs/CommentAPI.js'
+import { discussionApp } from './APIs/DiscussionsAPI.js'
 
 config()
 
@@ -114,6 +115,7 @@ app.use('/api/notifications', notificationApp)
 app.use('/api/issues', issueApp)
 
 app.use('/api/comments', commentApp)
+app.use('/api/discussions', discussionApp)
 
 app.use('/api/test', testApp)
 

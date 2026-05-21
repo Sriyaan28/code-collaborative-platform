@@ -1,4 +1,5 @@
 import FileExplorerItem from "./FileExplorerItem";
+import { FiGitCommit } from "react-icons/fi";
 
 const FileExplorer = ({
     width,
@@ -9,7 +10,9 @@ const FileExplorer = ({
     files,
     selectedFile,
     setSelectedFile,
-    onCreateFile
+    onCreateFile,
+    onOpenCommit,
+    hideCreate
 }) => {
 
     return (
@@ -44,30 +47,58 @@ const FileExplorer = ({
 
                     </h2>
 
-                    {/* CREATE FILE */}
-                    <button
-                        onClick={onCreateFile}
-                        className="
-                            w-9
-                            h-9
-                            rounded-lg
-                            flex
-                            items-center
-                            justify-center
-                            bg-[#161b22]
-                            hover:bg-[#1f2937]
-                            border
-                            border-gray-700
-                            hover:border-blue-500
-                            transition-all
-                            text-lg
-                            text-gray-300
-                            hover:text-blue-400
-                        "
-                        title="Create File"
-                    >
-                        📄
-                    </button>
+                    {/* ACTIONS */}
+                    <div className="flex items-center gap-2">
+                        {!hideCreate && (
+                            <button
+                                onClick={onOpenCommit}
+                                className="
+                                    w-8
+                                    h-8
+                                    rounded-lg
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bg-[#161b22]
+                                    hover:bg-green-500/20
+                                    border
+                                    border-gray-700
+                                    hover:border-green-500
+                                    transition-all
+                                    text-gray-300
+                                    hover:text-green-400
+                                "
+                                title="Commit Changes"
+                            >
+                                <FiGitCommit size={16} />
+                            </button>
+                        )}
+                        {!hideCreate && (
+                            <button
+                                onClick={onCreateFile}
+                                className="
+                                    w-8
+                                    h-8
+                                    rounded-lg
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bg-[#161b22]
+                                    hover:bg-[#1f2937]
+                                    border
+                                    border-gray-700
+                                    hover:border-blue-500
+                                    transition-all
+                                    text-sm
+                                    text-gray-300
+                                    hover:text-blue-400
+                                "
+                                title="Create File"
+                            >
+                                📄
+                            </button>
+                        )}
+                    </div>
 
                 </div>
 

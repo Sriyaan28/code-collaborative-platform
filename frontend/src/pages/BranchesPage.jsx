@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useParams, Link } from "react-router-dom";
-
-import DashboardLayout from "../layouts/DashboardLayout";
+import { useParams, Link, useOutletContext } from "react-router-dom";
 
 import Loader from "../components/common/Loader";
 
@@ -20,6 +18,7 @@ import useModal from "../hooks/useModal";
 const BranchesPage = () => {
 
     const { repoId } = useParams();
+    const { repository } = useOutletContext();
     const { showModal } = useModal();
 
     const [branches, setBranches] = useState([]);
@@ -158,18 +157,7 @@ const BranchesPage = () => {
     };
 
     return (
-
-        <DashboardLayout>
-
-            {/* Back Button */}
-            <div className="mb-6">
-                <Link 
-                    to={`/repository/${repoId}`}
-                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                >
-                    <span>←</span> Back to Repository Overview
-                </Link>
-            </div>
+        <div>
 
             {/* Header */}
             <div className="flex items-center justify-between mb-10">
@@ -186,14 +174,16 @@ const BranchesPage = () => {
 
                 </div>
 
-                <button
-                    onClick={() =>
-                        setShowCreateModal(true)
-                    }
-                    className="px-6 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
-                >
-                    + Create Branch
-                </button>
+                {repository?.currentUserRole !== 'viewer' && (
+                    <button
+                        onClick={() =>
+                            setShowCreateModal(true)
+                        }
+                        className="px-6 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
+                    >
+                        + Create Branch
+                    </button>
+                )}
 
             </div>
 
@@ -321,7 +311,7 @@ const BranchesPage = () => {
                 )
             }
 
-        </DashboardLayout>
+        </div>
     );
 };
 

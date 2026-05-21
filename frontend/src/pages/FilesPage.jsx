@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useParams, Link } from "react-router-dom";
-
-import DashboardLayout from "../layouts/DashboardLayout";
+import { useParams, Link, useOutletContext } from "react-router-dom";
 
 import Loader from "../components/common/Loader";
 
@@ -36,6 +34,7 @@ import {
 const FilesPage = () => {
 
     const { repoId } = useParams();
+    const { repository } = useOutletContext();
     const { showModal } = useModal();
 
     const [branches, setBranches] = useState([]);
@@ -321,36 +320,20 @@ const FilesPage = () => {
         );
 
     if (loading) {
-
-        return (
-
-            <DashboardLayout>
-
-                <Loader text="Loading files..." />
-
-            </DashboardLayout>
-        );
+        return <Loader text="Loading files..." />;
     }
 
     return (
-
-        <DashboardLayout>
-
-            {/* Back Button */}
-            <div className="mb-4">
-                <Link 
-                    to={`/repository/${repoId}`}
-                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                >
-                    <span>←</span> Back to Repository Overview
-                </Link>
-            </div>
-
+        <div>
             <div
                 className="
-                    h-[calc(100vh-112px)]
+                    h-[calc(100vh-350px)]
+                    min-h-[500px]
                     flex
                     overflow-hidden
+                    rounded-3xl
+                    border
+                    border-gray-800
                 "
             >
 
@@ -370,6 +353,10 @@ const FilesPage = () => {
                             onCreateFile={() =>
                                 setIsCreateModalOpen(true)
                             }
+                            onOpenCommit={() =>
+                                setIsCommitModalOpen(true)
+                            }
+                            hideCreate={repository?.currentUserRole === 'viewer'}
                         />
                     )
                 }
@@ -405,9 +392,6 @@ const FilesPage = () => {
                                         setIsFullscreen={setIsFullscreen}
                                         onOpenCodeHealth={() =>
                                             setIsCodeHealthOpen(true)
-                                        }
-                                        onOpenCommit={() =>
-                                            setIsCommitModalOpen(true)
                                         }
                                     />
 
@@ -509,7 +493,7 @@ const FilesPage = () => {
                 initialData={issueInitialData}
             />
 
-        </DashboardLayout>
+        </div>
     );
 };
 

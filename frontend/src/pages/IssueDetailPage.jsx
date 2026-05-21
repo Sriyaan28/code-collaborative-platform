@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
 import { getIssueById, updateIssueStatus, deleteIssue } from "../api/issueApi";
 import useModal from "../hooks/useModal";
@@ -66,23 +65,17 @@ const IssueDetailPage = () => {
     };
 
     if (loading) {
-        return (
-            <DashboardLayout>
-                <Loader text="Loading issue details..." />
-            </DashboardLayout>
-        );
+        return <Loader text="Loading issue details..." />;
     }
 
     if (errorMsg || !issue) {
         return (
-            <DashboardLayout>
-                <div className="max-w-4xl mx-auto text-center mt-20">
-                    <h2 className="text-2xl font-bold text-gray-300">{errorMsg || "Issue Not Found"}</h2>
-                    <Link to={`/repository/${repoId}/issues`} className="text-blue-500 hover:underline mt-4 inline-block">
-                        Back to Issues
-                    </Link>
-                </div>
-            </DashboardLayout>
+            <div className="max-w-4xl mx-auto text-center mt-20">
+                <h2 className="text-2xl font-bold text-gray-300">{errorMsg || "Issue Not Found"}</h2>
+                <Link to={`/repository/${repoId}/issues`} className="text-blue-500 hover:underline mt-4 inline-block">
+                    Back to Issues
+                </Link>
+            </div>
         );
     }
 
@@ -96,17 +89,15 @@ const IssueDetailPage = () => {
     const canDelete = isOwner; // backend says only owner can delete
 
     return (
-        <DashboardLayout>
-            <div className="max-w-4xl mx-auto">
-                
-                <div className="mb-6">
-                    <Link 
-                        to={`/repository/${repoId}/issues`}
-                        className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                    >
-                        <span>←</span> Back to Issues
-                    </Link>
-                </div>
+        <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+                <Link 
+                    to={`/repository/${repoId}/issues`}
+                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
+                >
+                    <span>←</span> Back to Issues
+                </Link>
+            </div>
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
@@ -199,8 +190,7 @@ const IssueDetailPage = () => {
                     </div>
                 </div>
 
-            </div>
-        </DashboardLayout>
+        </div>
     );
 };
 

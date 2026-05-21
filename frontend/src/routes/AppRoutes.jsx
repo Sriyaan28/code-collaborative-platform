@@ -19,8 +19,12 @@ import PullRequestsPage from "../pages/PullRequestsPage";
 import PullRequestDetailPage from "../pages/PullRequestDetailPage";
 import IssuesPage from "../pages/IssuesPage";
 import IssueDetailPage from "../pages/IssueDetailPage";
+import GlobalIssuesPage from "../pages/GlobalIssuesPage";
+import DiscussionsPage from "../pages/DiscussionsPage";
+import DiscussionDetailPage from "../pages/DiscussionDetailPage";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
+import RepositoryLayout from "../layouts/RepositoryLayout";
 
 const AppRoutes = () => {
 
@@ -70,14 +74,6 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/repository/:repoId"
-                    element={
-                        <ProtectedRoute>
-                            <RepositoryPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
                     path="/search/repositories"
                     element={
                         <ProtectedRoute>
@@ -102,79 +98,46 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/repository/:repoId/branches"
+                    path="/issues"
                     element={
                         <ProtectedRoute>
-                            <BranchesPage />
+                            <GlobalIssuesPage />
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/repository/:repoId/files"
+                    path="/discussions"
                     element={
                         <ProtectedRoute>
-                            <FilesPage />
+                            <DiscussionsPage />
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/repository/:repoId/collaborators"
+                    path="/discussion/:id"
                     element={
                         <ProtectedRoute>
-                            <CollaboratorsPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/repository/:repoId/commits"
-                    element={
-                        <ProtectedRoute>
-                            <CommitsPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/repository/:repoId/commit/:commitId"
-                    element={
-                        <ProtectedRoute>
-                            <CommitPage />
+                            <DiscussionDetailPage />
                         </ProtectedRoute>
                     }
                 />
 
-                <Route
-                    path="/repository/:repoId/pull-requests"
-                    element={
-                        <ProtectedRoute>
-                            <PullRequestsPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/repository/:repoId/pull-request/:prId"
-                    element={
-                        <ProtectedRoute>
-                            <PullRequestDetailPage />
-                        </ProtectedRoute>
-                    }
-                />
-                
-                <Route
-                    path="/repository/:repoId/issues"
-                    element={
-                        <ProtectedRoute>
-                            <IssuesPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/repository/:repoId/issue/:issueId"
-                    element={
-                        <ProtectedRoute>
-                            <IssueDetailPage />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/repository/:repoId" element={
+                    <ProtectedRoute>
+                        <RepositoryLayout />
+                    </ProtectedRoute>
+                }>
+                    <Route index element={<RepositoryPage />} />
+                    <Route path="branches" element={<BranchesPage />} />
+                    <Route path="files" element={<FilesPage />} />
+                    <Route path="collaborators" element={<CollaboratorsPage />} />
+                    <Route path="commits" element={<CommitsPage />} />
+                    <Route path="commit/:commitId" element={<CommitPage />} />
+                    <Route path="pull-requests" element={<PullRequestsPage />} />
+                    <Route path="pull-request/:prId" element={<PullRequestDetailPage />} />
+                    <Route path="issues" element={<IssuesPage />} />
+                    <Route path="issue/:issueId" element={<IssueDetailPage />} />
+                </Route>
 
             </Routes>
 

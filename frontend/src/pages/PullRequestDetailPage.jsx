@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
 import { getPullRequestById, updatePRStatus, deletePullRequest } from "../api/prApi";
 import useModal from "../hooks/useModal";
@@ -66,23 +65,17 @@ const PullRequestDetailPage = () => {
     };
 
     if (loading) {
-        return (
-            <DashboardLayout>
-                <Loader text="Loading pull request details..." />
-            </DashboardLayout>
-        );
+        return <Loader text="Loading pull request details..." />;
     }
 
     if (errorMsg || !pr) {
         return (
-            <DashboardLayout>
-                <div className="max-w-4xl mx-auto text-center mt-20">
-                    <h2 className="text-2xl font-bold text-gray-300">{errorMsg || "Pull Request Not Found"}</h2>
-                    <Link to={`/repository/${repoId}/pull-requests`} className="text-blue-500 hover:underline mt-4 inline-block">
-                        Back to Pull Requests
-                    </Link>
-                </div>
-            </DashboardLayout>
+            <div className="max-w-4xl mx-auto text-center mt-20">
+                <h2 className="text-2xl font-bold text-gray-300">{errorMsg || "Pull Request Not Found"}</h2>
+                <Link to={`/repository/${repoId}/pull-requests`} className="text-blue-500 hover:underline mt-4 inline-block">
+                    Back to Pull Requests
+                </Link>
+            </div>
         );
     }
 
@@ -91,25 +84,24 @@ const PullRequestDetailPage = () => {
     // For now we allow creator to delete.
 
     return (
-        <DashboardLayout>
-            <div className="max-w-4xl mx-auto">
-                
-                {/* Back Button */}
-                <div className="mb-6">
-                    <Link 
-                        to={`/repository/${repoId}/pull-requests`}
-                        className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                    >
-                        <span>←</span> Back to Pull Requests
-                    </Link>
-                </div>
+        <div className="max-w-4xl mx-auto">
+            
+            {/* Back Button */}
+            <div className="mb-6">
+                <Link 
+                    to={`/repository/${repoId}/pull-requests`}
+                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
+                >
+                    <span>←</span> Back to Pull Requests
+                </Link>
+            </div>
 
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-3 flex items-center gap-4">
-                            {pr.title}
-                            <span className="text-gray-500 font-normal">#{pr._id.substring(pr._id.length - 6)}</span>
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold mb-3 flex items-center gap-4">
+                        {pr.title}
+                        <span className="text-gray-500 font-normal">#{pr._id.substring(pr._id.length - 6)}</span>
                         </h1>
                         <div className="flex flex-wrap items-center gap-3 text-sm">
                             <span className={`px-3 py-1 rounded-full font-medium border ${
@@ -188,8 +180,7 @@ const PullRequestDetailPage = () => {
                     </div>
                 )}
 
-            </div>
-        </DashboardLayout>
+        </div>
     );
 };
 

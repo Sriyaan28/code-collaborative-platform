@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
 import { getCommitById } from "../api/commitApi";
 import DiffViewer from "../components/commit/DiffViewer";
@@ -28,22 +27,15 @@ const CommitPage = () => {
         }
     }, [commitId]);
 
-    return (
-        <DashboardLayout>
-            <div className="mb-6">
-                <Link 
-                    to={`/repository/${repoId}/commits`}
-                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm"
-                >
-                    <span>←</span> Back to Commits
-                </Link>
-            </div>
+    if (loading) {
+        return <Loader text="Loading commit details..." />;
+    }
 
-            {loading ? (
-                <Loader text="Loading commit details..." />
-            ) : !commitData || !commitData.commit ? (
-                <p className="text-gray-500">Commit not found</p>
-            ) : (
+    if (!commitData || !commitData.commit) {
+        return <p className="text-gray-500">Commit not found</p>;
+    }
+
+    return (
                 <div>
                     {/* COMMIT HEADER */}
                     <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-8 mb-8">
@@ -81,9 +73,7 @@ const CommitPage = () => {
                         
                         <DiffViewer differences={commitData.differences} />
                     </div>
-                </div>
-            )}
-        </DashboardLayout>
+        </div>
     );
 };
 

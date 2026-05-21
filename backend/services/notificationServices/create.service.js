@@ -24,6 +24,7 @@ export const createNotification = async ({
         'BRANCH_CREATED',
         'BRANCH_DELETED',
         'COMMIT_CREATED',
+        'COMMIT_ROLLBACK',
         'COLLAB_ADDED',
         'COLLAB_REMOVED',
         'COMMENT_ADDED',
@@ -104,6 +105,12 @@ function generateMessage(type) {
 
         case 'BRANCH_DELETED':
             return 'Branch deleted';
+
+        case 'COMMIT_CREATED':
+            return 'Commit created';
+
+        case 'COMMIT_ROLLBACK':
+            return 'Rollback successful';
 
         case 'COLLAB_ADDED':
             return 'Collaborator added';

@@ -27,20 +27,20 @@ export const getRepoByIdController = async (req, res) => {
         const role = req.role;
         console.log("User role in repository: ", role);
 
-        // everyone can access public repos
         if (role === 'viewer' && repository.visibility === 'PUBLIC') {
             return res.status(200).json({
                 message: "Repository found",
                 payload: repository,
+                role: 'viewer',
                 success: true
             })
         }
 
-        // owner can access private repo
         if (role === 'owner') {
             return res.status(200).json({
                 message: "Repository found",
                 payload: repository,
+                role: 'owner',
                 success: true
             })
         }
@@ -49,6 +49,7 @@ export const getRepoByIdController = async (req, res) => {
             return res.status(200).json({
                 message: "Repository found",
                 payload: repository,
+                role: 'collaborator',
                 success: true
             })
         }

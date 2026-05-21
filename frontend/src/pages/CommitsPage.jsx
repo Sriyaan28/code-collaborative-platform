@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import { useParams, Link } from "react-router-dom";
 
-import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
 
 import {
@@ -106,18 +104,7 @@ const CommitsPage = () => {
     };
 
     return (
-
-        <DashboardLayout>
-
-            {/* Back Button */}
-            <div className="mb-6">
-                <Link 
-                    to={`/repository/${repoId}`}
-                    className="text-gray-400 hover:text-white transition flex items-center gap-2 text-sm w-fit"
-                >
-                    <span>←</span> Back to Repository Overview
-                </Link>
-            </div>
+        <div>
 
             {/* HEADER */}
             <div className="mb-10">
@@ -261,7 +248,7 @@ const CommitsPage = () => {
                         )
             }
 
-        </DashboardLayout>
+        </div>
     );
 };
 

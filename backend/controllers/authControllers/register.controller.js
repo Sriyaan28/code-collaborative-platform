@@ -7,6 +7,12 @@ export const registerController = async(req,res)=>{
         // get user data from req 
         const newUser = req.body
 
+        // check if user already exists
+        const existingUser = await UserModel.findOne({ email: newUser.email })
+        if (existingUser) {
+            return res.status(409).json({ message: "Email already in use", success: false })
+        }
+
         // hash password
         newUser.password = await hash(newUser.password,12)
 
