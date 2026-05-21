@@ -4,66 +4,167 @@
    CUSTOM SCROLLBAR
 ========================= */
 
-/* WIDTH */
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
-/* TRACK */
 ::-webkit-scrollbar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 999px;
+  border: 2px solid #0d1117;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1f2937 #0d1117;
+}
+
+/* =========================
+   AI CINEMATIC BORDER
+========================= */
 
 @keyframes rotate-border {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* MAIN CONTAINER */
+
 .animated-border-wrapper {
   position: relative;
-  z-index: 0;
-  overflow: hidden;
-  border-radius: inherit;
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.3), inset 0 0 15px rgba(59, 130, 246, 0.2);
+
+  border-radius: 32px;
+
+  overflow: visible;
+
+  isolation: isolate;
+
+  background:
+    rgba(4, 10, 20, 0.96);
+
+  /* OUTER AMBIENT GLOW */
+  box-shadow:
+    0 0 30px rgba(59, 130, 246, 0.18),
+    0 0 60px rgba(59, 130, 246, 0.10),
+    0 0 120px rgba(59, 130, 246, 0.08),
+    0 0 200px rgba(59, 130, 246, 0.04);
 }
+
+/* SOFT OUTER BLOOM */
 
 .animated-border-wrapper::before {
   content: "";
+
   position: absolute;
-  z-index: -1;
-  left: -50%;
-  top: -50%;
-  width: 200%;
-  height: 200%;
-  background-color: transparent;
-  background-image: conic-gradient(
-    rgba(59, 130, 246, 0.2) 0deg, 
-    rgba(59, 130, 246, 0.2) 260deg, 
-    rgba(96, 165, 250, 0.8) 320deg, 
-    rgba(255, 255, 255, 1) 360deg
-  );
-  animation: rotate-border 2s linear infinite;
+
+  inset: -14px;
+
+  z-index: -3;
+
+  border-radius: 44px;
+
+  background:
+    radial-gradient(circle at center,
+      rgba(59, 130, 246, 0.22) 0%,
+      rgba(59, 130, 246, 0.12) 30%,
+      rgba(59, 130, 246, 0.05) 55%,
+      transparent 75%);
+
+  filter: blur(30px);
+
+  opacity: 1;
+
+  animation:
+    glow-pulse 5s ease-in-out infinite;
 }
 
+/* ROTATING ENERGY FIELD */
 
-/* HANDLE */
-::-webkit-scrollbar-thumb {
-    background: #1f2937;
-    border-radius: 999px;
-    border: 2px solid #0d1117;
+.animated-border-wrapper::after {
+  content: "";
+
+  position: absolute;
+
+  width: 260%;
+  height: 260%;
+
+  left: -80%;
+  top: -80%;
+
+  z-index: -2;
+
+  border-radius: 9999px;
+
+  background:
+    conic-gradient(from 0deg,
+
+      transparent 0deg,
+      transparent 235deg,
+
+      rgba(59, 130, 246, 0.08) 260deg,
+
+      rgba(96, 165, 250, 0.75) 295deg,
+
+      rgba(255, 255, 255, 1) 320deg,
+
+      rgba(96, 165, 250, 0.75) 340deg,
+
+      rgba(59, 130, 246, 0.08) 355deg,
+
+      transparent 360deg);
+
+  animation:
+    rotate-border 8s linear infinite;
+
+  filter: blur(55px);
+
+  opacity: 0.95;
 }
 
-/* HANDLE HOVER */
-::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6;
-}
+/* =========================
+   INNER CONTENT PANEL
+========================= */
 
-/* FIREFOX */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #1f2937 #0d1117;
+.animated-border-content {
+  position: relative;
+
+  z-index: 2;
+
+  border-radius: 28px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at top,
+      rgba(17, 24, 39, 0.98),
+      rgba(3, 7, 18, 0.98));
+
+  backdrop-filter: blur(16px);
 }

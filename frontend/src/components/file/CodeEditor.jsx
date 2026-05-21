@@ -38,7 +38,7 @@ const CodeEditor = ({
 
     // TAB & SAVE SUPPORT
     const handleKeyDown = (e) => {
-        
+
         // Handle Review Mode Actions
         if (isReviewing) {
             if (e.key === "Tab") {
@@ -93,13 +93,13 @@ const CodeEditor = ({
 
 
     return (
-        <div className="h-full flex flex-col bg-[#0d1117] overflow-hidden rounded-[inherit]">
-            
+        <div className={`h-full flex flex-col transition-all duration-500 rounded-[inherit] ${isGenerating ? 'animated-border-wrapper' : 'bg-[#0d1117] overflow-hidden'}`}>
+            <div className={`flex-1 flex flex-col transition-all duration-500 ${isGenerating ? 'animated-border-content' : 'overflow-hidden'}`}>
             {/* REVIEW BANNER */}
             {isReviewing && (
                 <div className="bg-blue-500/10 border-b border-blue-500/30 px-6 py-3 flex items-center justify-between text-blue-400 text-sm font-medium z-10 shrink-0">
                     <div className="flex items-center gap-2">
-                        <span className="text-lg">✨</span> 
+                        <span className="text-lg">✨</span>
                         AI Code Generated!
                     </div>
                     <div className="flex gap-4 opacity-80">
@@ -111,23 +111,23 @@ const CodeEditor = ({
 
             <div className="flex-1 flex overflow-hidden">
                 {/* LINE NUMBERS */}
-            <div
-                ref={lineNumberRef}
-                className="w-[70px] bg-[#161b22] border-r border-gray-800 text-gray-500 text-right py-6 px-3 overflow-hidden select-none font-mono text-[15px] leading-8"
-            >
+                <div
+                    ref={lineNumberRef}
+                    className={`w-[70px] border-r border-gray-800 text-gray-500 text-right py-6 px-3 overflow-hidden select-none font-mono text-[15px] leading-8 ${isGenerating ? 'bg-transparent' : 'bg-[#161b22]'}`}
+                >
 
-                {
-                    lineNumbers.map((line) => (
+                    {
+                        lineNumbers.map((line) => (
 
-                        <div key={line}>
+                            <div key={line}>
 
-                            {line}
+                                {line}
 
-                        </div>
-                    ))
-                }
+                            </div>
+                        ))
+                    }
 
-            </div>
+                </div>
 
                 {/* EDITOR */}
                 <textarea
@@ -143,15 +143,16 @@ const CodeEditor = ({
                     spellCheck={false}
                     readOnly={isReviewing}
                     placeholder="Start writing code..."
-                    className={`flex-1 bg-[#0d1117] py-6 px-6 outline-none resize-none overflow-auto font-mono text-[15px] leading-8 custom-scrollbar transition-colors ${
+                    className={`flex-1 py-6 px-6 outline-none resize-none overflow-auto font-mono text-[15px] leading-8 custom-scrollbar transition-colors ${
                         isReviewing ? 'text-gray-500 selection:bg-transparent' : 'text-white'
-                    }`}
+                    } ${isGenerating ? 'bg-transparent' : 'bg-[#0d1117]'}`}
                     style={{
                         minHeight: "100%",
                         whiteSpace: "pre",
                         tabSize: 4
                     }}
                 />
+            </div>
             </div>
         </div>
     );

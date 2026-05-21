@@ -74,14 +74,14 @@ const FilesPage = () => {
 
     const [isCreateIssueModalOpen, setIsCreateIssueModalOpen] =
         useState(false);
-        
-    const [issueInitialData, setIssueInitialData] = 
+
+    const [issueInitialData, setIssueInitialData] =
         useState(null);
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [isReviewing, setIsReviewing] = useState(false);
     const [originalContent, setOriginalContent] = useState("");
-    
+
     const typeWriterRef = useRef(null);
     const fullAiCodeRef = useRef("");
 
@@ -346,7 +346,7 @@ const FilesPage = () => {
 
             fullAiCodeRef.current = aiCode;
             setContent("");
-            
+
             let i = 0;
             typeWriterRef.current = setInterval(() => {
                 if (i < aiCode.length) {
@@ -456,7 +456,7 @@ const FilesPage = () => {
                                     />
 
                                     {/* EDITOR */}
-                                    <div className={`flex-1 overflow-hidden transition-all duration-300 relative ${isGenerating ? 'p-[2px] animated-border-wrapper rounded-none' : ''}`}>
+                                    <div className={`flex-1 min-h-0 transition-all duration-300 relative ${isGenerating ? 'p-8' : 'overflow-hidden'}`}>
 
                                         {
                                             editorLoading
@@ -497,9 +497,9 @@ const FilesPage = () => {
                     }
 
                     {selectedFile && !isReviewing && (
-                        <AICodeGenerator 
-                            onGenerate={handleGenerateCode} 
-                            isGenerating={isGenerating} 
+                        <AICodeGenerator
+                            onGenerate={handleGenerateCode}
+                            isGenerating={isGenerating}
                         />
                     )}
 
@@ -551,7 +551,7 @@ const FilesPage = () => {
             />
 
             {/* CREATE ISSUE MODAL */}
-            <CreateIssueModal 
+            <CreateIssueModal
                 isOpen={isCreateIssueModalOpen}
                 onClose={() => {
                     setIsCreateIssueModalOpen(false);
