@@ -45,3 +45,12 @@ export const searchUsers = async (
 
     return res.data;
 };
+
+export const searchUsersById = async (id) => {
+
+    const res = await axiosInstance.get(
+        `/users/user/${id}`
+    );
+
+    return res.data;
+};

@@ -63,3 +63,11 @@ export const rollbackCommit = async ({
 
     return response.data;
 };
+
+// GET COMMITS BY USER ID
+export const getUserCommits = async (userId) => {
+    const response = await axiosInstance.get(
+        `/commits/user/${userId}`
+    );
+    return response.data;
+};

@@ -9,7 +9,6 @@ import BranchCard from "../components/branches/BranchCard";
 import {
     getBranches,
     createBranch,
-    switchBranch,
     deleteBranch
 } from "../api/branchApi";
 
@@ -99,29 +98,7 @@ const BranchesPage = () => {
         }
     };
 
-    // SWITCH BRANCH
-    const handleSwitchBranch = async (
-        branchId
-    ) => {
 
-        try {
-
-            const res = await switchBranch(branchId);
-
-            showModal(res.message, "success");
-
-            fetchBranches();
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to switch branch",
-                "error"
-            );
-        }
-    };
 
     // DELETE BRANCH
     const handleDeleteBranch = async (
@@ -216,17 +193,6 @@ const BranchesPage = () => {
 
                                             {/* Actions */}
                                             <div className="mt-4 flex gap-3">
-
-                                                <button
-                                                    onClick={() =>
-                                                        handleSwitchBranch(
-                                                            branch._id
-                                                        )
-                                                    }
-                                                    className="flex-1 py-3 rounded-xl bg-[#161b22] border border-gray-700 hover:border-blue-500 transition"
-                                                >
-                                                    Switch
-                                                </button>
 
                                                 <button
                                                     onClick={() =>

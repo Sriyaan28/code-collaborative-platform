@@ -7,6 +7,7 @@ import { deleteFileController, deleteFileToggleController } from '../controllers
 import { getAllBranchFilesController, getAllFilesController, getAllMainBranchFilesController } from '../controllers/fileControllers/getAll.controller.js';
 import { getFileController } from '../controllers/fileControllers/get.controller.js';
 import { analyzeCodeHealth } from '../services/aiServices/codeHealthService.js';
+import { generateCodeService } from '../services/aiServices/codeGenerationService.js';
 
 export const fileApp = exp.Router()
 
@@ -65,3 +66,29 @@ fileApp.post('/code-health', verifyToken, async (req, res) => {
         })
     }
 })
+
+// route for generating code using AI
+fileApp.post('/generate-code', verifyToken, async (req, res) => {
+    try {
+        const { prompt, currentCode } = req.body;
+
+        if (!prompt) {
+            return res.status(400).json({
+                message: "Prompt is required"
+            });
+        }
+
+        const generatedCode = await generateCodeService(prompt, currentCode);
+
+        return res.status(200).json({
+            message: "Code generated successfully",
+            payload: { generatedCode }
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "Error generating code",
+            error: err.message
+        });
+    }
+});

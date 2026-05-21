@@ -67,3 +67,11 @@ export const deleteBranch = async (
 
     return res.data;
 };
+
+// GET BRANCH BY ID
+export const getBranchById = async (branchId) => {
+    const res = await axiosInstance.get(
+        `/branches/branch/${branchId}`
+    );
+    return res.data;
+};

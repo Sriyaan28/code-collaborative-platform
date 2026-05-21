@@ -55,6 +55,17 @@ export const getFileById = async (
 };
 
 
+
+// GENERATE CODE USING AI
+export const generateCode = async (prompt, currentCode) => {
+    const res = await axiosInstance.post("/files/generate-code", {
+        prompt,
+        currentCode
+    });
+    return res.data;
+};
+
+
 // UPDATE FILE
 export const updateFile = async (
     fileData

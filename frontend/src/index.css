@@ -11,8 +11,44 @@
 
 /* TRACK */
 ::-webkit-scrollbar-track {
-    background: #0d1117;
+    background-color: transparent;
 }
+
+@keyframes rotate-border {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animated-border-wrapper {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.3), inset 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.animated-border-wrapper::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-color: transparent;
+  background-image: conic-gradient(
+    rgba(59, 130, 246, 0.2) 0deg, 
+    rgba(59, 130, 246, 0.2) 260deg, 
+    rgba(96, 165, 250, 0.8) 320deg, 
+    rgba(255, 255, 255, 1) 360deg
+  );
+  animation: rotate-border 2s linear infinite;
+}
+
 
 /* HANDLE */
 ::-webkit-scrollbar-thumb {

@@ -1,8 +1,14 @@
+import { useNavigate } from "react-router-dom";
+
 const UserCard = ({ user }) => {
+    const navigate = useNavigate();
 
     return (
 
-        <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-6 hover:border-blue-500 transition cursor-pointer">
+        <div 
+            onClick={() => navigate(`/profile/${user._id}`)}
+            className="bg-[#161b22] border border-gray-800 rounded-3xl p-6 hover:border-blue-500 transition cursor-pointer"
+        >
 
             <div className="flex items-center gap-5">
 

@@ -1,144 +1,49 @@
 import { useEffect, useState } from "react";
-
+import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
-
-import {
-    getProfile,
-    updateProfile,
-    deleteProfile
-} from "../api/userApi";
-
-// update and delete aren't working properly
-// update and delete
-// is calling the api and getting 500 server error
-
+import { searchUsersById } from "../api/userApi";
+import { getUserCommits } from "../api/commitApi";
 import { useAuth } from "../hooks/useAuth";
-import useModal from "../hooks/useModal";
+import ContributionGraph from "../components/profile/ContributionGraph";
 
 const ProfilePage = () => {
+    const { userId } = useParams();
+    const { user: currentUser } = useAuth();
+    const navigate = useNavigate();
 
-    const { setUser } = useAuth();
-    const { showModal } = useModal();
+    // If no userId in URL, use the logged-in user's ID
+    const targetUserId = userId || currentUser?._id;
 
     const [loading, setLoading] = useState(true);
+    const [profileUser, setProfileUser] = useState(null);
+    const [commits, setCommits] = useState([]);
 
-    const [saving, setSaving] = useState(false);
-
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-    const [deletePassword, setDeletePassword] = useState("");
-
-    const [deleting, setDeleting] = useState(false);
-
-    const [formData, setFormData] = useState({
-        name: "",
-        email: ""
-    });
-
-    const [createdAt, setCreatedAt] = useState("");
+    const isOwnProfile = currentUser?._id === targetUserId;
 
     useEffect(() => {
-
-        const fetchProfile = async () => {
-
+        const fetchProfileData = async () => {
+            if (!targetUserId) return;
             try {
+                setLoading(true);
 
-                const data = await getProfile();
+                // Fetch User and Repositories
+                const userRes = await searchUsersById(targetUserId);
+                setProfileUser(userRes.payload);
 
-                const user = data.payload;
+                // Fetch User Commits
+                const commitsRes = await getUserCommits(targetUserId);
+                setCommits(commitsRes.payload || []);
 
-                setFormData({
-                    name: user.name || "",
-                    email: user.email || ""
-                });
-
-                setCreatedAt(user.createdAt);
-
-            }
-            catch (err) {
-
-                console.log(err);
-            }
-            finally {
-
+            } catch (err) {
+                console.error("Failed to load profile data:", err);
+            } finally {
                 setLoading(false);
             }
         };
 
-        fetchProfile();
-
-    }, []);
-
-    const handleChange = (e) => {
-
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        try {
-
-            setSaving(true);
-
-            const res = await updateProfile(
-                formData
-            );
-
-            setUser(res.payload);
-
-            showModal(res.message, "success");
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to update profile",
-                "error"
-            );
-        }
-        finally {
-
-            setSaving(false);
-        }
-    };
-    const handleDeleteProfile = async () => {
-
-        if (!deletePassword.trim()) {
-            return showModal("Password required", "error");
-        }
-
-        try {
-
-            setDeleting(true);
-
-            const res = await deleteProfile(deletePassword);
-
-            showModal(res.message, "success");
-
-            window.location.href = "/login";
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to delete profile",
-                "error"
-            );
-        }
-        finally {
-
-            setDeleting(false);
-        }
-    };
+        fetchProfileData();
+    }, [targetUserId]);
 
     if (loading) {
         return (
@@ -148,165 +53,88 @@ const ProfilePage = () => {
         );
     }
 
+    if (!profileUser) {
+        return (
+            <DashboardLayout>
+                <div className="flex items-center justify-center h-[50vh] text-gray-500">
+                    User not found.
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     return (
-
         <DashboardLayout>
+            <div className="max-w-6xl mx-auto pb-20 grid grid-cols-1 md:grid-cols-12 gap-8">
+                
+                {/* Left Sidebar: User Info */}
+                <div className="md:col-span-3">
+                    <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center">
+                        <div className="w-40 h-40 rounded-full bg-blue-500 flex items-center justify-center text-6xl font-bold text-black mb-6">
+                            {profileUser.userProfile ? (
+                                <img src={profileUser.userProfile} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                            ) : (
+                                profileUser.name?.charAt(0)?.toUpperCase()
+                            )}
+                        </div>
+                        
+                        <h1 className="text-2xl font-bold text-white mb-2">{profileUser.name}</h1>
+                        <p className="text-gray-400 mb-4">{profileUser.email}</p>
+                        
+                        <p className="text-sm text-gray-500 mb-6">
+                            Joined {profileUser.createdAt ? new Date(profileUser.createdAt).toLocaleDateString() : "N/A"}
+                        </p>
 
-            <div className="max-w-3xl mx-auto">
-
-                {/* Header */}
-                <div className="mb-10">
-
-                    <h1 className="text-4xl font-bold">
-                        Profile
-                    </h1>
-
-                    <p className="text-gray-400 mt-3">
-                        Manage your account information
-                    </p>
-
+                        {isOwnProfile && (
+                            <button
+                                onClick={() => navigate("/settings")}
+                                className="w-full py-3 rounded-xl border border-gray-700 hover:border-gray-500 hover:bg-[#1f2937] transition text-gray-300 font-medium"
+                            >
+                                Edit Settings
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                {/* Profile Card */}
-                <div className="bg-[#161b22] border border-gray-800 rounded-3xl p-8">
-
-                    {/* Avatar */}
-                    <div className="flex items-center gap-6 mb-10">
-
-                        <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-4xl font-bold text-black">
-
-                            {
-                                formData.name
-                                    ?.charAt(0)
-                                    ?.toUpperCase()
-                            }
-
-                        </div>
-
-                        <div>
-
-                            <h2 className="text-3xl font-bold">
-                                {formData.name}
-                            </h2>
-
-                            <p className="text-gray-400 mt-2">
-                                {formData.email}
-                            </p>
-
-                            <p className="text-sm text-gray-500 mt-2">
-                                Joined {
-                                    createdAt
-                                        ? new Date(createdAt)
-                                            .toLocaleDateString()
-                                        : "N/A"
-                                }
-                            </p>
-
-                        </div>
-
+                {/* Right Content: Contributions & Repositories */}
+                <div className="md:col-span-9 space-y-8">
+                    
+                    {/* Contribution Graph */}
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Contributions</h2>
+                        <ContributionGraph commits={commits} />
                     </div>
 
-                    {/* Form */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-6"
-                    >
-
-                        <div>
-
-                            <label className="block mb-3 text-gray-400">
-                                Name
-                            </label>
-
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="w-full p-4 rounded-2xl bg-[#0d1117] border border-gray-700 outline-none"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-3 text-gray-400">
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                disabled
-                                className="w-full p-4 rounded-2xl bg-[#0d1117] border border-gray-700 outline-none opacity-70 cursor-not-allowed"
-                            />
-
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="px-8 py-4 rounded-2xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
-                        >
-                            {
-                                saving
-                                    ? "Saving..."
-                                    : "Update Profile"
-                            }
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() =>
-                                setShowDeleteModal(true)
-                            }
-                            className="ml-4 px-8 py-4 rounded-2xl bg-red-500 hover:bg-red-400 transition text-black font-semibold"
-                        >
-                            Delete Profile
-                        </button>
-                        {showDeleteModal && (
-                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                <div className="bg-[#161b22] p-6 rounded-2xl border border-gray-800">
-                                    <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
-                                    <p className="text-gray-400 mb-4">
-                                        Type your password to confirm deletion:
-                                    </p>
-                                    <input
-                                        type="password"
-                                        value={deletePassword}
-                                        onChange={(e) =>
-                                            setDeletePassword(e.target.value)
-                                        }
-                                        className="w-full p-4 rounded-2xl bg-[#0d1117] border border-gray-700 outline-none"
-                                    />
-                                    <div className="mt-4 flex justify-end gap-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowDeleteModal(false)}
-                                            className="px-6 py-3 rounded-xl border border-gray-700"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={handleDeleteProfile}
-                                            disabled={deleting}
-                                            className="px-6 py-3 rounded-xl bg-red-500 hover:bg-red-400 transition text-black font-semibold"
-                                        >
-                                            {deleting ? "Deleting..." : "Delete"}
-                                        </button>
+                    {/* Repositories */}
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Public Repositories <span className="text-gray-500 text-lg font-normal ml-2">({profileUser.repositories?.length || 0})</span></h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {profileUser.repositories && profileUser.repositories.length > 0 ? (
+                                profileUser.repositories.map(repo => (
+                                    <div
+                                        key={repo._id}
+                                        onClick={() => navigate(`/repository/${repo._id}`)}
+                                        className="bg-[#161b22] border border-gray-800 hover:border-gray-600 rounded-2xl p-6 cursor-pointer transition flex flex-col"
+                                    >
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h3 className="text-lg font-bold text-blue-400 truncate">{repo.name}</h3>
+                                            <span className="text-xs px-2 py-1 rounded-full border border-gray-700 text-gray-400 uppercase tracking-widest">{repo.visibility}</span>
+                                        </div>
+                                        <p className="text-gray-400 text-sm flex-1 line-clamp-2">
+                                            {repo.description || "No description provided."}
+                                        </p>
                                     </div>
+                                ))
+                            ) : (
+                                <div className="col-span-2 p-8 border border-gray-800 rounded-2xl text-center text-gray-500">
+                                    No public repositories found.
                                 </div>
-                            </div>
-                        )}
-
-                    </form>
+                            )}
+                        </div>
+                    </div>
 
                 </div>
-
             </div>
-
         </DashboardLayout>
     );
 };

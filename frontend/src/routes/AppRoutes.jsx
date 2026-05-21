@@ -9,6 +9,7 @@ import RepositoriesPage from "../pages/RepositoriesPage";
 import SearchRepositoriesPage from "../pages/SearchRepositoriesPage";
 import SearchUsersPage from "../pages/SearchUsersPage";
 import ProfilePage from "../pages/ProfilePage";
+import SettingsPage from "../pages/SettingsPage";
 import BranchesPage from "../pages/BranchesPage";
 import FilesPage from "../pages/FilesPage";
 import CollaboratorsPage from "../pages/CollaboratorsPage";
@@ -24,6 +25,7 @@ import DiscussionsPage from "../pages/DiscussionsPage";
 import DiscussionDetailPage from "../pages/DiscussionDetailPage";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
+import ReferenceRedirector from "../components/common/ReferenceRedirector";
 import RepositoryLayout from "../layouts/RepositoryLayout";
 
 const AppRoutes = () => {
@@ -98,6 +100,22 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
+                    path="/profile/:userId"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <SettingsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/issues"
                     element={
                         <ProtectedRoute>
@@ -121,6 +139,14 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Reference Redirectors */}
+                <Route path="/file/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="FILE" /></ProtectedRoute>} />
+                <Route path="/commit/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="COMMIT" /></ProtectedRoute>} />
+                <Route path="/branch/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="BRANCH" /></ProtectedRoute>} />
+                <Route path="/issue/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="ISSUE" /></ProtectedRoute>} />
+                <Route path="/pull-request/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="PULL_REQUEST" /></ProtectedRoute>} />
+                <Route path="/collaborator/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="COLLABORATOR" /></ProtectedRoute>} />
 
                 <Route path="/repository/:repoId" element={
                     <ProtectedRoute>

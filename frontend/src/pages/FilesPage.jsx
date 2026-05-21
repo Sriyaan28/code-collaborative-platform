@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useParams, Link, useOutletContext } from "react-router-dom";
 
@@ -14,6 +14,8 @@ import EmptyEditorState from "../components/file/EmptyEditorState";
 
 import CreateFileModal from "../components/file/CreateFileModal";
 
+import AICodeGenerator from "../components/file/AICodeGenerator";
+
 import CodeHealthModal from "../components/file/CodeHealthModal";
 import CreateIssueModal from "../components/issue/CreateIssueModal";
 import CreateCommitModal from "../components/commit/CreateCommitModal";
@@ -28,7 +30,8 @@ import {
     getBranchFiles,
     updateFile,
     deleteFile,
-    getFileById
+    getFileById,
+    generateCode
 } from "../api/fileApi";
 
 const FilesPage = () => {
@@ -74,6 +77,13 @@ const FilesPage = () => {
         
     const [issueInitialData, setIssueInitialData] = 
         useState(null);
+
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [isReviewing, setIsReviewing] = useState(false);
+    const [originalContent, setOriginalContent] = useState("");
+    
+    const typeWriterRef = useRef(null);
+    const fullAiCodeRef = useRef("");
 
     // ESCAPE FULLSCREEN
     useEffect(() => {
@@ -319,6 +329,56 @@ const FilesPage = () => {
                 file.old_content !== file.content
         );
 
+    // AI CODE GENERATION
+    const handleGenerateCode = async (prompt) => {
+        if (!selectedFile) return;
+
+        try {
+            setOriginalContent(content);
+            setIsFullscreen(true);
+            setIsGenerating(true);
+            setIsReviewing(true); // Show banner early
+
+            const data = await generateCode(prompt, content);
+            const aiCode = data.payload?.generatedCode || "";
+
+            if (!aiCode) throw new Error("No code generated");
+
+            fullAiCodeRef.current = aiCode;
+            setContent("");
+            
+            let i = 0;
+            typeWriterRef.current = setInterval(() => {
+                if (i < aiCode.length) {
+                    setContent((prev) => prev + aiCode.charAt(i));
+                    i++;
+                } else {
+                    if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+                }
+            }, 10);
+
+        } catch (err) {
+            console.log("AI Generation error", err);
+            showModal("Failed to generate code", "error");
+            setIsGenerating(false);
+            setIsReviewing(false);
+        }
+    };
+
+    const handleAcceptCode = () => {
+        if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+        if (fullAiCodeRef.current) setContent(fullAiCodeRef.current);
+        setIsReviewing(false);
+        setIsGenerating(false);
+    };
+
+    const handleRejectCode = () => {
+        if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+        setContent(originalContent);
+        setIsReviewing(false);
+        setIsGenerating(false);
+    };
+
     if (loading) {
         return <Loader text="Loading files..." />;
     }
@@ -396,7 +456,7 @@ const FilesPage = () => {
                                     />
 
                                     {/* EDITOR */}
-                                    <div className="flex-1 overflow-auto">
+                                    <div className={`flex-1 overflow-hidden transition-all duration-300 relative ${isGenerating ? 'p-[2px] animated-border-wrapper rounded-none' : ''}`}>
 
                                         {
                                             editorLoading
@@ -419,6 +479,10 @@ const FilesPage = () => {
                                                     <CodeEditor
                                                         content={content}
                                                         setContent={setContent}
+                                                        isGenerating={isGenerating}
+                                                        isReviewing={isReviewing}
+                                                        onAccept={handleAcceptCode}
+                                                        onReject={handleRejectCode}
                                                     />
                                                 )
                                         }
@@ -431,6 +495,13 @@ const FilesPage = () => {
                                 <EmptyEditorState />
                             )
                     }
+
+                    {selectedFile && !isReviewing && (
+                        <AICodeGenerator 
+                            onGenerate={handleGenerateCode} 
+                            isGenerating={isGenerating} 
+                        />
+                    )}
 
                 </div>
 

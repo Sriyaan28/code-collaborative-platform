@@ -53,22 +53,19 @@ const NotificationModal = ({
             </div>
 
             {/* ACTIONS */}
-            <div className="flex gap-3 p-4 border-b border-gray-800">
-
+            <div className="flex justify-between items-center p-3 px-6 border-b border-gray-800 bg-[#0d1117]/50">
                 <button
                     onClick={onMarkAllRead}
-                    className="flex-1 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 transition text-black font-semibold"
+                    className="text-sm text-blue-400 hover:text-blue-300 transition font-medium"
                 >
-                    Mark All Read
+                    ✓ Mark all as read
                 </button>
-
                 <button
                     onClick={onDeleteAll}
-                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-400 transition text-black font-semibold"
+                    className="text-sm text-gray-500 hover:text-red-400 transition font-medium"
                 >
-                    Delete All
+                    Clear all
                 </button>
-
             </div>
 
             {/* CONTENT */}

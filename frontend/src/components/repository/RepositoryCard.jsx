@@ -12,7 +12,7 @@ const RepositoryCard = ({ repository }) => {
     return (
         <div
             onClick={handleCardClick}
-            className="bg-[#161b22] border border-gray-800 rounded-3xl p-6 hover:border-blue-500 transition cursor-pointer">
+            className="group bg-[#161b22] border border-gray-800 rounded-3xl p-6 hover:border-blue-500 transition cursor-pointer">
 
             <div className="flex items-center justify-between">
 
@@ -26,12 +26,17 @@ const RepositoryCard = ({ repository }) => {
 
             </div>
 
-            <p className="text-gray-400 mt-5 leading-7">
-                {
-                    repository.description ||
-                    "No description"
-                }
-            </p>
+            <div className="relative mt-5 h-14 overflow-hidden group-hover:h-auto group-hover:overflow-visible transition-all">
+                <p className="text-gray-400 leading-7">
+                    {
+                        repository.description ||
+                        "No description"
+                    }
+                </p>
+                {repository.description && repository.description.length > 70 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#161b22] to-transparent pointer-events-none group-hover:opacity-0 transition-opacity"></div>
+                )}
+            </div>
 
         </div>
     );

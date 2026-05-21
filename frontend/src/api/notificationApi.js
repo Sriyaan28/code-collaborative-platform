@@ -41,7 +41,7 @@ export const markNotificationRead = async (
 // MARK ALL AS READ
 export const markAllNotificationsRead = async () => {
 
-    const res = await axiosInstance.patch(
+    const res = await axiosInstance.put(
         "/notifications/all-notifications"
     );
 

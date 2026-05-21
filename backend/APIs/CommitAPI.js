@@ -4,6 +4,7 @@ import { checkRepoAccess } from '../middleware/checkRepoAccess.js';
 import { getAllCommitsController, getCommitByIdController } from '../controllers/commitControllers/get.controller.js';
 import { createCommitController } from '../controllers/commitControllers/create.controller.js';
 import { rollbackCommitController } from '../controllers/commitControllers/rollback.controller.js';
+import { getCommitsByUserIdController } from '../controllers/commitControllers/getByUser.controller.js';
 
 export const commitApp = exp.Router()
 
@@ -18,3 +19,6 @@ commitApp.get('/repo/:repoId', verifyToken, checkRepoAccess, getAllCommitsContro
 
 // route to rollback to a commit
 commitApp.post('/rollback', verifyToken, checkRepoAccess, rollbackCommitController)
+
+// route to get all commits by a user
+commitApp.get('/user/:userId', verifyToken, getCommitsByUserIdController)
