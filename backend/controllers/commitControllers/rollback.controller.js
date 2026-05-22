@@ -42,6 +42,7 @@ export const rollbackCommitController = async (req, res) => {
             payload: rollbackResult
         });
     } catch (err) {
+        console.log(err)
         return res.status(500).json({
             message: "Failed to rollback commit",
             error: err.message,
