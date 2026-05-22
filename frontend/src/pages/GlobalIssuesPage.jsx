@@ -1,30 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
 import { getAssignedIssues } from "../api/issueApi";
 import useModal from "../hooks/useModal";
+import { useAppCache } from "../context/CacheContext";
 
 const GlobalIssuesPage = () => {
     const { showModal } = useModal();
-    const [loading, setLoading] = useState(true);
-    const [issues, setIssues] = useState([]);
+    const { getCache, setCache } = useAppCache();
 
-    const fetchIssues = async () => {
+    const cachedData = getCache("global_issues");
+    const [loading, setLoading] = useState(!cachedData);
+    const [issues, setIssues] = useState(cachedData || []);
+
+    const fetchIssues = useCallback(async () => {
         try {
-            setLoading(true);
+            if (!cachedData) setLoading(true);
             const res = await getAssignedIssues();
-            setIssues(res.payload || []);
+            const fetchedIssues = res.payload || [];
+            setIssues(fetchedIssues);
+            setCache("global_issues", fetchedIssues);
         } catch (err) {
             showModal("Failed to fetch assigned issues", "error");
         } finally {
             setLoading(false);
         }
-    };
+    }, [cachedData, setCache, showModal]);
 
     useEffect(() => {
         fetchIssues();
-    }, []);
+    }, [fetchIssues]);
 
     if (loading) {
         return (

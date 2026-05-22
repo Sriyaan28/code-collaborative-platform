@@ -6,18 +6,22 @@ import { searchUsersById } from "../api/userApi";
 import { getUserCommits } from "../api/commitApi";
 import { useAuth } from "../hooks/useAuth";
 import ContributionGraph from "../components/profile/ContributionGraph";
+import { useAppCache } from "../context/CacheContext";
 
 const ProfilePage = () => {
     const { userId } = useParams();
     const { user: currentUser } = useAuth();
     const navigate = useNavigate();
+    const { getCache, setCache } = useAppCache();
 
     // If no userId in URL, use the logged-in user's ID
     const targetUserId = userId || currentUser?._id;
+    const cacheKey = `profile_${targetUserId}`;
+    const cachedData = getCache(cacheKey);
 
-    const [loading, setLoading] = useState(true);
-    const [profileUser, setProfileUser] = useState(null);
-    const [commits, setCommits] = useState([]);
+    const [loading, setLoading] = useState(!cachedData);
+    const [profileUser, setProfileUser] = useState(cachedData?.profileUser || null);
+    const [commits, setCommits] = useState(cachedData?.commits || []);
 
     const isOwnProfile = currentUser?._id === targetUserId;
 
@@ -25,15 +29,19 @@ const ProfilePage = () => {
         const fetchProfileData = async () => {
             if (!targetUserId) return;
             try {
-                setLoading(true);
+                if (!cachedData) setLoading(true);
 
                 // Fetch User and Repositories
                 const userRes = await searchUsersById(targetUserId);
-                setProfileUser(userRes.payload);
-
+                const userPayload = userRes.payload;
+                
                 // Fetch User Commits
                 const commitsRes = await getUserCommits(targetUserId);
-                setCommits(commitsRes.payload || []);
+                const commitsPayload = commitsRes.payload || [];
+
+                setProfileUser(userPayload);
+                setCommits(commitsPayload);
+                setCache(cacheKey, { profileUser: userPayload, commits: commitsPayload });
 
             } catch (err) {
                 console.error("Failed to load profile data:", err);
@@ -43,7 +51,7 @@ const ProfilePage = () => {
         };
 
         fetchProfileData();
-    }, [targetUserId]);
+    }, [targetUserId, cacheKey, cachedData, setCache]);
 
     if (loading) {
         return (

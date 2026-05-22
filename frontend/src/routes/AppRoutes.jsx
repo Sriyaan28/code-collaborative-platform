@@ -36,15 +36,17 @@ import { DiscussionProvider } from "../context/DiscussionContext";
 import { IssueProvider } from "../context/IssueContext";
 import { PullRequestProvider } from "../context/PullRequestContext";
 import { NotificationProvider } from "../context/NotificationContext";
+import { CacheProvider } from "../context/CacheContext";
 
 const AppRoutes = () => {
 
     return (
 
         <BrowserRouter>
-            <NotificationProvider>
-                <DiscussionProvider>
-                    <Routes>
+            <CacheProvider>
+                <NotificationProvider>
+                    <DiscussionProvider>
+                        <Routes>
 
                 <Route
                     path="/"
@@ -183,9 +185,10 @@ const AppRoutes = () => {
                     <Route path="issue/:issueId" element={<IssueDetailPage />} />
                 </Route>
 
-                    </Routes>
-                </DiscussionProvider>
-            </NotificationProvider>
+                        </Routes>
+                    </DiscussionProvider>
+                </NotificationProvider>
+            </CacheProvider>
         </BrowserRouter>
     );
 };

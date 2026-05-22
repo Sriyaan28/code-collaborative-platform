@@ -1,43 +1,37 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
-
 import { searchRepositories } from "../api/repositoryApi";
-
 import RepositoryCard from "../components/repository/RepositoryCard";
+import { useAppCache } from "../context/CacheContext";
 
 const SearchRepositoriesPage = () => {
-
-    const [query, setQuery] = useState("");
-
-    const [repositories, setRepositories] = useState([]);
-
+    const { getCache, setCache } = useAppCache();
+    
+    const cachedData = getCache("search_repositories");
+    const [query, setQuery] = useState(cachedData?.query || "");
+    const [repositories, setRepositories] = useState(cachedData?.repositories || []);
     const [loading, setLoading] = useState(false);
 
+    // Persist search query state as user types
+    useEffect(() => {
+        setCache("search_repositories", { query, repositories });
+    }, [query, repositories, setCache]);
+
     const handleSearch = async (e) => {
-
         e.preventDefault();
-
         if (!query.trim()) return;
 
         try {
-
             setLoading(true);
-
             const data = await searchRepositories(query);
-
-            setRepositories(
-                data.payload || []
-            );
-
-        }
-        catch (err) {
-
+            const results = data.payload || [];
+            
+            setRepositories(results);
+            setCache("search_repositories", { query, repositories: results });
+        } catch (err) {
             console.log(err);
-        }
-        finally {
-
+        } finally {
             setLoading(false);
         }
     };

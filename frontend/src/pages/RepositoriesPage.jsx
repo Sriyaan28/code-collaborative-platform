@@ -1,55 +1,37 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useCallback } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
-
 import RepositoryCard from "../components/repository/RepositoryCard";
-
 import CreateRepositoryModal from "../components/repository/CreateRepositoryModal";
-
-import {
-    getRepositories
-} from "../api/repositoryApi";
+import { getRepositories } from "../api/repositoryApi";
+import { useAppCache } from "../context/CacheContext";
 
 const RepositoriesPage = () => {
-
-    const [repositories, setRepositories] = useState([]);
-
-    const [loading, setLoading] = useState(true);
-
+    const { getCache, setCache } = useAppCache();
+    
+    const cachedData = getCache("my_repositories");
+    const [repositories, setRepositories] = useState(cachedData || []);
+    const [loading, setLoading] = useState(!cachedData);
     const [showCreateModal, setShowCreateModal] = useState(false);
 
-    const fetchRepositories = async () => {
-
+    const fetchRepositories = useCallback(async () => {
         try {
-
-            setLoading(true);
-
-            const data =
-                await getRepositories();
-
-            // ONLY USER REPOSITORIES
-            setRepositories(
-                data.payload?.userRepositories || []
-            );
-
-        }
-        catch (err) {
-
+            if (!cachedData) setLoading(true);
+            const data = await getRepositories();
+            const userRepos = data.payload?.userRepositories || [];
+            
+            setRepositories(userRepos);
+            setCache("my_repositories", userRepos);
+        } catch (err) {
             console.log(err);
-        }
-        finally {
-
+        } finally {
             setLoading(false);
         }
-    };
+    }, [cachedData, setCache]);
 
     useEffect(() => {
-
         fetchRepositories();
-
-    }, []);
+    }, [fetchRepositories]);
 
     return (
 

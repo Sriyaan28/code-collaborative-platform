@@ -1,64 +1,46 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
-
 import UserCard from "../components/user/UserCard";
-
 import { searchUsers } from "../api/userApi";
+import { useAppCache } from "../context/CacheContext";
 
 const SearchUsersPage = () => {
-
-    const [query, setQuery] = useState("");
-
-    const [users, setUsers] = useState([]);
-
+    const { getCache, setCache } = useAppCache();
+    
+    const cachedData = getCache("search_users");
+    const [query, setQuery] = useState(cachedData?.query || "");
+    const [users, setUsers] = useState(cachedData?.users || []);
     const [loading, setLoading] = useState(false);
+    const [searchType, setSearchType] = useState(cachedData?.searchType || "name");
 
-    const [searchType, setSearchType] = useState("name");
+    // Persist search query state as user types
+    useEffect(() => {
+        setCache("search_users", { query, users, searchType });
+    }, [query, users, searchType, setCache]);
 
     const handleSearch = async (e) => {
-
         e.preventDefault();
-
         if (!query.trim()) return;
 
         try {
-
             setLoading(true);
-
-            const data = await searchUsers(
-                query,
-                searchType
-            );
-
+            const data = await searchUsers(query, searchType);
+            
+            let results = [];
             // if backend returns single user
-            if (
-                data.payload &&
-                !Array.isArray(data.payload)
-            ) {
-
-                setUsers([data.payload]);
-
+            if (data.payload && !Array.isArray(data.payload)) {
+                results = [data.payload];
+            } else {
+                results = data.payload || [];
             }
-
-            // if backend returns array
-            else {
-
-                setUsers(data.payload || []);
-
-            }
-
-        }
-        catch (err) {
-
+            
+            setUsers(results);
+            setCache("search_users", { query, users: results, searchType });
+        } catch (err) {
             console.log(err);
-
             setUsers([]);
-        }
-        finally {
-
+        } finally {
             setLoading(false);
         }
     };

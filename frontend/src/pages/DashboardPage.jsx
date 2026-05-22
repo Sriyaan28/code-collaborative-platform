@@ -1,59 +1,45 @@
 import { useEffect, useState } from "react";
-
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import { useAuth } from "../hooks/useAuth";
-
 import { getRepositories } from "../api/repositoryApi";
-
 import Loader from "../components/common/Loader";
-
 import RepositoryCard from "../components/repository/RepositoryCard";
+import { useAppCache } from "../context/CacheContext";
 
 const DashboardPage = () => {
-
     const { user } = useAuth();
+    const { getCache, setCache } = useAppCache();
 
-    const [userRepositories, setUserRepositories] = useState([]);
-
-    const [publicRepositories, setPublicRepositories] = useState([]);
-
+    const cachedData = getCache("dashboard_repos");
+    const [userRepositories, setUserRepositories] = useState(cachedData?.userRepositories || []);
+    const [publicRepositories, setPublicRepositories] = useState(cachedData?.publicRepositories || []);
     const [activeTab, setActiveTab] = useState("public");
-
     const [showCreateModal, setShowCreateModal] = useState(false);
-
-    const [loading, setLoading] = useState(true);
+    
+    // Only show loader if we have NO cached data
+    const [loading, setLoading] = useState(!cachedData);
 
     useEffect(() => {
-
         const fetchRepositories = async () => {
-
             try {
-
+                if (!cachedData) setLoading(true);
                 const data = await getRepositories();
-
-                setUserRepositories(
-                    data.payload.userRepositories || []
-                );
-
-                setPublicRepositories(
-                    data.payload.publicRepositories || []
-                );
-
-            }
-            catch (err) {
-
+                
+                const userRepos = data.payload.userRepositories || [];
+                const pubRepos = data.payload.publicRepositories || [];
+                
+                setUserRepositories(userRepos);
+                setPublicRepositories(pubRepos);
+                setCache("dashboard_repos", { userRepositories: userRepos, publicRepositories: pubRepos });
+            } catch (err) {
                 console.log(err);
-            }
-            finally {
-
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchRepositories();
-
-    }, []);
+    }, [cachedData, setCache]);
 
     const repositories =
         activeTab === "public"
