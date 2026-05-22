@@ -1,135 +1,26 @@
 import { useEffect, useState } from "react";
-
-import { useParams, Link, useOutletContext } from "react-router-dom";
-
+import { useOutletContext } from "react-router-dom";
 import Loader from "../components/common/Loader";
-
 import BranchCard from "../components/branches/BranchCard";
-
-import {
-    getBranches,
-    createBranch,
-    deleteBranch
-} from "../api/branchApi";
-
-import useModal from "../hooks/useModal";
+import useBranch from "../hooks/useBranch";
 
 const BranchesPage = () => {
-
-    const { repoId } = useParams();
     const { repository } = useOutletContext();
-    const { showModal } = useModal();
-
-    const [branches, setBranches] = useState([]);
-
-    const [loading, setLoading] = useState(true);
+    const { branches, loading, creating, fetchBranches, handleCreateBranch, handleDeleteBranch } = useBranch();
 
     const [showCreateModal, setShowCreateModal] = useState(false);
-
     const [branchName, setBranchName] = useState("");
 
-    const [creating, setCreating] = useState(false);
-
-    const fetchBranches = async () => {
-
-        try {
-
-            setLoading(true);
-
-            const data = await getBranches(repoId);
-
-            setBranches(
-                data.payload || []
-            );
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-        finally {
-
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-
         fetchBranches();
+    }, [fetchBranches]);
 
-    }, [repoId]);
-
-    // CREATE BRANCH
-    const handleCreateBranch = async (e) => {
-
+    const onSubmitCreate = async (e) => {
         e.preventDefault();
-
-        if (!branchName.trim()) return;
-
-        try {
-
-            setCreating(true);
-
-            const res = await createBranch({
-                name: branchName,
-                repoId: repoId
-            });
-
-            showModal(res.message, "success");
-
+        const success = await handleCreateBranch(branchName);
+        if (success) {
             setBranchName("");
-
             setShowCreateModal(false);
-
-            fetchBranches();
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to create branch",
-                "error"
-            );
-        }
-        finally {
-
-            setCreating(false);
-        }
-    };
-
-
-
-    // DELETE BRANCH
-    const handleDeleteBranch = async (
-        branchId
-    ) => {
-
-        const confirmDelete = window.confirm(
-            "Delete this branch?"
-        );
-
-        if (!confirmDelete) return;
-
-        try {
-
-            const res = await deleteBranch(
-                repoId,
-                branchId
-            );
-
-            showModal(res.message, "success");
-
-            fetchBranches();
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to delete branch",
-                "error"
-            );
         }
     };
 
@@ -241,7 +132,7 @@ const BranchesPage = () => {
                             </div>
 
                             <form
-                                onSubmit={handleCreateBranch}
+                                onSubmit={onSubmitCreate}
                                 className="space-y-5"
                             >
 

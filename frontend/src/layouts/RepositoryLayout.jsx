@@ -1,36 +1,11 @@
-import { useEffect, useState } from "react";
-import { useParams, Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import DashboardLayout from "./DashboardLayout";
 import RepositoryTabs from "../components/repository/RepositoryTabs";
 import Loader from "../components/common/Loader";
-import { getRepositoryById, deleteRepository } from "../api/repositoryApi";
-import useModal from "../hooks/useModal";
+import useRepository from "../hooks/useRepository";
 
 const RepositoryLayout = () => {
-    const { repoId } = useParams();
-    const navigate = useNavigate();
-    const { showModal } = useModal();
-    const [repository, setRepository] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [deleting, setDeleting] = useState(false);
-
-    useEffect(() => {
-        const fetchRepository = async () => {
-            try {
-                setLoading(true);
-                const data = await getRepositoryById(repoId);
-                setRepository({ ...data.payload, currentUserRole: data.role });
-            } catch (err) {
-                console.log(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (repoId) {
-            fetchRepository();
-        }
-    }, [repoId]);
+    const { repoId, repository, loading, deleting, handleDeleteRepo } = useRepository();
 
     if (loading) {
         return (
@@ -49,22 +24,6 @@ const RepositoryLayout = () => {
             </DashboardLayout>
         );
     }
-
-    const handleDeleteRepo = async () => {
-        const confirmDelete = window.confirm(`Are you sure you want to delete ${repository.name}? This action cannot be undone.`);
-        if (!confirmDelete) return;
-
-        try {
-            setDeleting(true);
-            const res = await deleteRepository(repoId);
-            showModal(res.message || "Repository deleted successfully", "success");
-            navigate("/dashboard");
-        } catch (err) {
-            console.error(err);
-            showModal(err.response?.data?.message || "Failed to delete repository", "error");
-            setDeleting(false);
-        }
-    };
 
     return (
         <DashboardLayout>

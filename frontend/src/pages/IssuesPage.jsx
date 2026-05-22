@@ -1,34 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Loader from "../components/common/Loader";
-import { getAllIssues } from "../api/issueApi";
 import CreateIssueModal from "../components/issue/CreateIssueModal";
-import useModal from "../hooks/useModal";
+import useIssue from "../hooks/useIssue";
 
 const IssuesPage = () => {
     const { repoId } = useParams();
-    const { showModal } = useModal();
+    const { issues, loading, fetchIssues } = useIssue();
     
-    const [loading, setLoading] = useState(true);
-    const [issues, setIssues] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [filter, setFilter] = useState("all"); // all, open, closed
 
-    const fetchIssues = async () => {
-        try {
-            setLoading(true);
-            const res = await getAllIssues(repoId);
-            setIssues(res.payload?.issues || []);
-        } catch (err) {
-            showModal("Failed to fetch issues", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         fetchIssues();
-    }, [repoId]);
+    }, [fetchIssues]);
 
     const getStatusColor = (status) => {
         return status === 'open' 

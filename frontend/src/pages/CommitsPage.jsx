@@ -1,107 +1,16 @@
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-
 import Loader from "../components/common/Loader";
-
-import {
-    getRepoCommits,
-    rollbackCommit
-} from "../api/commitApi";
-
 import DiffViewer from "../components/commit/DiffViewer";
-import useModal from "../hooks/useModal";
+import useCommit from "../hooks/useCommit";
 
 const CommitsPage = () => {
-
     const { repoId } = useParams();
-
-    const [commits, setCommits] =
-        useState([]);
-    const { showModal } = useModal();
-
-    const [loading, setLoading] =
-        useState(true);
-
-    const [rollingBack, setRollingBack] =
-        useState(null);
-
-    const fetchCommits = async () => {
-
-        try {
-
-            setLoading(true);
-
-            const data =
-                await getRepoCommits(
-                    repoId
-                );
-
-            setCommits(
-                data.payload || []
-            );
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-        finally {
-
-            setLoading(false);
-        }
-    };
+    const { commits, loading, rollingBack, fetchCommits, handleRollback } = useCommit();
 
     useEffect(() => {
-
         fetchCommits();
-
-    }, [repoId]);
-
-    // ROLLBACK
-    const handleRollback = async (
-        commitId
-    ) => {
-
-        const confirmRollback =
-            window.confirm(
-                "Rollback repository to this commit?"
-            );
-
-        if (!confirmRollback) return;
-
-        try {
-
-            setRollingBack(commitId);
-
-            const res = await rollbackCommit({
-                repository: repoId,
-                commitId
-            });
-
-            showModal(
-                res.message,
-                "success"
-            );
-
-            fetchCommits();
-
-        }
-        catch (err) {
-
-            console.log(err);
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to rollback commit",
-                "error"
-            );
-        }
-        finally {
-
-            setRollingBack(null);
-        }
-    };
+    }, [fetchCommits]);
 
     return (
         <div>

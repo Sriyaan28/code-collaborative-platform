@@ -1,66 +1,32 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import Loader from "../components/common/Loader";
-import { getPullRequestById, updatePRStatus, deletePullRequest } from "../api/prApi";
-import useModal from "../hooks/useModal";
 import { useAuth } from "../hooks/useAuth";
+import usePullRequest from "../hooks/usePullRequest";
 
 const PullRequestDetailPage = () => {
     const { repoId, prId } = useParams();
-    const { showModal } = useModal();
     const { user } = useAuth();
-    const navigate = useNavigate();
     
-    const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [pr, setPr] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
-
-    const fetchPR = async () => {
-        try {
-            setLoading(true);
-            setErrorMsg(null);
-            const res = await getPullRequestById(prId);
-            setPr(res.payload);
-        } catch (err) {
-            const msg = err.response?.data?.message || "Failed to fetch pull request details";
-            setErrorMsg(msg);
-            showModal(msg, "error");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { 
+        pr, loading, actionLoading, errorMsg, 
+        fetchPR, handleUpdateStatus, handleDelete 
+    } = usePullRequest();
 
     useEffect(() => {
-        fetchPR();
-    }, [prId]);
-
-    const handleUpdateStatus = async (status) => {
-        try {
-            setActionLoading(true);
-            const res = await updatePRStatus(prId, status);
-            showModal(res.message, "success");
-            fetchPR();
-        } catch (err) {
-            showModal(err.response?.data?.message || `Failed to ${status} pull request`, "error");
-        } finally {
-            setActionLoading(false);
+        if (prId) {
+            fetchPR(prId);
         }
+    }, [prId, fetchPR]);
+
+    const onUpdateStatus = (status) => {
+        handleUpdateStatus(prId, status);
     };
 
-    const handleDelete = async () => {
+    const onDelete = () => {
         const confirm = window.confirm("Are you sure you want to permanently delete this pull request?");
-        if (!confirm) return;
-
-        try {
-            setActionLoading(true);
-            const res = await deletePullRequest(prId);
-            showModal(res.message, "success");
-            navigate(`/repository/${repoId}/pull-requests`);
-        } catch (err) {
-            showModal(err.response?.data?.message || "Failed to delete pull request", "error");
-        } finally {
-            setActionLoading(false);
+        if (confirm) {
+            handleDelete(prId);
         }
     };
 
@@ -121,14 +87,14 @@ const PullRequestDetailPage = () => {
                         {pr.status === 'opened' && (
                             <>
                                 <button
-                                    onClick={() => handleUpdateStatus('merged')}
+                                    onClick={() => onUpdateStatus('merged')}
                                     disabled={actionLoading}
                                     className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl font-medium transition disabled:opacity-50 flex items-center gap-2"
                                 >
                                     ✓ Merge PR
                                 </button>
                                 <button
-                                    onClick={() => handleUpdateStatus('closed')}
+                                    onClick={() => onUpdateStatus('closed')}
                                     disabled={actionLoading}
                                     className="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl font-medium border border-gray-700 transition disabled:opacity-50"
                                 >
@@ -138,7 +104,7 @@ const PullRequestDetailPage = () => {
                         )}
                         {isAuthor && (
                             <button
-                                onClick={handleDelete}
+                                onClick={onDelete}
                                 disabled={actionLoading}
                                 className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-5 py-2.5 rounded-xl font-medium transition disabled:opacity-50"
                             >

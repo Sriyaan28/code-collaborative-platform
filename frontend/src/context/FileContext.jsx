@@ -1,0 +1,256 @@
+import { createContext, useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useParams } from "react-router-dom";
+import useModal from "../hooks/useModal";
+import { getBranches } from "../api/branchApi";
+import { getBranchFiles, updateFile, deleteFile, getFileById, generateCode } from "../api/fileApi";
+
+export const FileContext = createContext();
+
+export const FileProvider = ({ children }) => {
+    const { repoId } = useParams();
+    const { showModal } = useModal();
+
+    const [branches, setBranches] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState("");
+    const [files, setFiles] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [content, setContent] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [editorLoading, setEditorLoading] = useState(false);
+
+    // AI state
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [isReviewing, setIsReviewing] = useState(false);
+    const [originalContent, setOriginalContent] = useState("");
+    
+    const typeWriterRef = useRef(null);
+    const fullAiCodeRef = useRef("");
+
+    // FETCH BRANCHES
+    const fetchBranches = useCallback(async () => {
+        try {
+            const data = await getBranches(repoId);
+            const branchData = data.payload || [];
+            setBranches(branchData);
+            if (branchData.length > 0) {
+                setSelectedBranch(branchData[0]._id);
+            } else {
+                setLoading(false);
+            }
+        } catch (err) {
+            console.log(err);
+            setLoading(false);
+        }
+    }, [repoId]);
+
+    const initialFetchDone = useRef(false);
+    const currentBranchRef = useRef(selectedBranch);
+    const fileCache = useRef({});
+
+    const isGeneratingRef = useRef(isGenerating);
+    const isReviewingRef = useRef(isReviewing);
+    
+    useEffect(() => {
+        isGeneratingRef.current = isGenerating;
+        isReviewingRef.current = isReviewing;
+    }, [isGenerating, isReviewing]);
+
+    // FETCH FILES
+    const fetchFiles = useCallback(async (preserveEditorState = false) => {
+        if (!selectedBranch) return;
+
+        if (currentBranchRef.current !== selectedBranch) {
+            if (!preserveEditorState) {
+                setFiles([]);
+                setSelectedFile(null);
+                setContent("");
+            }
+            initialFetchDone.current = false;
+            currentBranchRef.current = selectedBranch;
+        }
+
+        try {
+            if (!initialFetchDone.current) setEditorLoading(true);
+            const data = await getBranchFiles(repoId, selectedBranch);
+            const fetchedFiles = (data.payload || []).filter(file => !file.isDeleted);
+            setFiles(fetchedFiles);
+            initialFetchDone.current = true;
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
+            setEditorLoading(false);
+        }
+    }, [repoId, selectedBranch]);
+
+    useEffect(() => {
+        if (repoId) {
+            fetchBranches();
+        }
+    }, [repoId, fetchBranches]);
+
+    useEffect(() => {
+        if (selectedBranch) {
+            fetchFiles();
+        }
+    }, [selectedBranch, fetchFiles]);
+
+    // FETCH FILE CONTENT
+    useEffect(() => {
+        const fetchContent = async () => {
+            if (!selectedFile) return;
+            const fileId = selectedFile._id;
+
+            if (fileCache.current[fileId] !== undefined) {
+                setContent(fileCache.current[fileId]);
+                // Silently fetch without loader
+            } else {
+                setContent("");
+                setEditorLoading(true);
+            }
+
+            try {
+                const data = await getFileById(fileId);
+                const freshContent = data.payload?.file?.content || "";
+                
+                // Only update if user hasn't switched away and AI is not active
+                if (!isGeneratingRef.current && !isReviewingRef.current) {
+                    fileCache.current[fileId] = freshContent;
+                    
+                    // If the user hasn't typed/changed the state to something else, or if we want to ensure latest
+                    // We only update if we are still on the same file
+                    setContent((prevContent) => {
+                         // Simple SWR: replace content with fresh DB content
+                         return freshContent;
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setEditorLoading(false);
+            }
+        };
+        fetchContent();
+    }, [selectedFile]);
+
+    // SAVE FILE
+    const handleSaveFile = useCallback(async () => {
+        if (!selectedFile) return;
+        try {
+            setSaving(true);
+            const res = await updateFile({
+                fileId: selectedFile._id,
+                repoId,
+                content
+            });
+            showModal(res.message, "success");
+            fetchFiles(true);
+        } catch (err) {
+            console.log(err);
+            showModal("Failed to save file", "error");
+        } finally {
+            setSaving(false);
+        }
+    }, [selectedFile, repoId, content, fetchFiles, showModal]);
+
+    // DELETE FILE
+    const handleDeleteFile = useCallback(async () => {
+        if (!selectedFile) return;
+        const confirmDelete = window.confirm("Delete this file?");
+        if (!confirmDelete) return;
+
+        try {
+            const res = await deleteFile(selectedFile._id, repoId);
+            showModal(res.message, "success");
+            setSelectedFile(null);
+            setContent("");
+            fetchFiles();
+        } catch (err) {
+            console.log(err);
+            showModal("Failed to delete file", "error");
+        }
+    }, [selectedFile, repoId, fetchFiles, showModal]);
+
+    // AI CODE GENERATION
+    const handleGenerateCode = useCallback(async (prompt, setIsFullscreen) => {
+        if (!selectedFile) return;
+        try {
+            setOriginalContent(content);
+            if (setIsFullscreen) setIsFullscreen(true);
+            setIsGenerating(true);
+            setIsReviewing(true);
+
+            const data = await generateCode(prompt, content);
+            const aiCode = data.payload?.generatedCode || "";
+
+            if (!aiCode) throw new Error("No code generated");
+
+            fullAiCodeRef.current = aiCode;
+            setContent("");
+
+            let i = 0;
+            typeWriterRef.current = setInterval(() => {
+                if (i < aiCode.length) {
+                    setContent((prev) => prev + aiCode.charAt(i));
+                    i++;
+                } else {
+                    if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+                }
+            }, 10);
+        } catch (err) {
+            console.log("AI Generation error", err);
+            showModal("Failed to generate code", "error");
+            setIsGenerating(false);
+            setIsReviewing(false);
+        }
+    }, [selectedFile, content, showModal]);
+
+    const handleAcceptCode = useCallback(() => {
+        if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+        if (fullAiCodeRef.current) setContent(fullAiCodeRef.current);
+        setIsReviewing(false);
+        setIsGenerating(false);
+    }, []);
+
+    const handleRejectCode = useCallback(() => {
+        if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+        setContent(originalContent);
+        setIsReviewing(false);
+        setIsGenerating(false);
+    }, [originalContent]);
+
+    const value = useMemo(() => ({
+        branches,
+        selectedBranch,
+        setSelectedBranch,
+        files,
+        selectedFile,
+        setSelectedFile,
+        content,
+        setContent,
+        loading,
+        saving,
+        editorLoading,
+        isGenerating,
+        isReviewing,
+        originalContent,
+        fetchBranches,
+        fetchFiles,
+        handleSaveFile,
+        handleDeleteFile,
+        handleGenerateCode,
+        handleAcceptCode,
+        handleRejectCode
+    }), [
+        branches, selectedBranch, files, selectedFile, content, loading, saving, editorLoading,
+        isGenerating, isReviewing, originalContent, fetchBranches, fetchFiles, handleSaveFile,
+        handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
+    ]);
+
+    return (
+        <FileContext.Provider value={value}>
+            {children}
+        </FileContext.Provider>
+    );
+};

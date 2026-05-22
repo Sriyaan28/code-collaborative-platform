@@ -1,178 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "../hooks/useAuth";
-
 import LogoutButton from "../components/common/LogoutButton";
-
 import NotificationModal from "../components/notification/NotificationModal";
-
-import {
-    getNotifications,
-    markNotificationRead,
-    markAllNotificationsRead,
-    deleteNotification,
-    deleteAllNotifications
-} from "../api/notificationApi";
+import useNotification from "../hooks/useNotification";
 
 const TopNavbar = () => {
-
     const navigate = useNavigate();
-
     const { user } = useAuth();
-
     const modalRef = useRef(null);
-
     const [showNotifications, setShowNotifications] = useState(false);
 
-    const [loadingNotifications, setLoadingNotifications] = useState(false);
-
-    const [notifications, setNotifications] = useState([]);
-
-    const [seenNotifications, setSeenNotifications] = useState([]);
-
-    const [unseenNotifications, setUnseenNotifications] = useState([]);
-
-    // FETCH NOTIFICATIONS
-    const fetchNotifications = async () => {
-
-        try {
-
-            setLoadingNotifications(true);
-
-            const data =
-                await getNotifications();
-
-            setNotifications(
-                data.payload?.allNotifications || []
-            );
-
-            setSeenNotifications(
-                data.payload?.seenNotifications || []
-            );
-
-            setUnseenNotifications(
-                data.payload?.unseenNotifications || []
-            );
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-        finally {
-
-            setLoadingNotifications(false);
-        }
-    };
+    const { 
+        notifications, unseenNotifications, loadingNotifications, fetchNotifications,
+        handleMarkRead, handleMarkAllRead, handleDeleteNotification, handleDeleteAllNotifications 
+    } = useNotification();
 
     useEffect(() => {
-
         fetchNotifications();
-
-    }, []);
+    }, [fetchNotifications]);
 
     // CLOSE MODAL ON OUTSIDE CLICK
     useEffect(() => {
-
         const handleClickOutside = (e) => {
-
-            if (
-                modalRef.current &&
-                !modalRef.current.contains(e.target)
-            ) {
-
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
                 setShowNotifications(false);
             }
         };
 
-        document.addEventListener(
-            "mousedown",
-            handleClickOutside
-        );
-
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-
-            document.removeEventListener(
-                "mousedown",
-                handleClickOutside
-            );
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-
     }, []);
-
-    // MARK SINGLE AS READ
-    const handleMarkRead = async (
-        notificationId
-    ) => {
-
-        try {
-
-            await markNotificationRead(
-                notificationId
-            );
-
-            fetchNotifications();
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    // MARK ALL AS READ
-    const handleMarkAllRead = async () => {
-
-        try {
-
-            await markAllNotificationsRead();
-
-            fetchNotifications();
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    // DELETE SINGLE
-    const handleDeleteNotification = async (
-        notificationId
-    ) => {
-
-        try {
-
-            await deleteNotification(
-                notificationId
-            );
-
-            fetchNotifications();
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    // DELETE ALL
-    const handleDeleteAllNotifications = async () => {
-
-        try {
-
-            await deleteAllNotifications();
-
-            fetchNotifications();
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-    };
 
     return (
 

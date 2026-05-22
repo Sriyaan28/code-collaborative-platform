@@ -27,14 +27,24 @@ import DiscussionDetailPage from "../pages/DiscussionDetailPage";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import ReferenceRedirector from "../components/common/ReferenceRedirector";
 import RepositoryLayout from "../layouts/RepositoryLayout";
+import { RepositoryProvider } from "../context/RepositoryContext";
+import { FileProvider } from "../context/FileContext";
+import { CommitProvider } from "../context/CommitContext";
+import { BranchProvider } from "../context/BranchContext";
+import { CollaboratorProvider } from "../context/CollaboratorContext";
+import { DiscussionProvider } from "../context/DiscussionContext";
+import { IssueProvider } from "../context/IssueContext";
+import { PullRequestProvider } from "../context/PullRequestContext";
+import { NotificationProvider } from "../context/NotificationContext";
 
 const AppRoutes = () => {
 
     return (
 
         <BrowserRouter>
-
-            <Routes>
+            <NotificationProvider>
+                <DiscussionProvider>
+                    <Routes>
 
                 <Route
                     path="/"
@@ -123,22 +133,16 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/discussions"
-                    element={
-                        <ProtectedRoute>
-                            <DiscussionsPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/discussion/:id"
-                    element={
-                        <ProtectedRoute>
-                            <DiscussionDetailPage />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/discussions" element={
+                    <ProtectedRoute>
+                        <DiscussionsPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/discussion/:id" element={
+                    <ProtectedRoute>
+                        <DiscussionDetailPage />
+                    </ProtectedRoute>
+                } />
 
                 {/* Reference Redirectors */}
                 <Route path="/file/:referenceId" element={<ProtectedRoute><ReferenceRedirector type="FILE" /></ProtectedRoute>} />
@@ -150,7 +154,21 @@ const AppRoutes = () => {
 
                 <Route path="/repository/:repoId" element={
                     <ProtectedRoute>
-                        <RepositoryLayout />
+                        <RepositoryProvider>
+                            <BranchProvider>
+                                <FileProvider>
+                                    <CollaboratorProvider>
+                                        <CommitProvider>
+                                            <PullRequestProvider>
+                                                <IssueProvider>
+                                                    <RepositoryLayout />
+                                                </IssueProvider>
+                                            </PullRequestProvider>
+                                        </CommitProvider>
+                                    </CollaboratorProvider>
+                                </FileProvider>
+                            </BranchProvider>
+                        </RepositoryProvider>
                     </ProtectedRoute>
                 }>
                     <Route index element={<RepositoryPage />} />
@@ -165,8 +183,9 @@ const AppRoutes = () => {
                     <Route path="issue/:issueId" element={<IssueDetailPage />} />
                 </Route>
 
-            </Routes>
-
+                    </Routes>
+                </DiscussionProvider>
+            </NotificationProvider>
         </BrowserRouter>
     );
 };

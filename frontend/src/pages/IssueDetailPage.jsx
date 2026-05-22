@@ -1,66 +1,32 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import Loader from "../components/common/Loader";
-import { getIssueById, updateIssueStatus, deleteIssue } from "../api/issueApi";
-import useModal from "../hooks/useModal";
 import { useAuth } from "../hooks/useAuth";
+import useIssue from "../hooks/useIssue";
 
 const IssueDetailPage = () => {
     const { repoId, issueId } = useParams();
-    const { showModal } = useModal();
     const { user } = useAuth();
-    const navigate = useNavigate();
     
-    const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [issue, setIssue] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
-
-    const fetchIssue = async () => {
-        try {
-            setLoading(true);
-            setErrorMsg(null);
-            const res = await getIssueById(issueId);
-            setIssue(res.payload?.issue || res.payload);
-        } catch (err) {
-            const msg = err.response?.data?.message || "Failed to fetch issue details";
-            setErrorMsg(msg);
-            showModal(msg, "error");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { 
+        issue, loading, actionLoading, errorMsg, 
+        fetchIssue, handleUpdateStatus, handleDelete 
+    } = useIssue();
 
     useEffect(() => {
-        fetchIssue();
-    }, [issueId]);
-
-    const handleUpdateStatus = async (status) => {
-        try {
-            setActionLoading(true);
-            const res = await updateIssueStatus(issueId, status);
-            showModal(res.message, "success");
-            fetchIssue();
-        } catch (err) {
-            showModal(err.response?.data?.message || `Failed to ${status} issue`, "error");
-        } finally {
-            setActionLoading(false);
+        if (issueId) {
+            fetchIssue(issueId);
         }
+    }, [issueId, fetchIssue]);
+
+    const onUpdateStatus = (status) => {
+        handleUpdateStatus(issueId, status);
     };
 
-    const handleDelete = async () => {
+    const onDelete = () => {
         const confirm = window.confirm("Are you sure you want to permanently delete this issue?");
-        if (!confirm) return;
-
-        try {
-            setActionLoading(true);
-            const res = await deleteIssue(issueId);
-            showModal(res.message, "success");
-            navigate(`/repository/${repoId}/issues`);
-        } catch (err) {
-            showModal(err.response?.data?.message || "Failed to delete issue", "error");
-        } finally {
-            setActionLoading(false);
+        if (confirm) {
+            handleDelete(issueId);
         }
     };
 
@@ -123,7 +89,7 @@ const IssueDetailPage = () => {
                     <div className="flex items-center gap-3 shrink-0">
                         {canUpdate && issue.status === 'open' && (
                             <button
-                                onClick={() => handleUpdateStatus('closed')}
+                                onClick={() => onUpdateStatus('closed')}
                                 disabled={actionLoading}
                                 className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl font-medium transition disabled:opacity-50"
                             >
@@ -132,7 +98,7 @@ const IssueDetailPage = () => {
                         )}
                         {canUpdate && issue.status === 'closed' && (
                             <button
-                                onClick={() => handleUpdateStatus('open')}
+                                onClick={() => onUpdateStatus('open')}
                                 disabled={actionLoading}
                                 className="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl font-medium border border-gray-700 transition disabled:opacity-50"
                             >
@@ -141,7 +107,7 @@ const IssueDetailPage = () => {
                         )}
                         {canDelete && (
                             <button
-                                onClick={handleDelete}
+                                onClick={onDelete}
                                 disabled={actionLoading}
                                 className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-5 py-2.5 rounded-xl font-medium transition disabled:opacity-50"
                             >

@@ -1,106 +1,20 @@
 import { useEffect, useState } from "react";
-
-import { useParams, Link } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import Loader from "../components/common/Loader";
-
 import CollaboratorCard from "../components/collaborator/CollaboratorCard";
-
 import AddCollaboratorModal from "../components/collaborator/AddCollaboratorModal";
-
-import {
-    getCollaborators,
-    removeCollaborator
-} from "../api/collaboratorApi";
-
-import useModal from "../hooks/useModal";
+import useCollaborator from "../hooks/useCollaborator";
 
 const CollaboratorsPage = () => {
-
     const { repoId } = useParams();
-    const { showModal } = useModal();
-
-    const [collaborators, setCollaborators] = useState([]);
-
-    const [blockedUsers, setBlockedUsers] = useState([]);
-
-    const [loading, setLoading] = useState(true);
+    const { collaborators, blockedUsers, loading, fetchCollaborators, handleRemove } = useCollaborator();
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
     const [activeTab, setActiveTab] = useState("collaborators");
 
-    // FETCH COLLABORATORS
-    const fetchCollaborators = async () => {
-
-        try {
-
-            setLoading(true);
-
-            const data =
-                await getCollaborators(
-                    repoId
-                );
-
-            console.log(data);
-
-            setCollaborators(
-                data.payload?.collaborators || []
-            );
-
-            setBlockedUsers(
-                data.payload?.blockedUsers || []
-            );
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
-        finally {
-
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-
         fetchCollaborators();
-
-    }, [repoId]);
-
-    // REMOVE COLLABORATOR
-    const handleRemove = async (
-        collabId
-    ) => {
-
-        const confirmRemove =
-            window.confirm(
-                "Remove collaborator?"
-            );
-
-        if (!confirmRemove) return;
-
-        try {
-
-            const res = await removeCollaborator(
-                collabId
-            );
-
-            showModal(res.message, "success");
-
-            fetchCollaborators();
-
-        }
-        catch (err) {
-
-            showModal(
-                err.response?.data?.message ||
-                "Failed to remove collaborator",
-                "error"
-            );
-        }
-    };
+    }, [fetchCollaborators]);
 
     return (
         <div>

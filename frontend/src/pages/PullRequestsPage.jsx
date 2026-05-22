@@ -1,45 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Loader from "../components/common/Loader";
-import { getAllPullRequests } from "../api/prApi";
-import { getBranches } from "../api/branchApi";
 import CreatePRModal from "../components/pr/CreatePRModal";
-import useModal from "../hooks/useModal";
+import usePullRequest from "../hooks/usePullRequest";
 
 const PullRequestsPage = () => {
     const { repoId } = useParams();
-    const { showModal } = useModal();
+    const { pullRequests, branches, loading, fetchPullRequests } = usePullRequest();
     
-    const [loading, setLoading] = useState(true);
-    const [pullRequests, setPullRequests] = useState([]);
-    const [branches, setBranches] = useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const [prRes, branchRes] = await Promise.all([
-                getAllPullRequests(repoId),
-                getBranches(repoId)
-            ]);
-            
-            const payload = prRes.payload || {};
-            setPullRequests([
-                ...(payload.openPullRequests || []),
-                ...(payload.mergedPullRequests || []),
-                ...(payload.closedPullRequests || [])
-            ]);
-            setBranches(branchRes.payload || []);
-        } catch (err) {
-            showModal("Failed to fetch pull requests", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchData();
-    }, [repoId]);
+        fetchPullRequests();
+    }, [fetchPullRequests]);
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -124,7 +97,7 @@ const PullRequestsPage = () => {
             <CreatePRModal 
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
-                onPRCreated={fetchData}
+                onPRCreated={fetchPullRequests}
                 repository={repoId}
                 branches={branches}
             />

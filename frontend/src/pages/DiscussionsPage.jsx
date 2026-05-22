@@ -2,39 +2,26 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
-import { getAllDiscussions } from "../api/discussionApi";
 import CreateDiscussionModal from "../components/discussion/CreateDiscussionModal";
 import useModal from "../hooks/useModal";
+import useDiscussion from "../hooks/useDiscussion";
 
 const DiscussionsPage = () => {
     const { showModal } = useModal();
-    const [loading, setLoading] = useState(true);
-    const [discussions, setDiscussions] = useState([]);
+    const { discussions, loading, fetchDiscussions } = useDiscussion();
     const [search, setSearch] = useState("");
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const fetchDiscussions = async () => {
-        try {
-            setLoading(true);
-            const res = await getAllDiscussions(search);
-            setDiscussions(res.payload || []);
-        } catch (err) {
-            showModal("Failed to fetch discussions", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         const debounce = setTimeout(() => {
-            fetchDiscussions();
+            fetchDiscussions(search);
         }, 500);
         return () => clearTimeout(debounce);
-    }, [search]);
+    }, [search, fetchDiscussions]);
 
     const handleSuccess = () => {
         setIsCreateModalOpen(false);
-        fetchDiscussions();
+        fetchDiscussions(search);
         showModal("Tech blog published successfully!", "success");
     };
 

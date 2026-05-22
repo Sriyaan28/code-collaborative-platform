@@ -1,31 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Loader from "../components/common/Loader";
-import { getCommitById } from "../api/commitApi";
 import DiffViewer from "../components/commit/DiffViewer";
+import useCommit from "../hooks/useCommit";
 
 const CommitPage = () => {
     const { repoId, commitId } = useParams();
-    const [commitData, setCommitData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const { commitData, loading, fetchCommit } = useCommit();
 
     useEffect(() => {
-        const fetchCommit = async () => {
-            try {
-                setLoading(true);
-                const data = await getCommitById(commitId);
-                setCommitData(data.payload);
-            } catch (err) {
-                console.log(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         if (commitId) {
-            fetchCommit();
+            fetchCommit(commitId);
         }
-    }, [commitId]);
+    }, [commitId, fetchCommit]);
 
     if (loading) {
         return <Loader text="Loading commit details..." />;

@@ -1,21 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Loader from "../components/common/Loader";
-import { getDiscussionById, toggleLikeDiscussion, addComment, deleteDiscussion, deleteComment } from "../api/discussionApi";
 import { searchUsers } from "../api/userApi";
-import useModal from "../hooks/useModal";
 import { useAuth } from "../hooks/useAuth";
+import useDiscussion from "../hooks/useDiscussion";
 
 const DiscussionDetailPage = () => {
     const { id } = useParams();
-    const { showModal } = useModal();
     const { user } = useAuth();
-    const navigate = useNavigate();
-
-    const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [discussion, setDiscussion] = useState(null);
+    
+    const { 
+        discussion, loading, actionLoading, 
+        fetchDiscussion, handleLike, handleAddComment, 
+        handleDelete, handleDeleteComment 
+    } = useDiscussion();
 
     // Comment State
     const [commentInput, setCommentInput] = useState("");
@@ -25,21 +24,11 @@ const DiscussionDetailPage = () => {
     const [focusedMentionIndex, setFocusedMentionIndex] = useState(0);
     const textareaRef = useRef(null);
 
-    const fetchDiscussion = async () => {
-        try {
-            setLoading(true);
-            const res = await getDiscussionById(id);
-            setDiscussion(res.payload);
-        } catch (err) {
-            showModal("Failed to fetch discussion details", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchDiscussion();
-    }, [id]);
+        if (id) {
+            fetchDiscussion(id);
+        }
+    }, [id, fetchDiscussion]);
 
     // Handle Mention Search
     useEffect(() => {
@@ -130,55 +119,26 @@ const DiscussionDetailPage = () => {
         }
     };
 
-    const handleLike = async () => {
-        try {
-            const res = await toggleLikeDiscussion(id);
-            setDiscussion(prev => ({ ...prev, likes: res.payload }));
-        } catch (err) {
-            showModal("Failed to like discussion", "error");
-        }
-    };
+    const onLike = () => handleLike(id);
 
-    const handleAddComment = async (e) => {
+    const onAddComment = async (e) => {
         e.preventDefault();
         if (!commentInput.trim()) return;
-
-        try {
-            setActionLoading(true);
-            const res = await addComment(id, commentInput);
-            setDiscussion(prev => ({ ...prev, comments: res.payload }));
+        const success = await handleAddComment(id, commentInput);
+        if (success) {
             setCommentInput("");
-        } catch (err) {
-            showModal(err.response?.data?.message || "Failed to add comment", "error");
-        } finally {
-            setActionLoading(false);
         }
     };
 
-    const handleDelete = async () => {
-        if (!window.confirm("Are you sure you want to delete this tech blog?")) return;
-        try {
-            setActionLoading(true);
-            await deleteDiscussion(id);
-            showModal("Discussion deleted successfully", "success");
-            navigate("/discussions");
-        } catch (err) {
-            showModal(err.response?.data?.message || "Failed to delete discussion", "error");
-            setActionLoading(false);
+    const onDeleteDiscussion = () => {
+        if (window.confirm("Are you sure you want to delete this tech blog?")) {
+            handleDelete(id);
         }
     };
 
-    const handleDeleteComment = async (commentId) => {
-        if (!window.confirm("Are you sure you want to delete this comment?")) return;
-        try {
-            setActionLoading(true);
-            const res = await deleteComment(id, commentId);
-            setDiscussion(prev => ({ ...prev, comments: res.payload }));
-            showModal("Comment deleted successfully", "success");
-        } catch (err) {
-            showModal(err.response?.data?.message || "Failed to delete comment", "error");
-        } finally {
-            setActionLoading(false);
+    const onDeleteComment = (commentId) => {
+        if (window.confirm("Are you sure you want to delete this comment?")) {
+            handleDeleteComment(id, commentId);
         }
     };
 
@@ -280,7 +240,7 @@ const DiscussionDetailPage = () => {
                         </h1>
                         {isAuthor && (
                             <button
-                                onClick={handleDelete}
+                                onClick={onDeleteDiscussion}
                                 disabled={actionLoading}
                                 className="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-4 py-2 rounded-xl text-sm font-medium transition disabled:opacity-50 shrink-0"
                             >
@@ -308,7 +268,7 @@ const DiscussionDetailPage = () => {
 
                         {/* Like Button */}
                         <button
-                            onClick={handleLike}
+                            onClick={onLike}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full border transition ${hasLiked
                                 ? 'bg-red-500/10 border-red-500/30 text-red-400'
                                 : 'bg-[#161b22] border-gray-700 text-gray-400 hover:bg-gray-800'
@@ -372,7 +332,7 @@ const DiscussionDetailPage = () => {
                     <h3 className="text-xl font-bold mb-6">Comments ({discussion.comments?.length || 0})</h3>
 
                     {/* Add Comment */}
-                    <form onSubmit={handleAddComment} className="mb-8 relative">
+                    <form onSubmit={onAddComment} className="mb-8 relative">
                         <div className="flex gap-3">
                             <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
                                 {user?.name?.charAt(0)}
@@ -461,7 +421,7 @@ const DiscussionDetailPage = () => {
                                         </span>
                                         {(isAuthor || currentUserId === comment.user?._id) && (
                                             <button
-                                                onClick={() => handleDeleteComment(comment._id)}
+                                                onClick={() => onDeleteComment(comment._id)}
                                                 disabled={actionLoading}
                                                 className="text-gray-600 hover:bg-gray-700 rounded-lg px-1 py-1 opacity-0 group-hover:opacity-100 transition disabled:opacity-0 ml-1 text-xs"
                                                 title="Delete Comment"

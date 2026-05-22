@@ -1,74 +1,21 @@
-import { useEffect, useState } from "react";
-
-import {
-    useNavigate,
-    useParams
-} from "react-router-dom";
-
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import Loader from "../components/common/Loader";
-
-import {
-    getNotificationById,
-    markNotificationRead
-} from "../api/notificationApi";
-
 import useModal from "../hooks/useModal";
+import useNotification from "../hooks/useNotification";
 
 const NotificationPage = () => {
-
     const { notificationId } = useParams();
-
     const navigate = useNavigate();
     const { showModal } = useModal();
-
-    const [notification, setNotification] = useState(null);
-
-    const [loading, setLoading] = useState(true);
+    const { notification, loadingNotification, fetchNotification } = useNotification();
 
     useEffect(() => {
-
-        const fetchNotification = async () => {
-
-            try {
-
-                const data =
-                    await getNotificationById(
-                        notificationId
-                    );
-
-                const notificationData =
-                    data.payload;
-
-                setNotification(
-                    notificationData
-                );
-
-                // AUTO MARK READ
-                if (
-                    !notificationData.isRead
-                ) {
-
-                    await markNotificationRead(
-                        notificationId
-                    );
-                }
-
-            }
-            catch (err) {
-
-                console.log(err);
-            }
-            finally {
-
-                setLoading(false);
-            }
-        };
-
-        fetchNotification();
-
-    }, [notificationId]);
+        if (notificationId) {
+            fetchNotification(notificationId);
+        }
+    }, [notificationId, fetchNotification]);
 
     const handleReferenceRedirect = () => {
 
@@ -163,7 +110,7 @@ const NotificationPage = () => {
         }
     };
 
-    if (loading) {
+    if (loadingNotification) {
 
         return (
 

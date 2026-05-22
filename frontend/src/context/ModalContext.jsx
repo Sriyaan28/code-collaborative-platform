@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback, useMemo } from "react";
 
 export const ModalContext = createContext();
 
@@ -19,20 +19,22 @@ export const ModalProvider = ({ children }) => {
         return () => clearTimeout(timer);
     }, [modal.isOpen]);
 
-    const showModal = (message, type = "success") => {
+    const showModal = useCallback((message, type = "success") => {
         // Simple heuristic for generic alert messages to determine type
         if (message && message.toLowerCase().includes("failed") && type === "success") {
             type = "error";
         }
         setModal({ isOpen: true, message, type });
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setModal((prev) => ({ ...prev, isOpen: false }));
-    };
+    }, []);
+
+    const value = useMemo(() => ({ showModal, closeModal }), [showModal, closeModal]);
 
     return (
-        <ModalContext.Provider value={{ showModal }}>
+        <ModalContext.Provider value={value}>
             {children}
             
             {modal.isOpen && (
