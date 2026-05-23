@@ -37,7 +37,7 @@ export const loginController = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: false,
-            sameSite: "lax"
+            sameSite: "None"
         })
 
         // remove password from user object
