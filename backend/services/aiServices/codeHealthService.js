@@ -7,7 +7,7 @@ const GROQ_API_KEY =
     process.env.GROQ_API_KEY?.trim();
 
 const GROQ_MODEL =
-    "llama-3.3-70b-versatile";
+    "openai/gpt-oss-20b";
 
 export const analyzeCodeHealth = async (
     code
@@ -49,6 +49,9 @@ Response format:
 }
 
 Rules:
+- CRITICAL: If the code contains syntax, compilation, or obvious runtime errors, instantly drop all scores below 30.
+- Be extremely generous with scoring. If the code is functionally correct and has no serious errors, give it a score of 95-100.
+- Do NOT point out minor styling, formatting, or nitpicky errors. Only report issues if they are compilation, runtime, or serious security/logic flaws.
 - codeHealth must be out of 100
 - performanceScore must be out of 100
 - readabilityScore must be out of 100

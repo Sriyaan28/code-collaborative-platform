@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { diffLines } from "diff";
 
 import axiosInstance from "../../api/axios";
+import { getFileById } from "../../api/fileApi";
 import useModal from "../../hooks/useModal";
 
 const CodeHealthModal = ({
     isOpen,
     onClose,
-    code,
+    fileId,
     onApplyEdits,
     onCreateIssue
 }) => {
@@ -24,7 +25,7 @@ const CodeHealthModal = ({
 
         if (
             isOpen &&
-            code
+            fileId
         ) {
 
             analyzeCode();
@@ -40,11 +41,15 @@ const CodeHealthModal = ({
 
             setResult(null);
 
+            // Fetch fresh code from DB
+            const fileData = await getFileById(fileId);
+            const freshCode = fileData.payload?.file?.content || "";
+
             const response =
                 await axiosInstance.post(
                     "/files/code-health",
                     {
-                        code
+                        code: freshCode
                     }
                 );
 
@@ -56,7 +61,7 @@ const CodeHealthModal = ({
             // DIFF
             const diff =
                 diffLines(
-                    code,
+                    freshCode,
                     aiResult.improvedCode || ""
                 );
 

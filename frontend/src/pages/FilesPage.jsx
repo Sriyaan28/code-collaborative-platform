@@ -232,7 +232,7 @@ const FilesPage = () => {
                 onClose={() =>
                     setIsCodeHealthOpen(false)
                 }
-                code={content}
+                fileId={selectedFile?._id}
                 onApplyEdits={(newCode) => {
                     setContent(newCode);
                     setIsCodeHealthOpen(false);
