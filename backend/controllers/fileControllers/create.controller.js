@@ -1,4 +1,5 @@
 import { createFile } from "../../services/fileServices/create.service.js";
+import { FileModel } from "../../models/FileModel.js";
 import { createNotification } from "../../services/notificationServices/create.service.js";
 
 export const createFileController = async (req, res) => {
@@ -32,6 +33,24 @@ export const createFileController = async (req, res) => {
             repoId,
             branchId
         } = req.body;
+
+        // file name should be in the pattern filename.extension
+        const pattern = /^[^\/\\:*?"<>|]+\.[^\/\\:*?"<>|]+$/;
+        if (!pattern.test(name)) {
+            return res.status(400).json({
+                success: false,
+                message: "File name must be in the format filename.extension"
+            });
+        }
+
+        // check if file already exists in the same repository and same branch
+        const existingFile = await FileModel.findOne({ name, repository: repoId, branch: branchId, isDeleted: false });
+        if (existingFile) {
+            return res.status(400).json({
+                success: false,
+                message: "File already exists in the same branch of this repository"
+            });
+        }
 
         const newFile = await createFile({
             name,

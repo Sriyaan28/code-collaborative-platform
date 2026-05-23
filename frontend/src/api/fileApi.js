@@ -22,7 +22,8 @@ export const getBranchFiles = async (
 ) => {
 
     const res = await axiosInstance.get(
-        `/files/repo/${repoId}/branch/${branchId}`
+        `/files/repo/${repoId}/branch/${branchId}`,
+        { params: { t: Date.now() } }
     );
 
     return res.data;
@@ -35,7 +36,8 @@ export const getMainBranchFiles = async (
 ) => {
 
     const res = await axiosInstance.get(
-        `/files/repo/${repoId}/branch/main`
+        `/files/repo/${repoId}/branch/main`,
+        { params: { t: Date.now() } }
     );
 
     return res.data;
@@ -48,7 +50,8 @@ export const getFileById = async (
 ) => {
 
     const res = await axiosInstance.get(
-        `/files/file/${fileId}`
+        `/files/file/${fileId}`,
+        { params: { t: Date.now() } }
     );
 
     return res.data;

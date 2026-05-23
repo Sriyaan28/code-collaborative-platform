@@ -15,10 +15,10 @@ import useFile from "../hooks/useFile";
 const FilesPage = () => {
     const { repoId } = useParams();
     const { repository } = useOutletContext();
-    
+
     const {
         branches, selectedBranch, setSelectedBranch, files, selectedFile, setSelectedFile,
-        content, setContent, loading, saving, editorLoading, isGenerating, isReviewing,
+        content, setContent, loading, saving, editorLoading, isGenerating, isReviewing, isSyncingContent,
         fetchFiles, handleSaveFile, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
     } = useFile();
 
@@ -46,6 +46,29 @@ const FilesPage = () => {
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [selectedFile, content, handleSaveFile]);
+
+    // INTERACTION-BASED FILES POLLING
+    useEffect(() => {
+        // Fetch files initially when Files tab is opened
+        fetchFiles(true);
+
+        let timeout;
+        const handleInteraction = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                fetchFiles(true);
+            }, 2000);
+        };
+
+        window.addEventListener('click', handleInteraction);
+        window.addEventListener('keydown', handleInteraction);
+
+        return () => {
+            clearTimeout(timeout);
+            window.removeEventListener('click', handleInteraction);
+            window.removeEventListener('keydown', handleInteraction);
+        };
+    }, [fetchFiles]);
 
     const onGenerateCodeSubmit = (prompt) => {
         handleGenerateCode(prompt, setIsFullscreen);
@@ -125,6 +148,7 @@ const FilesPage = () => {
                                         onOpenCodeHealth={() =>
                                             setIsCodeHealthOpen(true)
                                         }
+                                        currentUserRole={repository?.currentUserRole}
                                     />
 
                                     {/* EDITOR */}
@@ -153,6 +177,7 @@ const FilesPage = () => {
                                                         setContent={setContent}
                                                         isGenerating={isGenerating}
                                                         isReviewing={isReviewing}
+                                                        isSyncingContent={isSyncingContent}
                                                         onAccept={handleAcceptCode}
                                                         onReject={handleRejectCode}
                                                     />
@@ -168,7 +193,7 @@ const FilesPage = () => {
                             )
                     }
 
-                    {selectedFile && !isReviewing && (
+                    {selectedFile && !isReviewing && repository?.currentUserRole !== 'viewer' && (
                         <AICodeGenerator
                             onGenerate={onGenerateCodeSubmit}
                             isGenerating={isGenerating}

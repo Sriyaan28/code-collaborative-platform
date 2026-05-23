@@ -6,6 +6,7 @@ const CodeEditor = ({
     onSave,
     isGenerating,
     isReviewing,
+    isSyncingContent,
     onAccept,
     onReject
 }) => {
@@ -141,10 +142,10 @@ const CodeEditor = ({
                     onScroll={handleScroll}
                     onKeyDown={handleKeyDown}
                     spellCheck={false}
-                    readOnly={isReviewing}
+                    readOnly={isReviewing || isSyncingContent}
                     placeholder="Start writing code..."
                     className={`flex-1 py-6 px-6 outline-none resize-none overflow-auto font-mono text-[15px] leading-8 custom-scrollbar transition-colors ${
-                        isReviewing ? 'text-gray-500 selection:bg-transparent' : 'text-white'
+                        (isReviewing || isSyncingContent) ? 'text-gray-500 selection:bg-transparent' : 'text-white'
                     } ${isGenerating ? 'bg-transparent' : 'bg-[#0d1117]'}`}
                     style={{
                         minHeight: "100%",

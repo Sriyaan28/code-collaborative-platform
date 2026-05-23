@@ -18,6 +18,12 @@ const TopNavbar = () => {
 
     useEffect(() => {
         fetchNotifications();
+
+        const interval = setInterval(() => {
+            fetchNotifications(true); // Fetch silently
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, [fetchNotifications]);
 
     // CLOSE MODAL ON OUTSIDE CLICK

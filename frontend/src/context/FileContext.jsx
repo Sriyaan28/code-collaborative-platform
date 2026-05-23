@@ -18,6 +18,7 @@ export const FileProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [editorLoading, setEditorLoading] = useState(false);
+    const [isSyncingContent, setIsSyncingContent] = useState(false);
 
     // AI state
     const [isGenerating, setIsGenerating] = useState(false);
@@ -105,6 +106,7 @@ export const FileProvider = ({ children }) => {
             if (fileCache.current[fileId] !== undefined) {
                 setContent(fileCache.current[fileId]);
                 // Silently fetch without loader
+                setIsSyncingContent(true);
             } else {
                 setContent("");
                 setEditorLoading(true);
@@ -129,6 +131,7 @@ export const FileProvider = ({ children }) => {
                 console.log(err);
             } finally {
                 setEditorLoading(false);
+                setIsSyncingContent(false);
             }
         };
         fetchContent();
@@ -234,6 +237,7 @@ export const FileProvider = ({ children }) => {
         editorLoading,
         isGenerating,
         isReviewing,
+        isSyncingContent,
         originalContent,
         fetchBranches,
         fetchFiles,
@@ -244,7 +248,7 @@ export const FileProvider = ({ children }) => {
         handleRejectCode
     }), [
         branches, selectedBranch, files, selectedFile, content, loading, saving, editorLoading,
-        isGenerating, isReviewing, originalContent, fetchBranches, fetchFiles, handleSaveFile,
+        isGenerating, isReviewing, isSyncingContent, originalContent, fetchBranches, fetchFiles, handleSaveFile,
         handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
     ]);
 

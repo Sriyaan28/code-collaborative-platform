@@ -15,7 +15,8 @@ const FileToolbar = ({
     saving,
     isFullscreen,
     setIsFullscreen,
-    onOpenCodeHealth
+    onOpenCodeHealth,
+    currentUserRole
 }) => {
 
     return (
@@ -99,27 +100,31 @@ const FileToolbar = ({
                     title="Code Health"
                 />
 
-                {/* UNDO */}
-                <ToolbarButton
-                    icon={<FiRotateCcw size={15} />}
-                    onClick={() =>
-                        document.execCommand(
-                            "undo"
-                        )
-                    }
-                    title="Undo"
-                />
+                {currentUserRole !== 'viewer' && (
+                    <>
+                        {/* UNDO */}
+                        <ToolbarButton
+                            icon={<FiRotateCcw size={15} />}
+                            onClick={() =>
+                                document.execCommand(
+                                    "undo"
+                                )
+                            }
+                            title="Undo"
+                        />
 
-                {/* REDO */}
-                <ToolbarButton
-                    icon={<FiRotateCw size={15} />}
-                    onClick={() =>
-                        document.execCommand(
-                            "redo"
-                        )
-                    }
-                    title="Redo"
-                />
+                        {/* REDO */}
+                        <ToolbarButton
+                            icon={<FiRotateCw size={15} />}
+                            onClick={() =>
+                                document.execCommand(
+                                    "redo"
+                                )
+                            }
+                            title="Redo"
+                        />
+                    </>
+                )}
 
                 {/* FULLSCREEN */}
                 <ToolbarButton
@@ -136,22 +141,26 @@ const FileToolbar = ({
                     title={isFullscreen ? "Minimize" : "Maximize"}
                 />
 
-                {/* SAVE */}
-                <ToolbarButton
-                    icon={<FiSave size={15} />}
-                    onClick={onSave}
-                    variant="blue"
-                    disabled={saving}
-                    title="Save"
-                />
+                {currentUserRole !== 'viewer' && (
+                    <>
+                        {/* SAVE */}
+                        <ToolbarButton
+                            icon={<FiSave size={15} />}
+                            onClick={onSave}
+                            variant="blue"
+                            disabled={saving}
+                            title="Save"
+                        />
 
-                {/* DELETE */}
-                <ToolbarButton
-                    icon={<FiTrash2 size={15} />}
-                    onClick={onDelete}
-                    variant="red"
-                    title="Delete"
-                />
+                        {/* DELETE */}
+                        <ToolbarButton
+                            icon={<FiTrash2 size={15} />}
+                            onClick={onDelete}
+                            variant="red"
+                            title="Delete"
+                        />
+                    </>
+                )}
 
             </div>
 

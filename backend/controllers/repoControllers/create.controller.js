@@ -15,6 +15,18 @@ export const createRepoController = async (req, res) => {
             return res.status(400).json({ message: "User ID not found in request" })
         }
 
+        // check if newrepo name matches the regex pattern - /^[a-zA-Z0-9-_]+$/
+        const pattern = /^[a-zA-Z0-9-_]+$/;
+        if (!pattern.test(newrepo.name)) {
+            return res.status(400).json({ message: "Repository name can only contain letters, numbers, hyphens and underscores" })
+        }
+
+        // check if repository already exists with same name and owner
+        const existingRepo = await RepositoryModel.findOne({ name: newrepo.name, owner: newrepo.owner })
+        if (existingRepo) {
+            return res.status(400).json({ message: "Repository already exists under this name" })
+        }
+
         // console.log("creating repository with data", newrepo)
 
         // create new repository document and save to db

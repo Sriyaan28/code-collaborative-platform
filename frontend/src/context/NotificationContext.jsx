@@ -15,9 +15,9 @@ export const NotificationProvider = ({ children }) => {
     const [notification, setNotification] = useState(null);
     const [loadingNotification, setLoadingNotification] = useState(true);
 
-    const fetchNotifications = useCallback(async () => {
+    const fetchNotifications = useCallback(async (silent = false) => {
         try {
-            setLoadingNotifications(true);
+            if (!silent) setLoadingNotifications(true);
             const data = await getNotifications();
             setNotifications(data.payload?.allNotifications || []);
             setSeenNotifications(data.payload?.seenNotifications || []);
@@ -25,7 +25,7 @@ export const NotificationProvider = ({ children }) => {
         } catch (err) {
             console.log("Failed to fetch notifications", err);
         } finally {
-            setLoadingNotifications(false);
+            if (!silent) setLoadingNotifications(false);
         }
     }, []);
 

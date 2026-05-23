@@ -7,7 +7,8 @@ export const getBranches = async (
 ) => {
 
     const res = await axiosInstance.get(
-        `/branches/repo/${repoId}`
+        `/branches/repo/${repoId}`,
+        { params: { t: Date.now() } }
     );
 
     return res.data;
@@ -21,7 +22,8 @@ export const getBranch = async (
 ) => {
 
     const res = await axiosInstance.get(
-        `/branches/repo/${repoId}/branch/${branchName}`
+        `/branches/repo/${repoId}/branch/${branchName}`,
+        { params: { t: Date.now() } }
     );
 
     return res.data;
@@ -71,7 +73,8 @@ export const deleteBranch = async (
 // GET BRANCH BY ID
 export const getBranchById = async (branchId) => {
     const res = await axiosInstance.get(
-        `/branches/branch/${branchId}`
+        `/branches/branch/${branchId}`,
+        { params: { t: Date.now() } }
     );
     return res.data;
 };
