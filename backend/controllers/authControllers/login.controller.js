@@ -36,7 +36,7 @@ export const loginController = async (req, res) => {
         const token = sign({ id: currentUser._id, email: currentUser.email }, process.env.JWT_SECRET, { expiresIn: "1d" })
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
+            secure: true, // MUST be true when sameSite is 'None'
             sameSite: "None"
         })
 

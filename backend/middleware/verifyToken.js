@@ -10,7 +10,7 @@ export function verifyToken(req,res,next)
 {
     // console.log("Token is ",req.cookies.token)
     // token verification logic
-    const token = req.cookies?.token; //?.(optional chaining op) will return undefined
+    const token = req.cookies?.token || req.headers?.authorization?.split(" ")[1];
     if(!token)
     {
         return res.status(401).json({message:"Unauthorised"})
