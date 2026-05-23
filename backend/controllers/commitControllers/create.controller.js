@@ -112,6 +112,18 @@ export const createCommitController = async (req, res) => {
             });
         }
 
+        // populate file snapshots for the commit
+        const activeFiles = await FileModel.find({ 
+            branch: commitBranch, 
+            isDeleted: false 
+        });
+
+        const file_snapshots = activeFiles.map(f => ({
+            file_id: f._id,
+            name: f.name,
+            content: f.content || ""
+        }));
+
         // create commit
         let commit;
         if (isInitialCommit) {
@@ -120,7 +132,8 @@ export const createCommitController = async (req, res) => {
                 message,
                 branch: commitBranch,
                 author: uid,
-                files_changed
+                files_changed,
+                file_snapshots
             });
         } else {
             commit = await CommitModel.create({
@@ -128,7 +141,8 @@ export const createCommitController = async (req, res) => {
                 repository,
                 branch: commitBranch,
                 author: uid,
-                files_changed
+                files_changed,
+                file_snapshots
             });
         }
 

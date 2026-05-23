@@ -6,7 +6,8 @@ export const createInitialCommit = async ({
     message,
     branch,
     author,
-    files_changed
+    files_changed,
+    file_snapshots
 }) => {
     try {
         const commit = await CommitModel.create({
@@ -14,7 +15,8 @@ export const createInitialCommit = async ({
             message,
             branch,
             author,
-            files_changed
+            files_changed,
+            file_snapshots
         });
         return commit;
     } catch (err) {

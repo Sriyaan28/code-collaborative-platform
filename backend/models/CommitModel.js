@@ -47,6 +47,24 @@ const commitSchema = new Schema({
         required: true
       }
     }
+  ],
+
+  file_snapshots: [
+    {
+      file_id: {
+        type: Schema.Types.ObjectId,
+        ref: "File",
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      content: {
+        type: String,
+        default: ""
+      }
+    }
   ]
 
 }, {
