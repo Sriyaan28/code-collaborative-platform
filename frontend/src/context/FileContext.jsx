@@ -34,8 +34,13 @@ export const FileProvider = ({ children }) => {
             const data = await getBranches(repoId);
             const branchData = data.payload || [];
             setBranches(branchData);
+            
             if (branchData.length > 0) {
-                setSelectedBranch(branchData[0]._id);
+                // If we don't have a selected branch, or the currently selected branch doesn't exist anymore
+                setSelectedBranch(current => {
+                    const branchExists = branchData.find(b => b._id === current);
+                    return branchExists ? current : branchData[0]._id;
+                });
             } else {
                 setLoading(false);
             }

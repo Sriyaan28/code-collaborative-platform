@@ -39,7 +39,8 @@ const DashboardPage = () => {
         };
 
         fetchRepositories();
-    }, [cachedData, setCache]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setCache]);
 
     const repositories =
         activeTab === "public"

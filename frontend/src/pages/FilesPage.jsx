@@ -19,7 +19,7 @@ const FilesPage = () => {
     const {
         branches, selectedBranch, setSelectedBranch, files, selectedFile, setSelectedFile,
         content, setContent, loading, saving, editorLoading, isGenerating, isReviewing, isSyncingContent,
-        fetchFiles, handleSaveFile, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
+        fetchBranches, fetchFiles, handleSaveFile, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
     } = useFile();
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -49,7 +49,8 @@ const FilesPage = () => {
 
     // INTERACTION-BASED FILES POLLING
     useEffect(() => {
-        // Fetch files initially when Files tab is opened
+        // Fetch branches and files initially when Files tab is opened
+        fetchBranches();
         fetchFiles(true);
 
         let timeout;
@@ -68,7 +69,7 @@ const FilesPage = () => {
             window.removeEventListener('click', handleInteraction);
             window.removeEventListener('keydown', handleInteraction);
         };
-    }, [fetchFiles]);
+    }, [fetchFiles, fetchBranches]);
 
     const onGenerateCodeSubmit = (prompt) => {
         handleGenerateCode(prompt, setIsFullscreen);
