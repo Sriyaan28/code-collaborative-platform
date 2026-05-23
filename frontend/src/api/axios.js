@@ -1,6 +1,7 @@
 import axios from "axios";
 
-// baseUrl: https://code-collaborative-platform.vercel.app/api
+// baseUrl (render backend): https://code-collaborative-platform.onrender.com
+// baseUrl(vercel backend): https://code-collaborative-platform.vercel.app/api
 // baseUrl: http://localhost:8080/api
 const axiosInstance = axios.create({
     baseURL: "https://code-collaborative-platform.vercel.app/api",
