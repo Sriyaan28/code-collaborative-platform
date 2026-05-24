@@ -5,11 +5,14 @@
  - Create and manage repositories
  - Upload / edit project files
  - Commit history tracking
+ - Robust state-snapshot rollback logic for commits
  - Pull requests for proposing code changes
  - Issue tracking system for bugs or feature requests
  - Code review comments on specific lines
  - Team collaboration & permissions (owner, collaborator, viewer)
  - Real-time notifications for PR updates and comments
+ - AI-powered code generation
+ - AI Code Health checks for performance and security
  
  # Tech Stack:
   - React 
@@ -22,7 +25,7 @@
   - Cloud storage (AWS S3 / Cloudinary)
 
 # ENTITY:
-    USER, REPOSITORIES, PROJECT FILES, COMMENTS, NOTIFICATIONS, COLLABORATORS, COMMITS, PULL REQUESTS, ISSUES
+    USER, REPOSITORIES, PROJECT FILES, COMMENTS, NOTIFICATIONS, COLLABORATORS, COMMITS, PULL REQUESTS, ISSUES, DISCUSSIONS, BRANCHES
 
 # SCHEMA:
     
@@ -44,6 +47,13 @@
     - collaborators(user_id)
     - isActive
     - comments
+    - mainReadmeFile(file_id)
+    - timestamps
+
+    BRANCH:
+    - branch_id
+    - name
+    - repository(repo_id)
     - timestamps
 
     FILES:
@@ -105,6 +115,18 @@
     - status(open,close)
     - assignees(user_id)
     - timestamp
+
+    DISCUSSIONS:
+    - discussion_id
+    - title
+    - content
+    - author(user_id)
+    - tags
+    - mentionedUsers(user_id)
+    - linkedRepositories(repo_id)
+    - likes(user_id)
+    - comments
+    - timestamps
 
     
 
