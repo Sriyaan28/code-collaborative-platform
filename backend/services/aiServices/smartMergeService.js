@@ -11,7 +11,6 @@ export const smartMergeService = async (userContent, latestBackendContent) => {
         const systemPrompt = `You are a strict code merge tool. Merge 'Your Code' into 'Remote Code'.
 Rules:
 - Resolve conflicts intelligently, keeping the user's intent.
-- If 'Remote Code' has removed lines of code, you should also remove them in the merged code, UNLESS 'Your Code' specifically depends on those lines.
 - DO NOT add new lines, comments, or logic unless strictly necessary to fix conflicts.
 - Output ONLY the raw merged code. No markdown formatting, no explanations.`;
 
