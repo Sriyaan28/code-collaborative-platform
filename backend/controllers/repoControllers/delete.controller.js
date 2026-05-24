@@ -1,11 +1,11 @@
 import { RepositoryModel } from "../../models/RepositoryModel.js"
 import { createNotification } from "../../services/notificationServices/create.service.js"
-import { deleteBranch } from "../../services/branchServices/delete.service.js"
-import { deleteFile } from "../../services/fileServices/delete.service.js"
-import { deletePRByIdService } from "../../services/prServices/delete.service.js"
 import { FileModel } from "../../models/FileModel.js"
 import { BranchModel } from "../../models/BranchModel.js"
 import { PRModel } from "../../models/PRModel.js"
+import { IssuesModel } from "../../models/IssuesModel.js"
+import { CommitModel } from "../../models/CommitModel.js"
+import { CollaboratorModel } from "../../models/CollaboratorModel.js"
 
 export const deleteRepoByIdController = async (req, res) => {
     try {
@@ -27,16 +27,16 @@ export const deleteRepoByIdController = async (req, res) => {
                 success: false
             })
         }
-        // delete all files from repo
-        const files = await FileModel.find({ repository: rid })
-        files.forEach(async (file) => {
-            await deleteFile({ fileId: file._id })
-        })
-        // delete all branches from repo
-        const branches = await BranchModel.find({ repository: rid })
-        branches.forEach(async (branch) => {
-            await deleteBranch({ branchId: branch._id })
-        })
+
+        // Delete all related records concurrently
+        await Promise.all([
+            FileModel.deleteMany({ repository: rid }),
+            BranchModel.deleteMany({ repository: rid }),
+            CommitModel.deleteMany({ repository: rid }),
+            PRModel.deleteMany({ repository: rid }),
+            IssuesModel.deleteMany({ repository: rid }),
+            CollaboratorModel.deleteMany({ repo: rid })
+        ]);
 
         // find repository by id
         const deletedRepository = await RepositoryModel.findByIdAndDelete(rid)
