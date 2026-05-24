@@ -8,6 +8,7 @@ import { getAllBranchFilesController, getAllFilesController, getAllMainBranchFil
 import { getFileController } from '../controllers/fileControllers/get.controller.js';
 import { analyzeCodeHealth } from '../services/aiServices/codeHealthService.js';
 import { generateCodeService } from '../services/aiServices/codeGenerationService.js';
+import { smartMergeService } from '../services/aiServices/smartMergeService.js';
 
 export const fileApp = exp.Router()
 
@@ -88,6 +89,32 @@ fileApp.post('/generate-code', verifyToken, async (req, res) => {
         console.log(err);
         return res.status(500).json({
             message: "Error generating code",
+            error: err.message
+        });
+    }
+});
+
+// route for smart merging code
+fileApp.post('/smart-merge', verifyToken, async (req, res) => {
+    try {
+        const { userContent, latestBackendContent } = req.body;
+
+        if (userContent === undefined || latestBackendContent === undefined) {
+            return res.status(400).json({
+                message: "userContent and latestBackendContent are required"
+            });
+        }
+
+        const mergedCode = await smartMergeService(userContent, latestBackendContent);
+
+        return res.status(200).json({
+            message: "Code merged successfully",
+            payload: { mergedCode }
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "Error merging code",
             error: err.message
         });
     }

@@ -10,6 +10,7 @@ import AICodeGenerator from "../components/file/AICodeGenerator";
 import CodeHealthModal from "../components/file/CodeHealthModal";
 import CreateIssueModal from "../components/issue/CreateIssueModal";
 import CreateCommitModal from "../components/commit/CreateCommitModal";
+import ChangesDetectedModal from "../components/file/ChangesDetectedModal";
 import useFile from "../hooks/useFile";
 
 const FilesPage = () => {
@@ -18,8 +19,8 @@ const FilesPage = () => {
 
     const {
         branches, selectedBranch, setSelectedBranch, files, selectedFile, setSelectedFile,
-        content, setContent, loading, saving, editorLoading, isGenerating, isReviewing, isSyncingContent,
-        fetchBranches, fetchFiles, handleSaveFile, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
+        content, setContent, loading, saving, editorLoading, isGenerating, isReviewing, isSyncingContent, conflictData, setConflictData,
+        fetchBranches, fetchFiles, handleSaveFile, handleForceSave, handleSmartMerge, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
     } = useFile();
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -260,6 +261,16 @@ const FilesPage = () => {
                 }}
                 repoId={repoId}
                 initialData={issueInitialData}
+            />
+
+            {/* CHANGES DETECTED MODAL */}
+            <ChangesDetectedModal
+                isOpen={!!conflictData}
+                onClose={() => setConflictData(null)}
+                onForceSave={handleForceSave}
+                onSmartMerge={handleSmartMerge}
+                oldContent={conflictData?.oldContent}
+                fetchedContent={conflictData?.fetchedContent}
             />
 
         </div>

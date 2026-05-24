@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, useCallback, useMemo, useRef } from
 import { useParams } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import { getBranches } from "../api/branchApi";
-import { getBranchFiles, updateFile, deleteFile, getFileById, generateCode } from "../api/fileApi";
+import { getBranchFiles, updateFile, deleteFile, getFileById, generateCode, smartMergeCode } from "../api/fileApi";
 
 export const FileContext = createContext();
 
@@ -19,6 +19,7 @@ export const FileProvider = ({ children }) => {
     const [saving, setSaving] = useState(false);
     const [editorLoading, setEditorLoading] = useState(false);
     const [isSyncingContent, setIsSyncingContent] = useState(false);
+    const [conflictData, setConflictData] = useState(null);
 
     // AI state
     const [isGenerating, setIsGenerating] = useState(false);
@@ -56,6 +57,7 @@ export const FileProvider = ({ children }) => {
 
     const isGeneratingRef = useRef(isGenerating);
     const isReviewingRef = useRef(isReviewing);
+    const isSmartMergeRef = useRef(false);
     
     useEffect(() => {
         isGeneratingRef.current = isGenerating;
@@ -147,12 +149,27 @@ export const FileProvider = ({ children }) => {
         if (!selectedFile) return;
         try {
             setSaving(true);
+
+            const data = await getFileById(selectedFile._id);
+            const freshContent = data.payload?.file?.content || "";
+            const oldLoadedContent = fileCache.current[selectedFile._id];
+
+            if (freshContent !== oldLoadedContent && oldLoadedContent !== undefined) {
+                setSaving(false);
+                setConflictData({
+                    oldContent: oldLoadedContent,
+                    fetchedContent: freshContent
+                });
+                return;
+            }
+
             const res = await updateFile({
                 fileId: selectedFile._id,
                 repoId,
                 content
             });
             showModal(res.message, "success");
+            fileCache.current[selectedFile._id] = content;
             fetchFiles(true);
         } catch (err) {
             console.log(err);
@@ -161,6 +178,62 @@ export const FileProvider = ({ children }) => {
             setSaving(false);
         }
     }, [selectedFile, repoId, content, fetchFiles, showModal]);
+
+    const handleForceSave = useCallback(async () => {
+        if (!selectedFile) return;
+        try {
+            setSaving(true);
+            setConflictData(null);
+            const res = await updateFile({
+                fileId: selectedFile._id,
+                repoId,
+                content
+            });
+            showModal(res.message, "success");
+            fileCache.current[selectedFile._id] = content;
+            fetchFiles(true);
+        } catch (err) {
+            console.log(err);
+            showModal("Failed to force save file", "error");
+        } finally {
+            setSaving(false);
+        }
+    }, [selectedFile, repoId, content, fetchFiles, showModal]);
+
+    const handleSmartMerge = useCallback(async () => {
+        if (!selectedFile || !conflictData) return;
+        try {
+            setOriginalContent(content);
+            const latestBackendContent = conflictData.fetchedContent;
+            setConflictData(null);
+            isSmartMergeRef.current = true;
+            setIsGenerating(true);
+            setIsReviewing(true);
+
+            const data = await smartMergeCode(content, latestBackendContent);
+            const aiCode = data.payload?.mergedCode || "";
+
+            if (!aiCode) throw new Error("No code generated");
+
+            fullAiCodeRef.current = aiCode;
+            setContent("");
+
+            let i = 0;
+            typeWriterRef.current = setInterval(() => {
+                if (i < aiCode.length) {
+                    setContent((prev) => prev + aiCode.charAt(i));
+                    i++;
+                } else {
+                    if (typeWriterRef.current) clearInterval(typeWriterRef.current);
+                }
+            }, 10);
+        } catch (err) {
+            console.log("Smart Merge AI error", err);
+            showModal("Failed to merge code", "error");
+            setIsGenerating(false);
+            setIsReviewing(false);
+        }
+    }, [selectedFile, content, conflictData, showModal]);
 
     // DELETE FILE
     const handleDeleteFile = useCallback(async () => {
@@ -214,16 +287,39 @@ export const FileProvider = ({ children }) => {
         }
     }, [selectedFile, content, showModal]);
 
-    const handleAcceptCode = useCallback(() => {
+    const handleAcceptCode = useCallback(async () => {
         if (typeWriterRef.current) clearInterval(typeWriterRef.current);
-        if (fullAiCodeRef.current) setContent(fullAiCodeRef.current);
+        const finalCode = fullAiCodeRef.current;
+        if (finalCode) {
+            setContent(finalCode);
+            if (isSmartMergeRef.current && selectedFile) {
+                try {
+                    setSaving(true);
+                    const res = await updateFile({
+                        fileId: selectedFile._id,
+                        repoId,
+                        content: finalCode
+                    });
+                    showModal("Smart Merge saved successfully", "success");
+                    fileCache.current[selectedFile._id] = finalCode;
+                    fetchFiles(true);
+                } catch (err) {
+                    console.log(err);
+                    showModal("Failed to save merged file", "error");
+                } finally {
+                    setSaving(false);
+                }
+            }
+        }
+        isSmartMergeRef.current = false;
         setIsReviewing(false);
         setIsGenerating(false);
-    }, []);
+    }, [selectedFile, repoId, fetchFiles, showModal]);
 
     const handleRejectCode = useCallback(() => {
         if (typeWriterRef.current) clearInterval(typeWriterRef.current);
         setContent(originalContent);
+        isSmartMergeRef.current = false;
         setIsReviewing(false);
         setIsGenerating(false);
     }, [originalContent]);
@@ -244,17 +340,21 @@ export const FileProvider = ({ children }) => {
         isReviewing,
         isSyncingContent,
         originalContent,
+        conflictData,
+        setConflictData,
         fetchBranches,
         fetchFiles,
         handleSaveFile,
+        handleForceSave,
+        handleSmartMerge,
         handleDeleteFile,
         handleGenerateCode,
         handleAcceptCode,
         handleRejectCode
     }), [
         branches, selectedBranch, files, selectedFile, content, loading, saving, editorLoading,
-        isGenerating, isReviewing, isSyncingContent, originalContent, fetchBranches, fetchFiles, handleSaveFile,
-        handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
+        isGenerating, isReviewing, isSyncingContent, originalContent, conflictData, fetchBranches, fetchFiles, handleSaveFile,
+        handleForceSave, handleSmartMerge, handleDeleteFile, handleGenerateCode, handleAcceptCode, handleRejectCode
     ]);
 
     return (

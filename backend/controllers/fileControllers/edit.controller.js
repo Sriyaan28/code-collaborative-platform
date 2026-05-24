@@ -23,12 +23,19 @@ export const editFileController = async (req, res) => {
         if (file.isDeleted) {
             return res.status(404).json({ message: 'File not found', success: false });
         }
+        const isNameChanged = name && name !== file.name;
+        const isContentChanged = content !== undefined && content !== file.content;
+
+        if (!isNameChanged && !isContentChanged) {
+            return res.status(200).json({ message: 'No changes detected', payload: file, success: false });
+        }
+
         // update file name and content
-        if (name && name !== file.name) {
+        if (isNameChanged) {
             file.name = name;
         }
         // update old_content and content if content is changed
-        if (content && content !== file.content) {
+        if (isContentChanged) {
             file.old_content = file.content || "";
             file.content = content;
         }

@@ -7,7 +7,7 @@ const GROQ_API_KEY =
     process.env.GROQ_API_KEY?.trim();
 
 const GROQ_MODEL =
-    "openai/gpt-oss-20b";
+    "meta-llama/llama-4-scout-17b-16e-instruct";
 
 export const analyzeCodeHealth = async (
     code

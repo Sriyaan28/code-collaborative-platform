@@ -68,6 +68,15 @@ export const generateCode = async (prompt, currentCode) => {
     return res.data;
 };
 
+// SMART MERGE CODE
+export const smartMergeCode = async (userContent, latestBackendContent) => {
+    const res = await axiosInstance.post("/files/smart-merge", {
+        userContent,
+        latestBackendContent
+    });
+    return res.data;
+};
+
 
 // UPDATE FILE
 export const updateFile = async (
