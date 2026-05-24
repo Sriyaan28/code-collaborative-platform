@@ -21,7 +21,11 @@ const repositorySchema = new Schema({
     isActive:{
         type: Boolean,
         default: true
-    }, 
+    },
+    mainReadmeFile: {
+        type: Schema.Types.ObjectId,
+        ref: "File"
+    },
     comments:[
         {
             type: Schema.Types.ObjectId,

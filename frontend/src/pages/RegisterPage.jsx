@@ -58,7 +58,14 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#0d1117] text-white px-5">
+        <div className="min-h-screen flex items-center justify-center bg-[#0d1117] text-white px-5 relative">
+
+            <Link 
+                to="/"
+                className="absolute top-6 left-6 md:top-8 md:left-8 text-gray-400 hover:text-white transition text-sm flex items-center gap-2"
+            >
+                &larr; Back to Home
+            </Link>
 
             <form
                 onSubmit={handleSubmit}

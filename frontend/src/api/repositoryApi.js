@@ -58,9 +58,9 @@ export const updateRepository = async (
     repositoryData
 ) => {
 
-    const res = await axiosInstance.patch(
-        `/repository/repo/${repoId}`,
-        repositoryData
+    const res = await axiosInstance.put(
+        `/repository/repo`,
+        { ...repositoryData, repoId }
     );
 
     return res.data;

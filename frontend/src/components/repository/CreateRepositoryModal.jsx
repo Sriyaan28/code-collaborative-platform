@@ -21,10 +21,24 @@ const CreateRepositoryModal = ({
     if (!isOpen) return null;
 
     const handleChange = (e) => {
+        let value = e.target.value;
+        
+        // Auto-convert spaces to hyphens for repository name
+        if (e.target.name === 'name') {
+            value = value.replace(/\s+/g, '-');
+        }
+
+        // Limit description to 50 words
+        if (e.target.name === 'description') {
+            const words = value.trim().split(/\s+/).filter(word => word.length > 0);
+            if (words.length > 50) {
+                return;
+            }
+        }
 
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: value
         });
     };
 
@@ -101,14 +115,19 @@ const CreateRepositoryModal = ({
                         className="w-full p-4 rounded-xl bg-[#0d1117] border border-gray-700 outline-none"
                     />
 
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        rows={4}
-                        className="w-full p-4 rounded-xl bg-[#0d1117] border border-gray-700 outline-none resize-none"
-                    />
+                    <div>
+                        <textarea
+                            name="description"
+                            placeholder="Description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            rows={4}
+                            className="w-full p-4 rounded-xl bg-[#0d1117] border border-gray-700 outline-none resize-none"
+                        />
+                        <div className="text-right text-gray-500 text-xs mt-2">
+                            {formData.description.trim() ? formData.description.trim().split(/\s+/).length : 0} / 50 words
+                        </div>
+                    </div>
 
                     <select
                         name="visibility"

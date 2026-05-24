@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import DashboardLayout from "./DashboardLayout";
 import RepositoryTabs from "../components/repository/RepositoryTabs";
 import Loader from "../components/common/Loader";
@@ -30,6 +30,13 @@ const RepositoryLayout = () => {
             <div className="max-w-6xl mx-auto w-full pb-20">
                 {/* Repository Header */}
                 <div className="mb-10">
+                    <Link
+                        to="/repositories"
+                        className="text-gray-400 hover:text-white transition text-sm flex items-center gap-2 mb-6 w-max"
+                    >
+                        &larr; Back to Repositories
+                    </Link>
+
                     <div className="flex items-center justify-between flex-wrap gap-5">
                         <div className="flex items-center gap-5 flex-wrap">
                             <h1 className="text-5xl font-bold text-blue-400">
@@ -40,16 +47,7 @@ const RepositoryLayout = () => {
                             </span>
                         </div>
 
-                        {repository.currentUserRole === 'owner' && (
-                            <button
-                                onClick={handleDeleteRepo}
-                                disabled={deleting}
-                                className="px-5 py-2.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 transition flex items-center gap-2 font-medium"
-                            >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-                                {deleting ? "Deleting..." : "Delete Repository"}
-                            </button>
-                        )}
+                        {/* Delete button moved to Settings Tab */}
                     </div>
                     <p className="text-gray-400 mt-6 text-lg leading-8 max-w-4xl">
                         {repository.description || "No description"}

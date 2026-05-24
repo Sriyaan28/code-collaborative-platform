@@ -24,32 +24,32 @@ const RepositoryTabs = ({
             path: `/repository/${repoId}/files`
         },
 
-        {
+        ...(repository?.currentUserRole !== 'viewer' ? [{
             name: "Pull Requests",
             path: `/repository/${repoId}/pull-requests`
-        },
+        }] : []),
 
-        {
+        ...(repository?.currentUserRole !== 'viewer' ? [{
             name: "Issues",
             path: `/repository/${repoId}/issues`
-        },
+        }] : []),
 
-        {
+        ...(repository?.currentUserRole === 'owner' ? [{
             name: "Collaborators",
             path: `/repository/${repoId}/collaborators`
-        },
+        }] : []),
 
         {
             name: "Commits",
             path: `/repository/${repoId}/commits`
-        }
+        },
 
-    ].filter(tab => {
-        if (repository?.currentUserRole === 'viewer') {
-            return !["Pull Requests", "Issues", "Collaborators"].includes(tab.name);
-        }
-        return true;
-    });
+        ...(repository?.currentUserRole === 'owner' ? [{
+            name: "Settings",
+            path: `/repository/${repoId}/settings`
+        }] : [])
+
+    ];
 
     return (
 

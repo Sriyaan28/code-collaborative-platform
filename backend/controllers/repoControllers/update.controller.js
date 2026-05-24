@@ -15,10 +15,10 @@ export const updateRepoByIdController = async (req, res) => {
         // check role using checkRepoAccess middleware
         const role = req.role;
         console.log("User role in repository: ", role);
-        // if role is viewer, then the user does not have permission to update the repository
-        if (role === 'viewer') {
+        // if role is not owner, then the user does not have permission to update the repository
+        if (role !== 'owner') {
             return res.status(403).json({
-                message: `${role}(s) do not have permission to update this repository`,
+                message: `Only the owner can update this repository`,
                 success: false
             })
         }
@@ -27,6 +27,14 @@ export const updateRepoByIdController = async (req, res) => {
         const repository = await RepositoryModel.findById(rid)
         if (!repository) {
             return res.status(404).json({ message: "Repository not found" })
+        }
+
+        // check if new name already exists for this owner
+        if (req.body.name && req.body.name !== repository.name) {
+            const existingRepo = await RepositoryModel.findOne({ owner: uid, name: req.body.name });
+            if (existingRepo) {
+                return res.status(400).json({ message: `You already have a repository named '${req.body.name}'`, success: false });
+            }
         }
         // update repository with new data from req body
         const updatedRepository = await RepositoryModel.findByIdAndUpdate(

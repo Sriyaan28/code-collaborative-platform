@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import RepositoryPage from "../pages/RepositoryPage";
+import RepositorySettingsPage from "../pages/RepositorySettingsPage";
 import RepositoriesPage from "../pages/RepositoriesPage";
 import SearchRepositoriesPage from "../pages/SearchRepositoriesPage";
 import SearchUsersPage from "../pages/SearchUsersPage";
@@ -183,6 +184,7 @@ const AppRoutes = () => {
                     <Route path="pull-request/:prId" element={<PullRequestDetailPage />} />
                     <Route path="issues" element={<IssuesPage />} />
                     <Route path="issue/:issueId" element={<IssueDetailPage />} />
+                    <Route path="settings" element={<RepositorySettingsPage />} />
                 </Route>
 
                         </Routes>
